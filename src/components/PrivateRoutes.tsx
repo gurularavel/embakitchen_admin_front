@@ -2,7 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { URLS } from '~ek/shared/const/urls'
 import { Menu } from '~ek/components/Menu'
 
-export const PrivateRouters = () => {
+export const PrivateRoutes = () => {
   return (
     <>
       <Routes>
