@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import * as React from 'react'
 import { Layout, theme } from 'antd'
-import { Footer } from './footer'
-import AppSider from './sider'
-import AppHeader from './header'
+import { AppFooter } from '~ek/components/layout/footer'
+import { AppSider } from '~ek/components/layout/sider'
+import { AppHeader } from '~ek/components/layout/header'
 
 const { Content } = Layout
 
@@ -11,7 +11,7 @@ interface IProps {
 }
 
 const AppLayout: React.FC<IProps> = ({ children }) => {
-  const [collapsed, setCollapsed] = useState<boolean>(false)
+  const [collapsed, setCollapsed] = React.useState<boolean>(false)
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken()
@@ -39,7 +39,7 @@ const AppLayout: React.FC<IProps> = ({ children }) => {
         >
           {children}
         </Content>
-        <Footer />
+        <AppFooter />
       </Layout>
     </Layout>
   )

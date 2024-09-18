@@ -1,4 +1,4 @@
-import AppLayout from './components/layout'
+import AppLayout from '~ek/components/layout'
 
 export function App() {
   return <AppLayout>Embakitchen Admin</AppLayout>

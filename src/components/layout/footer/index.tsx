@@ -2,7 +2,7 @@ const footerStyles: Readonly<TailwindStyle> = {
   wrapper: 'text-center bg-gray-200 p-4',
 }
 
-export const Footer: React.FC = () => {
+export const AppFooter: React.FC = () => {
   return (
     <>
       <div className={footerStyles.wrapper}>

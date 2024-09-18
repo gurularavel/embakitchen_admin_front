@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import { Button, Layout } from 'antd'
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons'
 
@@ -9,7 +9,7 @@ interface IProps {
   setCollapsed: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const AppHeader: React.FC<IProps> = ({ collapsed, setCollapsed }) => {
+export const AppHeader: React.FC<IProps> = ({ collapsed, setCollapsed }) => {
   return (
     <Header style={{ padding: 0, background: '#fff' }}>
       <Button
@@ -25,5 +25,3 @@ const AppHeader: React.FC<IProps> = ({ collapsed, setCollapsed }) => {
     </Header>
   )
 }
-
-export default AppHeader

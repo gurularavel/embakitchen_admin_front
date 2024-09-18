@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import * as React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { ConfigProvider, Menu, Layout } from 'antd'
 import { URLS } from '~ek/shared/const/urls'
@@ -14,8 +14,8 @@ interface IProps {
 interface IMenu {
   key: string
   path: string
-  label: ReactNode
-  icon: ReactNode
+  label: React.ReactNode
+  icon: React.ReactNode
 }
 
 const items: IMenu[] = [
@@ -36,7 +36,7 @@ const items: IMenu[] = [
   label,
 }))
 
-const AppSider: React.FC<IProps> = ({ collapsed, setCollapsed }) => {
+export const AppSider: React.FC<IProps> = ({ collapsed, setCollapsed }) => {
   const location = useLocation()
   return (
     <Sider
@@ -70,5 +70,3 @@ const AppSider: React.FC<IProps> = ({ collapsed, setCollapsed }) => {
     </Sider>
   )
 }
-
-export default AppSider

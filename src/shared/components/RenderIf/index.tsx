@@ -1,9 +1,12 @@
-import React from 'react'
-import { IProps } from './types'
+import * as React from 'react'
 
-const RenderIf = ({ condition, children, renderElse = '' }: IProps) => {
+interface IProps {
+  condition: React.ReactNode
+  children: React.ReactNode
+  renderElse?: React.ReactNode
+}
+
+export const RenderIf = ({ condition, children, renderElse = '' }: IProps) => {
   if (condition) return <React.Fragment>{children}</React.Fragment>
   return <React.Fragment>{renderElse}</React.Fragment>
 }
-
-export default RenderIf
