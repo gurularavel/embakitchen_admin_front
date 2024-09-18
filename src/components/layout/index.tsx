@@ -10,7 +10,7 @@ interface IProps {
   children: React.ReactNode
 }
 
-const AppLayout: React.FC<IProps> = ({ children }) => {
+export const AppLayout: React.FC<IProps> = ({ children }) => {
   const [collapsed, setCollapsed] = React.useState<boolean>(false)
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -44,5 +44,3 @@ const AppLayout: React.FC<IProps> = ({ children }) => {
     </Layout>
   )
 }
-
-export default AppLayout
