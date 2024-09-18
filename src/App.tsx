@@ -1,3 +1,5 @@
+import AppLayout from './components/layout'
+
 export function App() {
-  return <h1 className='test'>Embakitchen Admin</h1>
+  return <AppLayout>Embakitchen Admin</AppLayout>
 }
