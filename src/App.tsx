@@ -1,5 +1,5 @@
-import AppLayout from '~ek/components/layout'
+import { Router } from '~ek/components'
 
 export function App() {
-  return <AppLayout>Embakitchen Admin</AppLayout>
+  return <Router />
 }

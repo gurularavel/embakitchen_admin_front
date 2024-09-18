@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 interface IProps {
-  condition: React.ReactNode
+  condition: boolean
   children: React.ReactNode
   renderElse?: React.ReactNode
 }
