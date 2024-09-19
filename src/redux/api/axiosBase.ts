@@ -1,19 +1,17 @@
 import { BaseQueryFn } from '@reduxjs/toolkit/query/react'
 import axios, { AxiosRequestConfig, AxiosError } from 'axios'
-import { toast } from 'react-toastify'
+import { notification } from 'antd'
 import { v4 as uuid } from 'uuid'
 import { revertAll } from '~ek/redux/feature/constants'
 
 const baseURL = `${import.meta.env.VITE_BASE_URL}`
 
 const errorNotifier = (message?: string) => {
-  toast.error(message, {
-    position: 'top-right',
-    autoClose: 2000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
+  notification.error({
+    message: 'Error',
+    description: message || 'An error occurred',
+    placement: 'topRight',
+    duration: 2,
   })
 }
 
