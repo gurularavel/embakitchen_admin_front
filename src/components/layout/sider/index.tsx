@@ -2,7 +2,11 @@ import * as React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { ConfigProvider, Menu, Layout } from 'antd'
 import { URLS } from '~ek/shared/const/urls'
-import { UsergroupAddOutlined, BlockOutlined } from '@ant-design/icons'
+import {
+  UsergroupAddOutlined,
+  BlockOutlined,
+  ExpandOutlined,
+} from '@ant-design/icons'
 import logo from '~ek/assets/images/132x20.67.svg'
 const { Sider } = Layout
 
@@ -28,6 +32,11 @@ const items: IMenu[] = [
     path: URLS.MENU,
     label: <Link to={URLS.MENU}>Menu</Link>,
     icon: <BlockOutlined className={'!text-lg'} />,
+  },
+  {
+    path: URLS.ABOUT,
+    label: <Link to={URLS.ABOUT}>Haqqımızda</Link>,
+    icon: <ExpandOutlined className={'!text-lg'} />,
   },
 ].map(({ label, icon, path }) => ({
   key: path,

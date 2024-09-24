@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { URLS } from '~ek/shared/const/urls'
 import { Menu } from '~ek/components/Menu'
+import { About } from '~ek/components/About'
 
 export const PrivateRoutes = () => {
   return (
@@ -17,6 +18,10 @@ export const PrivateRoutes = () => {
         <Route
           path={URLS.MENU}
           element={<Menu />}
+        ></Route>
+        <Route
+          path={URLS.ABOUT}
+          element={<About />}
         ></Route>
       </Routes>
     </>
