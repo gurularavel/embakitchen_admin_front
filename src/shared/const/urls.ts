@@ -2,5 +2,6 @@ export const enum URLS {
   LOGIN = '/login',
   HOME = '/',
   MENU = '/menu',
-  ABOUT = '/about',
+  ABOUT_CONTENT = '/about/content',
+  ABOUT_INFO_BLOCKS = '/about/info_blocks',
 }
