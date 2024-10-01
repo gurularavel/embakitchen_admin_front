@@ -1,27 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { APIBaseQuery } from '~ek/redux/api/axiosBase'
-
-interface IFileProperties {
-  [key: string]: {
-    name: string
-    file_name: string
-    uuid: string
-    preview_url: string
-    original_url: string
-    order: number
-    custom_properties: []
-    extension: string
-    size: number
-  }
-}
-
-interface IAbout {
-  id: number
-  title: ILangContent
-  content: ILangContent
-  video: IFileProperties
-  image: IFileProperties
-}
+import { IAbout, IGetInfoBlock } from '~ek/types/about'
 
 export const aboutApi = createApi({
   reducerPath: 'aboutApi',
@@ -47,7 +26,20 @@ export const aboutApi = createApi({
       },
       invalidatesTags: () => [{ type: 'About_Content' }],
     }),
+    getInfoBlocks: builder.query<IGetInfoBlock, void>({
+      query(params) {
+        return {
+          url: 'about-info-blocks',
+          method: 'GET',
+          params,
+        }
+      },
+    }),
   }),
 })
 
-export const { useGetAboutQuery, usePostOrCreateAboutMutation } = aboutApi
+export const {
+  useGetAboutQuery,
+  usePostOrCreateAboutMutation,
+  useGetInfoBlocksQuery,
+} = aboutApi

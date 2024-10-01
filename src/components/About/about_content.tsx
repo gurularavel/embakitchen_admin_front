@@ -14,8 +14,9 @@ import {
   useGetAboutQuery,
   usePostOrCreateAboutMutation,
 } from '~ek/redux/api/about'
-import { Loading, RenderIf } from '~ek/shared/components'
-import { ErrorMessage } from '~ek/shared/components/ErrorMessage'
+import { Loading, RenderIf, ErrorMessage } from '~ek/shared/components'
+import { confirmModal } from '~ek/shared/helpers'
+import { useFileRemoveMutation } from '~ek/redux/api/fileRemove'
 
 interface IFile {
   file: File | null
@@ -41,6 +42,22 @@ export const About_Content: React.FC = () => {
 
   const { data, isLoading, isError } = useGetAboutQuery()
   const [postAbout, { isLoading: postLoading }] = usePostOrCreateAboutMutation()
+  const [deleteFile] = useFileRemoveMutation()
+
+  const initialValues = data
+    ? {
+      title: {
+        az: data.title.az,
+        en: data.title.en,
+        ru: data.title.ru,
+      },
+      content: {
+        az: data.content.az,
+        en: data.content.en,
+        ru: data.content.ru,
+      },
+    }
+    : {}
 
   React.useEffect(() => {
     if (data?.image && typeof data.image === 'object') {
@@ -99,24 +116,32 @@ export const About_Content: React.FC = () => {
     return false
   }
 
-  const initialValues = data
-    ? {
-      title: {
-        az: data.title.az,
-        en: data.title.en,
-        ru: data.title.ru,
+  const handleRemoveFile = async (file: UploadFile, type: string) => {
+    confirmModal({
+      title: 'Bu faylı silmək istədiyinizdən əminsiniz?',
+      onOk: () => {
+        deleteFile({
+          mediaIDS: [file.uid],
+        }).then(() => {
+          if (type === 'video') {
+            setVideo({ file: null, fileList: [] })
+          } else if (type === 'image') {
+            setImage({ file: null, fileList: [] })
+          }
+        })
       },
-      content: {
-        az: data.content.az,
-        en: data.content.en,
-        ru: data.content.ru,
-      },
-    }
-    : {}
+      onCancel: () => {},
+    })
+  }
 
   const onFinish = async (values: IForm) => {
-    if (video.file?.size === 0) {
-      message.error('Please select a file first!')
+    if (video.file?.size === 0 || !video.fileList.length) {
+      message.error('Please select video first!')
+      return
+    }
+
+    if (image.file?.size === 0 || !image.fileList.length) {
+      message.error('Please select image first!')
       return
     }
 
@@ -165,6 +190,15 @@ export const About_Content: React.FC = () => {
             name='image'
             label='Banner Photo'
             valuePropName='image'
+            rules={[
+              {
+                required: true,
+                validator: () =>
+                  image.fileList.length > 0
+                    ? Promise.resolve()
+                    : Promise.reject(new Error('Please upload a image file!')),
+              },
+            ]}
             getValueFromEvent={e => {
               return e?.fileList
             }}
@@ -176,7 +210,7 @@ export const About_Content: React.FC = () => {
               listType='picture'
               beforeUpload={file => beforeUpload(file, 'image')}
               fileList={image.fileList}
-              onRemove={() => setImage({ file: null, fileList: [] })}
+              onRemove={file => handleRemoveFile(file, 'image')}
             >
               <Button icon={<UploadOutlined />}>Click to upload</Button>
             </Upload>
@@ -243,6 +277,15 @@ export const About_Content: React.FC = () => {
             name='video'
             label='Upload Video'
             valuePropName='video'
+            rules={[
+              {
+                required: true,
+                validator: () =>
+                  video.fileList.length > 0
+                    ? Promise.resolve()
+                    : Promise.reject(new Error('Please upload a video file!')),
+              },
+            ]}
           >
             <Upload
               name='video'
@@ -251,7 +294,7 @@ export const About_Content: React.FC = () => {
               listType='picture'
               beforeUpload={file => beforeUpload(file, 'video')}
               fileList={video.fileList}
-              onRemove={() => setVideo({ file: null, fileList: [] })}
+              onRemove={file => handleRemoveFile(file, 'video')}
             >
               <Button icon={<UploadOutlined />}>Click to upload</Button>
             </Upload>
