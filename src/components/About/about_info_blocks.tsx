@@ -1,14 +1,14 @@
 import * as React from 'react'
+import { FormOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons'
+import { Button, Space, Table, Tooltip } from 'antd'
 import {
-  PoweroffOutlined,
-  PlusOutlined,
-  DeleteOutlined,
-} from '@ant-design/icons'
-import { Button, Table, Tooltip } from 'antd'
-import { useGetInfoBlocksQuery } from '~ek/redux/api/about'
+  useDeleteInfoBlocksMutation,
+  useGetInfoBlocksQuery,
+} from '~ek/redux/api/about'
 import { Loading, RenderIf } from '~ek/shared/components'
 import { ErrorMessage } from '~ek/shared/components/ErrorMessage'
 import { InfoBlock } from '~ek/types/about'
+import { confirmModal } from '~ek/shared/helpers'
 
 export const About_Info_Blocks = () => {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([])
@@ -18,6 +18,7 @@ export const About_Info_Blocks = () => {
     pageSize: 10,
   })
   const { data, isLoading, isError } = useGetInfoBlocksQuery()
+  const [deleteBlocks] = useDeleteInfoBlocksMutation()
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     setSelectedRowKeys(newSelectedRowKeys)
@@ -51,17 +52,36 @@ export const About_Info_Blocks = () => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
+      render: (_: string, block: InfoBlock) =>
+        block.status ? (
+          <span className={'text-teal-500'}>Active</span>
+        ) : (
+          <span className={'text-red-500'}>Deactive</span>
+        ),
+    },
+    {
+      title: 'Actions',
+      dataIndex: 'action',
+      key: 'action',
       render: (_: string, block: InfoBlock) => (
-        <Button
-          type='default'
-          className={
-            block.status
-              ? 'border text-teal-600 hover:!border-teal-600 hover:!text-teal-600'
-              : 'border text-red-500 hover:!border-red-500 hover:!text-red-500'
-          }
-          icon={<PoweroffOutlined />}
-          size={'middle'}
-        />
+        <Space size='middle'>
+          <Button>
+            <FormOutlined />
+          </Button>
+          <Button
+            danger
+            onClick={() =>
+              confirmModal({
+                title: 'Bunu silmək istədiyinizdən əminsiniz?',
+                onOk: () => {
+                  deleteBlocks({ ids: [block.id] })
+                },
+              })
+            }
+          >
+            <DeleteOutlined />
+          </Button>
+        </Space>
       ),
     },
   ]
@@ -78,7 +98,15 @@ export const About_Info_Blocks = () => {
         <div>
           <div className='flex justify-end items-center mb-3'>
             {selectedRowKeys.length ? (
-              <DeleteOutlined className='mr-3 text-xl text-red-500 cursor-pointer' />
+              <DeleteOutlined
+                className='mr-3 text-xl text-red-500 cursor-pointer'
+                onClick={() =>
+                  confirmModal({
+                    title: 'Bunu silmək istədiyinizdən əminsiniz?',
+                    onOk: () => deleteBlocks({ ids: selectedRowKeys }),
+                  })
+                }
+              />
             ) : (
               ''
             )}

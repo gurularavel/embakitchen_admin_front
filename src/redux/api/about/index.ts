@@ -2,10 +2,14 @@ import { createApi } from '@reduxjs/toolkit/query/react'
 import { APIBaseQuery } from '~ek/redux/api/axiosBase'
 import { IAbout, IGetInfoBlock } from '~ek/types/about'
 
+interface IDeleteBlock {
+  ids: React.Key[]
+}
+
 export const aboutApi = createApi({
   reducerPath: 'aboutApi',
   baseQuery: APIBaseQuery,
-  tagTypes: ['About_Content'],
+  tagTypes: ['ABOUT_CONTENT', 'ABOUT_INFO_BLOCKS'],
   endpoints: builder => ({
     getAbout: builder.query<IAbout, void>({
       query() {
@@ -14,7 +18,7 @@ export const aboutApi = createApi({
           url: 'about',
         }
       },
-      providesTags: () => [{ type: 'About_Content' }],
+      providesTags: () => [{ type: 'ABOUT_CONTENT' }],
     }),
     postOrCreateAbout: builder.mutation<void, FormData>({
       query(formData) {
@@ -24,7 +28,7 @@ export const aboutApi = createApi({
           data: formData,
         }
       },
-      invalidatesTags: () => [{ type: 'About_Content' }],
+      invalidatesTags: () => [{ type: 'ABOUT_CONTENT' }],
     }),
     getInfoBlocks: builder.query<IGetInfoBlock, void>({
       query(params) {
@@ -34,6 +38,17 @@ export const aboutApi = createApi({
           params,
         }
       },
+      providesTags: () => [{ type: 'ABOUT_INFO_BLOCKS' }],
+    }),
+    deleteInfoBlocks: builder.mutation<void, IDeleteBlock>({
+      query(data) {
+        return {
+          method: 'DELETE',
+          url: 'about-info-blocks',
+          data,
+        }
+      },
+      invalidatesTags: () => [{ type: 'ABOUT_INFO_BLOCKS' }],
     }),
   }),
 })
@@ -42,4 +57,5 @@ export const {
   useGetAboutQuery,
   usePostOrCreateAboutMutation,
   useGetInfoBlocksQuery,
+  useDeleteInfoBlocksMutation,
 } = aboutApi
