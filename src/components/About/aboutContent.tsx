@@ -26,11 +26,11 @@ interface IFile {
 interface IForm {
   content: ILangContent
   title: ILangContent
-  video: IFile
+  video?: IFile
   image: IFile
 }
 
-export const About_Content: React.FC = () => {
+export const AboutContent: React.FC = () => {
   const [image, setImage] = React.useState<IFile>({
     file: null,
     fileList: [],
@@ -196,7 +196,9 @@ export const About_Content: React.FC = () => {
                 validator: () =>
                   image.fileList.length > 0
                     ? Promise.resolve()
-                    : Promise.reject(new Error('Please upload a image file!')),
+                    : Promise.reject(
+                      new Error('Zəhmət olmasa image fayl yükləyin!'),
+                    ),
               },
             ]}
             getValueFromEvent={e => {
@@ -283,7 +285,9 @@ export const About_Content: React.FC = () => {
                 validator: () =>
                   video.fileList.length > 0
                     ? Promise.resolve()
-                    : Promise.reject(new Error('Please upload a video file!')),
+                    : Promise.reject(
+                      new Error('Zəhmət olmasa video fayl yükləyin!'),
+                    ),
               },
             ]}
           >

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { FormOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons'
-import { Button, Space, Table, Tooltip } from 'antd'
+import { Button, ConfigProvider, Space, Table } from 'antd'
 import {
   useDeleteInfoBlocksMutation,
   useGetInfoBlocksQuery,
@@ -9,14 +9,18 @@ import { Loading, RenderIf } from '~ek/shared/components'
 import { ErrorMessage } from '~ek/shared/components/ErrorMessage'
 import { InfoBlock } from '~ek/types/about'
 import { confirmModal } from '~ek/shared/helpers'
+import { AddBlockDrawer } from './addBlockDrawer'
 
-export const About_Info_Blocks = () => {
+export const AboutInfoBlocks = () => {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([])
   const [pageParams, setPageParams] = React.useState<IPageParams>({
     take: 10,
     currentPage: 1,
     pageSize: 10,
   })
+  const [drawerType, setDrawerType] = React.useState<'edit' | 'add' | null>(
+    null,
+  )
   const { data, isLoading, isError } = useGetInfoBlocksQuery()
   const [deleteBlocks] = useDeleteInfoBlocksMutation()
 
@@ -30,6 +34,11 @@ export const About_Info_Blocks = () => {
       currentPage: pagination.currentPage,
       pageSize: pagination.pageSize,
     }))
+  }
+
+  const onClose = () => {
+    setDrawerType(null)
+    setSelectedRowKeys([])
   }
 
   const rowSelection = {
@@ -72,7 +81,7 @@ export const About_Info_Blocks = () => {
             danger
             onClick={() =>
               confirmModal({
-                title: 'Bunu silmək istədiyinizdən əminsiniz?',
+                title: 'Silmək istədiyinizdən əminsiniz?',
                 onOk: () => {
                   deleteBlocks({ ids: [block.id] })
                 },
@@ -102,7 +111,7 @@ export const About_Info_Blocks = () => {
                 className='mr-3 text-xl text-red-500 cursor-pointer'
                 onClick={() =>
                   confirmModal({
-                    title: 'Bunu silmək istədiyinizdən əminsiniz?',
+                    title: 'Silmək istədiyinizdən əminsiniz?',
                     onOk: () => deleteBlocks({ ids: selectedRowKeys }),
                   })
                 }
@@ -110,13 +119,24 @@ export const About_Info_Blocks = () => {
             ) : (
               ''
             )}
-            <Tooltip title='Add Block'>
+            <ConfigProvider
+              theme={{
+                token: {
+                  colorPrimary: '#00b96b',
+                },
+              }}
+            >
               <Button
-                className='p-3.5 bg-slate-100 text-teal-600 hover:!bg-teal-600 hover:!text-white !border-none outline-none'
-                shape='circle'
+                type='primary'
                 icon={<PlusOutlined />}
-              />
-            </Tooltip>
+                onClick={e => {
+                  e.stopPropagation()
+                  setDrawerType('add')
+                }}
+              >
+                Blok əlavə et
+              </Button>
+            </ConfigProvider>
           </div>
           <Table
             dataSource={data?.data.map((block: InfoBlock, i) => ({
@@ -133,6 +153,13 @@ export const About_Info_Blocks = () => {
             onChange={() => handleTableChange}
             className='overflow-x-auto'
           />
+
+          {drawerType === 'add' && (
+            <AddBlockDrawer
+              open={!!drawerType}
+              onClose={onClose}
+            />
+          )}
         </div>
       )}
     </>

@@ -1,10 +1,11 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { APIBaseQuery } from '~ek/redux/api/axiosBase'
-import { IAbout, IGetInfoBlock } from '~ek/types/about'
-
-interface IDeleteBlock {
-  ids: React.Key[]
-}
+import {
+  IAbout,
+  IGetInfoBlock,
+  IDeleteBlock,
+  IPostBlock,
+} from '~ek/types/about'
 
 export const aboutApi = createApi({
   reducerPath: 'aboutApi',
@@ -50,6 +51,16 @@ export const aboutApi = createApi({
       },
       invalidatesTags: () => [{ type: 'ABOUT_INFO_BLOCKS' }],
     }),
+    postInfoBlock: builder.mutation<void, IPostBlock>({
+      query(data) {
+        return {
+          method: 'POST',
+          url: 'about-info-blocks',
+          data,
+        }
+      },
+      invalidatesTags: () => [{ type: 'ABOUT_INFO_BLOCKS' }],
+    }),
   }),
 })
 
@@ -58,4 +69,5 @@ export const {
   usePostOrCreateAboutMutation,
   useGetInfoBlocksQuery,
   useDeleteInfoBlocksMutation,
+  usePostInfoBlockMutation,
 } = aboutApi

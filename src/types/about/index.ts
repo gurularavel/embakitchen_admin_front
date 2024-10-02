@@ -32,3 +32,12 @@ export interface IGetInfoBlock {
   data: InfoBlock[]
   pagination: IPagination
 }
+
+export interface IPostBlock {
+  title: ILangContent
+  content: ILangContent
+}
+
+export interface IDeleteBlock {
+  ids: React.Key[]
+}

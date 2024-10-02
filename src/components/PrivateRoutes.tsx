@@ -1,8 +1,8 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { URLS } from '~ek/shared/const/urls'
 import { Menu } from '~ek/components/Menu'
-import { About_Content } from '~ek/components/About/about_content'
-import { About_Info_Blocks } from '~ek/components/About/about_info_blocks'
+import { AboutContent } from '~ek/components/About/aboutContent'
+import { AboutInfoBlocks } from '~ek/components/About/aboutInfoBlocks'
 
 export const PrivateRoutes = () => {
   return (
@@ -22,11 +22,11 @@ export const PrivateRoutes = () => {
         ></Route>
         <Route
           path={URLS.ABOUT_CONTENT}
-          element={<About_Content />}
+          element={<AboutContent />}
         ></Route>
         <Route
           path={URLS.ABOUT_INFO_BLOCKS}
-          element={<About_Info_Blocks />}
+          element={<AboutInfoBlocks />}
         ></Route>
       </Routes>
     </>
