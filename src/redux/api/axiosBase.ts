@@ -79,7 +79,11 @@ export const axiosBaseQuery = ({
 
 export const APIBaseQueryInterceptor = axiosBaseQuery({
   baseUrl: baseURL,
-  headers: headers => {
+  headers: (headers, { getState }) => {
+    const { auth } = getState()
+    if (auth?.token) {
+      headers['Authorization'] = `Bearer ${auth.token}`
+    }
     headers['x-requestid'] = uuid()
     return headers
   },
