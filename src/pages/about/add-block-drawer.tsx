@@ -8,7 +8,10 @@ interface IDrawerProps {
   onClose: () => void
 }
 
-export const AddBlockDrawer: React.FC<IDrawerProps> = ({ open, onClose }) => {
+export function AddBlockDrawer({
+  open,
+  onClose,
+}: IDrawerProps): React.ReactElement {
   const [addBlock, { isLoading }] = usePostInfoBlockMutation()
   const [form] = Form.useForm()
 

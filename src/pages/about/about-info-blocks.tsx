@@ -5,13 +5,13 @@ import {
   useDeleteInfoBlocksMutation,
   useGetInfoBlocksQuery,
 } from '~ek/redux/api/about'
+import { AddBlockDrawer } from '~ek/pages/about/add-block-drawer'
 import { Loading, RenderIf } from '~ek/shared/components'
-import { ErrorMessage } from '~ek/shared/components/ErrorMessage'
-import { InfoBlock } from '~ek/types/about'
+import { ErrorMessage } from '~ek/shared/components/error-message'
 import { confirmModal } from '~ek/shared/helpers'
-import { AddBlockDrawer } from './addBlockDrawer'
+import { InfoBlock } from '~ek/types/about'
 
-export const AboutInfoBlocks = () => {
+export function AboutInfoBlocks(): React.ReactElement {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([])
   const [pageParams, setPageParams] = React.useState<IPageParams>({
     take: 10,
@@ -103,7 +103,7 @@ export const AboutInfoBlocks = () => {
       <RenderIf condition={isLoading}>
         <Loading />
       </RenderIf>
-      {!isError && !isLoading && data?.data?.length && (
+      <RenderIf condition={!isError && !isLoading && data?.data?.length}>
         <div>
           <div className='flex justify-end items-center mb-3'>
             {selectedRowKeys.length ? (
@@ -161,7 +161,7 @@ export const AboutInfoBlocks = () => {
             />
           )}
         </div>
-      )}
+      </RenderIf>
     </>
   )
 }

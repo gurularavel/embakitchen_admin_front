@@ -1,10 +1,9 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { URLS } from '~ek/shared/const/urls'
-import { Menu } from '~ek/components/Menu'
-import { AboutContent } from '~ek/components/About/aboutContent'
-import { AboutInfoBlocks } from '~ek/components/About/aboutInfoBlocks'
+import { Menu } from '~ek/pages/Menu'
+import { AboutContent, AboutInfoBlocks } from '~ek/pages/about'
 
-export const PrivateRoutes = () => {
+export function PrivateRoutes(): React.ReactElement {
   return (
     <>
       <Routes>

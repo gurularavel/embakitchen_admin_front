@@ -11,7 +11,10 @@ interface IProps {
   setCollapsed: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export const AppHeader: React.FC<IProps> = ({ collapsed, setCollapsed }) => {
+export function AppHeader({
+  collapsed,
+  setCollapsed,
+}: IProps): React.ReactElement {
   const dispatch = useAppDispatch()
   return (
     <Header

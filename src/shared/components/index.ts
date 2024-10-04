@@ -1,3 +1,3 @@
-export { RenderIf } from '~ek/shared/components/RenderIf'
-export { Loading } from '~ek/shared/components/Loading'
-export { ErrorMessage } from '~ek/shared/components/ErrorMessage'
+export { RenderIf } from '~ek/shared/components/render-if'
+export { Loading } from '~ek/shared/components/loading'
+export { ErrorMessage } from '~ek/shared/components/error-message'

@@ -30,7 +30,7 @@ interface IForm {
   image: IFile
 }
 
-export const AboutContent: React.FC = () => {
+export function AboutContent(): React.ReactElement {
   const [image, setImage] = React.useState<IFile>({
     file: null,
     fileList: [],
@@ -176,7 +176,7 @@ export const AboutContent: React.FC = () => {
       <RenderIf condition={isLoading}>
         <Loading />
       </RenderIf>
-      {!isError && !isLoading && (
+      <RenderIf condition={!isError && !isLoading}>
         <Form
           name='about_form'
           labelCol={{ span: 6 }}
@@ -316,7 +316,7 @@ export const AboutContent: React.FC = () => {
             </Space>
           </Form.Item>
         </Form>
-      )}
+      </RenderIf>
     </>
   )
 }

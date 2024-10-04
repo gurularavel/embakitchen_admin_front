@@ -55,7 +55,10 @@ const items: IMenu[] = [
   },
 ]
 
-export const AppSider: React.FC<IProps> = ({ collapsed, setCollapsed }) => {
+export function AppSider({
+  collapsed,
+  setCollapsed,
+}: IProps): React.ReactElement {
   const location = useLocation()
   return (
     <Sider
