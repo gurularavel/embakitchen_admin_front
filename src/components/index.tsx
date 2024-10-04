@@ -3,12 +3,14 @@ import { URLS } from '~ek/shared/const/urls'
 import { AppLayout } from '~ek/components/layout'
 import { PrivateRoutes } from '~ek/components/PrivateRoutes'
 import { RenderIf } from '~ek/shared/components'
+import { useAppSelector } from '~ek/redux/store'
+import { Login } from '~ek/components/Login'
 
 export const Router = () => {
-  const token = true
+  const { token } = useAppSelector(state => state.auth)
   return (
     <>
-      <RenderIf condition={token}>
+      <RenderIf condition={!!token}>
         <AppLayout>
           <PrivateRoutes />
         </AppLayout>
@@ -21,7 +23,7 @@ export const Router = () => {
           />
           <Route
             path={URLS.LOGIN}
-            element={<h2>Login page</h2>}
+            element={<Login />}
           />
         </Routes>
       </RenderIf>

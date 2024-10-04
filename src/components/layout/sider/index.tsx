@@ -2,7 +2,11 @@ import * as React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { ConfigProvider, Menu, Layout } from 'antd'
 import { URLS } from '~ek/shared/const/urls'
-import { UsergroupAddOutlined, BlockOutlined } from '@ant-design/icons'
+import {
+  UsergroupAddOutlined,
+  BlockOutlined,
+  ExpandOutlined,
+} from '@ant-design/icons'
 import logo from '~ek/assets/images/132x20.67.svg'
 const { Sider } = Layout
 
@@ -13,28 +17,43 @@ interface IProps {
 
 interface IMenu {
   key: string
-  path: string
   label: React.ReactNode
-  icon: React.ReactNode
+  path?: string
+  icon?: React.ReactNode
+  children?: IMenu[]
 }
 
 const items: IMenu[] = [
   {
+    key: URLS.HOME,
     path: '/',
     label: <Link to='/'>Home</Link>,
     icon: <UsergroupAddOutlined className={'!text-lg'} />,
   },
   {
+    key: URLS.MENU,
     path: URLS.MENU,
     label: <Link to={URLS.MENU}>Menu</Link>,
     icon: <BlockOutlined className={'!text-lg'} />,
   },
-].map(({ label, icon, path }) => ({
-  key: path,
-  icon,
-  path,
-  label,
-}))
+  {
+    key: '3',
+    label: 'Haqqımızda',
+    icon: <ExpandOutlined className={'!text-lg'} />,
+    children: [
+      {
+        key: URLS.ABOUT_CONTENT,
+        label: <Link to={URLS.ABOUT_CONTENT}>Kontent</Link>,
+        path: URLS.ABOUT_CONTENT,
+      },
+      {
+        key: URLS.ABOUT_INFO_BLOCKS,
+        label: <Link to={URLS.ABOUT_INFO_BLOCKS}>İnfo bloklar</Link>,
+        path: URLS.ABOUT_INFO_BLOCKS,
+      },
+    ],
+  },
+]
 
 export const AppSider: React.FC<IProps> = ({ collapsed, setCollapsed }) => {
   const location = useLocation()
@@ -63,6 +82,7 @@ export const AppSider: React.FC<IProps> = ({ collapsed, setCollapsed }) => {
         <Menu
           theme='dark'
           mode='inline'
+          defaultOpenKeys={['3']}
           selectedKeys={[location.pathname]}
           items={items}
         />
