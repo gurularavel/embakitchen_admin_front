@@ -1,7 +1,6 @@
 import { BaseQueryFn } from '@reduxjs/toolkit/query/react'
 import axios, { AxiosRequestConfig, AxiosError } from 'axios'
 import { notification } from 'antd'
-import { v4 as uuid } from 'uuid'
 import { revertAll } from '~ek/redux/feature/constants'
 
 const baseURL = `${import.meta.env.VITE_BASE_URL}`
@@ -84,7 +83,6 @@ export const APIBaseQueryInterceptor = axiosBaseQuery({
     if (auth?.token) {
       headers['Authorization'] = `Bearer ${auth.token}`
     }
-    headers['x-requestid'] = uuid()
     return headers
   },
 })

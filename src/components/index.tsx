@@ -4,7 +4,7 @@ import { AppLayout } from '~ek/components/layout'
 import { PrivateRoutes } from '~ek/components/PrivateRoutes'
 import { RenderIf } from '~ek/shared/components'
 import { useAppSelector } from '~ek/redux/store'
-import { Login } from './Login'
+import { Login } from '~ek/components/Login'
 
 export const Router = () => {
   const { token } = useAppSelector(state => state.auth)

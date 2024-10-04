@@ -2,16 +2,22 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import { IAuth } from '~ek/types/auth'
-import { revertAll } from '../constants'
+import { revertAll } from '~ek/redux/feature/constants'
 
 const initialState: IAuth = {
-  admin: {
+  user: {
     id: 0,
     name: '',
     surname: '',
     email: '',
-    created_at: '',
-    updated_at: '',
+    phone: '',
+    status: false,
+    city: {
+      id: 0,
+      title: {
+        en: '',
+      },
+    },
   },
   token: '',
 }
@@ -22,7 +28,7 @@ export const authSlice = createSlice({
   reducers: {
     setUser: (state, action: PayloadAction<IAuth>) => {
       state.token = action.payload.token
-      state.admin = action.payload.admin
+      state.user = action.payload.user
     },
   },
   extraReducers: builder => builder.addCase(revertAll, () => initialState),
@@ -34,7 +40,7 @@ const authReducer = persistReducer(
   {
     key: 'Auth',
     storage: storage,
-    whitelist: ['admin', 'token'],
+    whitelist: ['user', 'token'],
   },
   authSlice.reducer,
 )
