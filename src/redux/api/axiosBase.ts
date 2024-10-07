@@ -2,6 +2,7 @@ import { BaseQueryFn } from '@reduxjs/toolkit/query/react'
 import axios, { AxiosRequestConfig, AxiosError } from 'axios'
 import { notification } from 'antd'
 import { revertAll } from '~ek/redux/feature/constants'
+import { RootState } from '~ek/redux/store'
 
 const baseURL = `${import.meta.env.VITE_BASE_URL}`
 
@@ -18,7 +19,7 @@ export interface IAxiosBaseQuery {
   baseUrl?: string
   headers?: (
     headers: { [key: string]: string },
-    store: { getState: unknown; signal: unknown },
+    store: { getState: () => RootState; signal: AbortSignal },
   ) => { [key: string]: string }
 }
 
@@ -58,11 +59,14 @@ export const axiosBaseQuery = ({
     { signal, getState },
   ) => {
     try {
+      const state = getState() as RootState
       const result = await axios({
         url: baseUrl + url,
         method: method ? method : 'GET',
         ...(params && { params }),
-        ...(headers && { headers: headers({}, { getState, signal }) }),
+        ...(headers && {
+          headers: headers({}, { getState: () => state, signal }),
+        }),
         ...(data && { data }),
         responseType: responseType || 'json',
       })
@@ -78,7 +82,10 @@ export const axiosBaseQuery = ({
 
 export const APIBaseQueryInterceptor = axiosBaseQuery({
   baseUrl: baseURL,
-  headers: (headers, { getState }) => {
+  headers: (
+    headers: { [key: string]: string },
+    { getState }: { getState: () => RootState },
+  ) => {
     const { auth } = getState()
     if (auth?.token) {
       headers['Authorization'] = `Bearer ${auth.token}`

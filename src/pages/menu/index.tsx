@@ -4,7 +4,7 @@ import { useGetMenusQuery } from '~ek/redux/api/menu'
 import { Loading, RenderIf, ErrorMessage } from '~ek/shared/components'
 
 export function Menu(): React.ReactElement {
-  const [lang, setLang] = React.useState<string>('en') // eslint-disable-line @typescript-eslint/no-unused-vars
+  const [lang] = React.useState<string>('en')
   const { data, isError, isLoading } = useGetMenusQuery({ lang: lang })
 
   const navigate = useNavigate()
