@@ -1,4 +1,4 @@
-import { Router } from '~ek/components'
+import { Router } from '~ek/pages'
 
 export function App() {
   return <Router />

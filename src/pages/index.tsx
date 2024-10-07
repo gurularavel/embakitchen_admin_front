@@ -1,12 +1,12 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { URLS } from '~ek/shared/const/urls'
-import { AppLayout } from '~ek/components/layout'
-import { PrivateRoutes } from '~ek/components/PrivateRoutes'
+import { AppLayout } from '~ek/pages/layout'
+import { PrivateRoutes } from '~ek/pages/private-routes'
 import { RenderIf } from '~ek/shared/components'
 import { useAppSelector } from '~ek/redux/store'
-import { Login } from '~ek/components/Login'
+import { Login } from '~ek/pages/login'
 
-export const Router = () => {
+export function Router(): React.ReactElement {
   const { token } = useAppSelector(state => state.auth)
   return (
     <>

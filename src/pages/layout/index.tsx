@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { Layout, theme } from 'antd'
-import { AppFooter } from '~ek/components/layout/footer'
-import { AppSider } from '~ek/components/layout/sider'
-import { AppHeader } from '~ek/components/layout/header'
+import { AppFooter } from '~ek/pages/layout/footer'
+import { AppSider } from '~ek/pages/layout/sider'
+import { AppHeader } from '~ek/pages/layout/header'
 
 const { Content } = Layout
 
@@ -10,7 +10,7 @@ interface IProps {
   children: React.ReactNode
 }
 
-export const AppLayout: React.FC<IProps> = ({ children }) => {
+export function AppLayout({ children }: IProps): React.ReactElement {
   const [collapsed, setCollapsed] = React.useState<boolean>(false)
   const {
     token: { colorBgContainer, borderRadiusLG },

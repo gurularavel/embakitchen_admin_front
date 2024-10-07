@@ -15,7 +15,7 @@ import {
   usePostOrCreateAboutMutation,
 } from '~ek/redux/api/about'
 import { Loading, RenderIf, ErrorMessage } from '~ek/shared/components'
-import { confirmModal } from '~ek/shared/helpers'
+import { ConfirmModal } from '~ek/shared/helpers'
 import { useFileRemoveMutation } from '~ek/redux/api/fileRemove'
 
 interface IFile {
@@ -30,7 +30,7 @@ interface IForm {
   image: IFile
 }
 
-export const AboutContent: React.FC = () => {
+export function AboutContent(): React.ReactElement {
   const [image, setImage] = React.useState<IFile>({
     file: null,
     fileList: [],
@@ -117,7 +117,7 @@ export const AboutContent: React.FC = () => {
   }
 
   const handleRemoveFile = async (file: UploadFile, type: string) => {
-    confirmModal({
+    ConfirmModal({
       title: 'Bu faylı silmək istədiyinizdən əminsiniz?',
       onOk: () => {
         deleteFile({
@@ -176,7 +176,7 @@ export const AboutContent: React.FC = () => {
       <RenderIf condition={isLoading}>
         <Loading />
       </RenderIf>
-      {!isError && !isLoading && (
+      <RenderIf condition={!isError && !isLoading}>
         <Form
           name='about_form'
           labelCol={{ span: 6 }}
@@ -316,7 +316,7 @@ export const AboutContent: React.FC = () => {
             </Space>
           </Form.Item>
         </Form>
-      )}
+      </RenderIf>
     </>
   )
 }

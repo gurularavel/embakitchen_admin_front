@@ -8,11 +8,11 @@ interface ErrorMessageProps {
   onRetry?: () => void
 }
 
-export const ErrorMessage: React.FC<ErrorMessageProps> = ({
+export function ErrorMessage({
   message,
   description,
   onRetry,
-}) => {
+}: ErrorMessageProps): React.ReactElement {
   return (
     <div className='text-center p-5'>
       <Alert

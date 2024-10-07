@@ -10,14 +10,14 @@ type ConfirmModalOptions = {
   icon?: React.ReactNode
 }
 
-export const confirmModal = ({
+export function ConfirmModal({
   title,
   onOk,
   onCancel,
   okText = 'OK',
   cancelText = 'Cancel',
   icon = <ExclamationCircleOutlined />,
-}: ConfirmModalOptions): void => {
+}: ConfirmModalOptions): void {
   Modal.confirm({
     title,
     icon,

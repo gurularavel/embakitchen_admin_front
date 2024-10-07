@@ -9,7 +9,7 @@ import {
   REGISTER,
   persistStore,
 } from 'redux-persist'
-import { reducer, middlewares } from '~ek/redux/store/reducerAndMiddlewears'
+import { reducer, middlewares } from '~ek/redux/store/reducer-and-middlewears'
 
 export const store = configureStore({
   devTools: process.env.NODE_ENV === 'development',

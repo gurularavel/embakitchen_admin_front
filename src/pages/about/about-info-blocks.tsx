@@ -5,13 +5,12 @@ import {
   useDeleteInfoBlocksMutation,
   useGetInfoBlocksQuery,
 } from '~ek/redux/api/about'
-import { Loading, RenderIf } from '~ek/shared/components'
-import { ErrorMessage } from '~ek/shared/components/ErrorMessage'
+import { AddBlockDrawer } from '~ek/pages/about/add-block-drawer'
+import { Loading, RenderIf, ErrorMessage } from '~ek/shared/components'
+import { ConfirmModal } from '~ek/shared/helpers'
 import { InfoBlock } from '~ek/types/about'
-import { confirmModal } from '~ek/shared/helpers'
-import { AddBlockDrawer } from './addBlockDrawer'
 
-export const AboutInfoBlocks = () => {
+export function AboutInfoBlocks(): React.ReactElement {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([])
   const [pageParams, setPageParams] = React.useState<IPageParams>({
     take: 10,
@@ -80,7 +79,7 @@ export const AboutInfoBlocks = () => {
           <Button
             danger
             onClick={() =>
-              confirmModal({
+              ConfirmModal({
                 title: 'Silmək istədiyinizdən əminsiniz?',
                 onOk: () => {
                   deleteBlocks({ ids: [block.id] })
@@ -103,14 +102,14 @@ export const AboutInfoBlocks = () => {
       <RenderIf condition={isLoading}>
         <Loading />
       </RenderIf>
-      {!isError && !isLoading && data?.data?.length && (
+      <RenderIf condition={!isError && !isLoading && data?.data?.length}>
         <div>
           <div className='flex justify-end items-center mb-3'>
             {selectedRowKeys.length ? (
               <DeleteOutlined
                 className='mr-3 text-xl text-red-500 cursor-pointer'
                 onClick={() =>
-                  confirmModal({
+                  ConfirmModal({
                     title: 'Silmək istədiyinizdən əminsiniz?',
                     onOk: () => deleteBlocks({ ids: selectedRowKeys }),
                   })
@@ -161,7 +160,7 @@ export const AboutInfoBlocks = () => {
             />
           )}
         </div>
-      )}
+      </RenderIf>
     </>
   )
 }

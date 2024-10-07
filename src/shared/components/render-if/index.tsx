@@ -1,12 +1,12 @@
 import * as React from 'react'
 
 interface IProps {
-  condition: boolean
+  condition: boolean | number | undefined
   children: React.ReactNode
   renderElse?: React.ReactNode
 }
 
-export const RenderIf = ({ condition, children, renderElse = '' }: IProps) => {
+export function RenderIf({ condition, children, renderElse = '' }: IProps) {
   if (condition) return <React.Fragment>{children}</React.Fragment>
   return <React.Fragment>{renderElse}</React.Fragment>
 }
