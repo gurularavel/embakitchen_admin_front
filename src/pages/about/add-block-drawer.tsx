@@ -1,4 +1,4 @@
-import { Button, Col, Drawer, Form, Input, Row, Space } from 'antd'
+import { Button, Col, Drawer, Form, FormProps, Input, Row, Space } from 'antd'
 import { usePostInfoBlockMutation } from '~ek/redux/api/about'
 import { Loading, RenderIf } from '~ek/shared/components'
 import { IPostBlock } from '~ek/types/about'
@@ -8,6 +8,11 @@ interface IDrawerProps {
   onClose: () => void
 }
 
+interface IFieldForm {
+  title: ILangContent
+  content: ILangContent
+}
+
 export function AddBlockDrawer({
   open,
   onClose,
@@ -15,7 +20,9 @@ export function AddBlockDrawer({
   const [addBlock, { isLoading }] = usePostInfoBlockMutation()
   const [form] = Form.useForm()
 
-  const handleSubmit = (data: IPostBlock) => {
+  const handleSubmit: FormProps<IFieldForm>['onFinish'] = (
+    data: IPostBlock,
+  ) => {
     addBlock(data)
       .then(() => {
         onClose()
@@ -62,7 +69,7 @@ export function AddBlockDrawer({
             sm={12}
             md={8}
           >
-            <Form.Item
+            <Form.Item<IFieldForm>
               name={['title', 'az']}
               label='Başlıq(az)'
               rules={[
@@ -80,7 +87,7 @@ export function AddBlockDrawer({
             sm={12}
             md={8}
           >
-            <Form.Item
+            <Form.Item<IFieldForm>
               name={['title', 'en']}
               label='Başlıq(en)'
               rules={[
@@ -98,7 +105,7 @@ export function AddBlockDrawer({
             sm={12}
             md={8}
           >
-            <Form.Item
+            <Form.Item<IFieldForm>
               name={['title', 'ru']}
               label='Başlıq(ru)'
               rules={[
@@ -118,7 +125,7 @@ export function AddBlockDrawer({
             sm={12}
             md={8}
           >
-            <Form.Item
+            <Form.Item<IFieldForm>
               name={['content', 'az']}
               label='Açıqlama(az)'
               rules={[
@@ -139,7 +146,7 @@ export function AddBlockDrawer({
             sm={12}
             md={8}
           >
-            <Form.Item
+            <Form.Item<IFieldForm>
               name={['content', 'en']}
               label='Açıqlama(en)'
               rules={[
@@ -160,7 +167,7 @@ export function AddBlockDrawer({
             sm={12}
             md={8}
           >
-            <Form.Item
+            <Form.Item<IFieldForm>
               name={['content', 'ru']}
               label='Açıqlama(ru)'
               rules={[
