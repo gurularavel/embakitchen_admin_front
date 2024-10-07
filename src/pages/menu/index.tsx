@@ -1,8 +1,7 @@
 import * as React from 'react'
 import { useNavigate } from 'react-router'
 import { useGetMenusQuery } from '~ek/redux/api/menu'
-import { Loading, RenderIf } from '~ek/shared/components'
-import { ErrorMessage } from '~ek/shared/components/error-message'
+import { Loading, RenderIf, ErrorMessage } from '~ek/shared/components'
 
 export function Menu(): React.ReactElement {
   const [lang, setLang] = React.useState<string>('en') // eslint-disable-line @typescript-eslint/no-unused-vars
