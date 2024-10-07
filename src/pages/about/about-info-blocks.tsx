@@ -6,9 +6,8 @@ import {
   useGetInfoBlocksQuery,
 } from '~ek/redux/api/about'
 import { AddBlockDrawer } from '~ek/pages/about/add-block-drawer'
-import { Loading, RenderIf } from '~ek/shared/components'
-import { ErrorMessage } from '~ek/shared/components/error-message'
-import { confirmModal } from '~ek/shared/helpers'
+import { Loading, RenderIf, ErrorMessage } from '~ek/shared/components'
+import { ConfirmModal } from '~ek/shared/helpers'
 import { InfoBlock } from '~ek/types/about'
 
 export function AboutInfoBlocks(): React.ReactElement {
@@ -80,7 +79,7 @@ export function AboutInfoBlocks(): React.ReactElement {
           <Button
             danger
             onClick={() =>
-              confirmModal({
+              ConfirmModal({
                 title: 'Silmək istədiyinizdən əminsiniz?',
                 onOk: () => {
                   deleteBlocks({ ids: [block.id] })
@@ -110,7 +109,7 @@ export function AboutInfoBlocks(): React.ReactElement {
               <DeleteOutlined
                 className='mr-3 text-xl text-red-500 cursor-pointer'
                 onClick={() =>
-                  confirmModal({
+                  ConfirmModal({
                     title: 'Silmək istədiyinizdən əminsiniz?',
                     onOk: () => deleteBlocks({ ids: selectedRowKeys }),
                   })

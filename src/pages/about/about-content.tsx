@@ -15,7 +15,7 @@ import {
   usePostOrCreateAboutMutation,
 } from '~ek/redux/api/about'
 import { Loading, RenderIf, ErrorMessage } from '~ek/shared/components'
-import { confirmModal } from '~ek/shared/helpers'
+import { ConfirmModal } from '~ek/shared/helpers'
 import { useFileRemoveMutation } from '~ek/redux/api/fileRemove'
 
 interface IFile {
@@ -117,7 +117,7 @@ export function AboutContent(): React.ReactElement {
   }
 
   const handleRemoveFile = async (file: UploadFile, type: string) => {
-    confirmModal({
+    ConfirmModal({
       title: 'Bu faylı silmək istədiyinizdən əminsiniz?',
       onOk: () => {
         deleteFile({

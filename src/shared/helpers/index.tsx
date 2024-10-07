@@ -10,7 +10,7 @@ type ConfirmModalOptions = {
   icon?: React.ReactNode
 }
 
-export function confirmModal({
+export function ConfirmModal({
   title,
   onOk,
   onCancel,
