@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { URLS } from '~ek/shared/const/urls'
-import { Menu } from '~ek/pages/Menu'
+import { Menu } from '~ek/pages/menu'
 import { AboutContent, AboutInfoBlocks } from '~ek/pages/about'
 
 export function PrivateRoutes(): React.ReactElement {
