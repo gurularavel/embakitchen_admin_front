@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { ConfigProvider, Menu, Layout } from 'antd'
-import { URLS } from '~ek/shared/const/urls'
+import { URLS } from '~ek/shared/const/constants'
 import {
   UsergroupAddOutlined,
   BlockOutlined,
