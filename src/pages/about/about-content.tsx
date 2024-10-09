@@ -120,16 +120,15 @@ export function AboutContent(): React.ReactElement {
   const handleRemoveFile = async (file: UploadFile, type: string) => {
     ConfirmModal({
       title: 'Bu faylı silmək istədiyinizdən əminsiniz?',
-      onOk: () => {
-        deleteFile({
+      onOk: async () => {
+        await deleteFile({
           mediaIDS: [file.uid],
-        }).then(() => {
-          if (type === 'video') {
-            setVideo({ file: null, fileList: [] })
-          } else if (type === 'image') {
-            setImage({ file: null, fileList: [] })
-          }
         })
+        if (type === 'video') {
+          setVideo({ file: null, fileList: [] })
+        } else if (type === 'image') {
+          setImage({ file: null, fileList: [] })
+        }
       },
       onCancel: () => {},
     })

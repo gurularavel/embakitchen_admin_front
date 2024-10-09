@@ -1,4 +1,14 @@
-import { Button, Col, Drawer, Form, FormProps, Input, Row, Space } from 'antd'
+import {
+  Button,
+  Col,
+  Drawer,
+  Form,
+  FormProps,
+  Input,
+  Row,
+  Space,
+  theme,
+} from 'antd'
 import { usePostInfoBlockMutation } from '~ek/redux/api/about'
 import { Loading, RenderIf } from '~ek/shared/components'
 import { IPostBlock } from '~ek/types/about'
@@ -17,19 +27,26 @@ export function AddBlockDrawer({
   open,
   onClose,
 }: IDrawerProps): React.ReactElement {
+  const { token } = theme.useToken()
   const [addBlock, { isLoading }] = usePostInfoBlockMutation()
   const [form] = Form.useForm()
 
-  const handleSubmit: FormProps<IFieldForm>['onFinish'] = (
+  const formStyle: React.CSSProperties = {
+    maxWidth: 'none',
+    background: token.colorFillAlter,
+    borderRadius: token.borderRadiusLG,
+    padding: 24,
+  }
+
+  const handleSubmit: FormProps<IFieldForm>['onFinish'] = async (
     data: IPostBlock,
   ) => {
-    addBlock(data)
-      .then(() => {
-        onClose()
-      })
-      .catch((error: unknown) => {
-        console.error(error)
-      })
+    try {
+      await addBlock(data)
+      onClose()
+    } catch (e: unknown) {
+      console.error(e)
+    }
   }
 
   return (
@@ -59,11 +76,12 @@ export function AddBlockDrawer({
         layout='vertical'
         form={form}
         onFinish={handleSubmit}
+        style={formStyle}
       >
         <RenderIf condition={isLoading}>
           <Loading />
         </RenderIf>
-        <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+        <Row gutter={{ xs: 8, sm: 16 }}>
           <Col
             xs={24}
             sm={12}
