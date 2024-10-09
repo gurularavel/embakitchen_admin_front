@@ -18,7 +18,7 @@ declare global {
 
   interface IPageParams {
     take: number
-    currentPage: number
+    current: number
     pageSize: number
   }
 }

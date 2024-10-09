@@ -41,3 +41,17 @@ export interface IPostBlock {
 export interface IDeleteBlock {
   ids: React.Key[]
 }
+
+export interface IPutBlock {
+  id: number
+  data: {
+    title: ILangContent
+    content: ILangContent
+    status: boolean
+  }
+}
+
+export interface IParams {
+  status?: boolean
+  page?: number
+}

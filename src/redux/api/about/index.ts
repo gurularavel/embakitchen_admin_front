@@ -5,6 +5,8 @@ import {
   IGetInfoBlock,
   IDeleteBlock,
   IPostBlock,
+  IPutBlock,
+  IParams,
 } from '~ek/types/about'
 
 export const aboutApi = createApi({
@@ -31,7 +33,7 @@ export const aboutApi = createApi({
       },
       invalidatesTags: () => [{ type: 'ABOUT_CONTENT' }],
     }),
-    getInfoBlocks: builder.query<IGetInfoBlock, void>({
+    getInfoBlocks: builder.query<IGetInfoBlock, IParams>({
       query(params) {
         return {
           url: 'about-info-blocks',
@@ -61,6 +63,17 @@ export const aboutApi = createApi({
       },
       invalidatesTags: () => [{ type: 'ABOUT_INFO_BLOCKS' }],
     }),
+    editInfoBlock: builder.mutation<void, IPutBlock>({
+      query(data) {
+        const { id, data: putData } = data
+        return {
+          method: 'PUT',
+          url: `about-info-blocks/${id}`,
+          data: putData,
+        }
+      },
+      invalidatesTags: () => [{ type: 'ABOUT_INFO_BLOCKS' }],
+    }),
   }),
 })
 
@@ -70,4 +83,5 @@ export const {
   useGetInfoBlocksQuery,
   useDeleteInfoBlocksMutation,
   usePostInfoBlockMutation,
+  useEditInfoBlockMutation,
 } = aboutApi
