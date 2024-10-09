@@ -1,33 +1,92 @@
-import { Button, Col, Drawer, Form, Input, Row, Space } from 'antd'
-import { usePostInfoBlockMutation } from '~ek/redux/api/about'
-import { Loading, RenderIf } from '~ek/shared/components'
-import { IPostBlock } from '~ek/types/about'
+import * as React from 'react'
+import {
+  Button,
+  Col,
+  Drawer,
+  Form,
+  FormProps,
+  Input,
+  Row,
+  Space,
+  Switch,
+  theme,
+} from 'antd'
+import { useEditInfoBlockMutation } from '~ek/redux/api/about'
+import { InfoBlock } from '~ek/types/about'
 
 interface IDrawerProps {
   open: boolean
   onClose: () => void
+  block: InfoBlock
 }
 
-export function AddBlockDrawer({
+interface IFieldForm {
+  title: ILangContent
+  content: ILangContent
+  status: boolean
+}
+
+export function EditInfoBlock({
   open,
   onClose,
+  block,
 }: IDrawerProps): React.ReactElement {
-  const [addBlock, { isLoading }] = usePostInfoBlockMutation()
+  const { token } = theme.useToken()
   const [form] = Form.useForm()
+  const [switchChecked, setSwitchChecked] = React.useState<boolean>(
+    block.status,
+  )
 
-  const handleSubmit = (data: IPostBlock) => {
-    addBlock(data)
-      .then(() => {
-        onClose()
-      })
-      .catch((error: unknown) => {
-        console.error(error)
-      })
+  const [editBlock, { isLoading }] = useEditInfoBlockMutation()
+
+  const formStyle: React.CSSProperties = {
+    maxWidth: 'none',
+    background: token.colorFillAlter,
+    borderRadius: token.borderRadiusLG,
+    padding: 24,
+  }
+  const initialValues: InfoBlock = {
+    content: {
+      az: block.content.az,
+      en: block.content.en,
+      ru: block.content.ru,
+    },
+    title: {
+      az: block.title.az,
+      en: block.title.en,
+      ru: block.title.ru,
+    },
+    status: block.status,
+    id: block.id,
+    slug: {
+      az: block.slug.az,
+      en: block.slug.en,
+      ru: block.slug.ru,
+    },
+  }
+  const handleSwitchChange = (checked: boolean) => {
+    setSwitchChecked(checked)
+    form.setFieldsValue({ status: checked })
+  }
+
+  const handleSubmit: FormProps<IFieldForm>['onFinish'] = async (
+    data: IFieldForm,
+  ) => {
+    try {
+      const postData = {
+        id: block.id,
+        data: data,
+      }
+      await editBlock(postData)
+      onClose()
+    } catch (e: unknown) {
+      console.error(e)
+    }
   }
 
   return (
     <Drawer
-      title='Yeni blok'
+      title='Düzəliş'
       onClose={onClose}
       open={open}
       size={'large'}
@@ -40,6 +99,7 @@ export function AddBlockDrawer({
             Close
           </Button>
           <Button
+            disabled={isLoading}
             type='primary'
             onClick={() => form.submit()}
           >
@@ -52,17 +112,16 @@ export function AddBlockDrawer({
         layout='vertical'
         form={form}
         onFinish={handleSubmit}
+        initialValues={initialValues}
+        style={formStyle}
       >
-        <RenderIf condition={isLoading}>
-          <Loading />
-        </RenderIf>
         <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
           <Col
             xs={24}
             sm={12}
             md={8}
           >
-            <Form.Item
+            <Form.Item<IFieldForm>
               name={['title', 'az']}
               label='Başlıq(az)'
               rules={[
@@ -80,7 +139,7 @@ export function AddBlockDrawer({
             sm={12}
             md={8}
           >
-            <Form.Item
+            <Form.Item<IFieldForm>
               name={['title', 'en']}
               label='Başlıq(en)'
               rules={[
@@ -98,7 +157,7 @@ export function AddBlockDrawer({
             sm={12}
             md={8}
           >
-            <Form.Item
+            <Form.Item<IFieldForm>
               name={['title', 'ru']}
               label='Başlıq(ru)'
               rules={[
@@ -118,7 +177,7 @@ export function AddBlockDrawer({
             sm={12}
             md={8}
           >
-            <Form.Item
+            <Form.Item<IFieldForm>
               name={['content', 'az']}
               label='Açıqlama(az)'
               rules={[
@@ -139,7 +198,7 @@ export function AddBlockDrawer({
             sm={12}
             md={8}
           >
-            <Form.Item
+            <Form.Item<IFieldForm>
               name={['content', 'en']}
               label='Açıqlama(en)'
               rules={[
@@ -160,7 +219,7 @@ export function AddBlockDrawer({
             sm={12}
             md={8}
           >
-            <Form.Item
+            <Form.Item<IFieldForm>
               name={['content', 'ru']}
               label='Açıqlama(ru)'
               rules={[
@@ -173,6 +232,20 @@ export function AddBlockDrawer({
               <Input.TextArea
                 rows={4}
                 placeholder='Açıqlama (ru)'
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={24}>
+            <Form.Item<IFieldForm>
+              name='status'
+              label='Status'
+            >
+              <Switch
+                checked={switchChecked}
+                style={{
+                  backgroundColor: switchChecked ? '#52c41a' : '#ff4d4f',
+                }}
+                onChange={checked => handleSwitchChange(checked)}
               />
             </Form.Item>
           </Col>

@@ -1,38 +1,64 @@
 import * as React from 'react'
-import { FormOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons'
-import { Button, ConfigProvider, Space, Table } from 'antd'
+import {
+  Button,
+  ConfigProvider,
+  Space,
+  Table,
+  TablePaginationConfig,
+} from 'antd'
+import { AddBlockDrawer } from '~ek/pages/about/add-info-block'
+import { EditInfoBlock } from '~ek/pages/about/edit-info-block'
+import { Loading, RenderIf, ErrorMessage } from '~ek/shared/components'
+import { ConfirmModal } from '~ek/shared/helpers'
 import {
   useDeleteInfoBlocksMutation,
   useGetInfoBlocksQuery,
 } from '~ek/redux/api/about'
-import { AddBlockDrawer } from '~ek/pages/about/add-block-drawer'
-import { Loading, RenderIf, ErrorMessage } from '~ek/shared/components'
-import { ConfirmModal } from '~ek/shared/helpers'
 import { InfoBlock } from '~ek/types/about'
+import { FormOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons'
 
 export function AboutInfoBlocks(): React.ReactElement {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([])
+  const [selectedBlock, setSelectedBlock] = React.useState<InfoBlock | null>(
+    null,
+  )
   const [pageParams, setPageParams] = React.useState<IPageParams>({
     take: 10,
-    currentPage: 1,
+    current: 1,
     pageSize: 10,
   })
   const [drawerType, setDrawerType] = React.useState<'edit' | 'add' | null>(
     null,
   )
-  const { data, isLoading, isError } = useGetInfoBlocksQuery()
+  const { data, isLoading, isError } = useGetInfoBlocksQuery({
+    page: pageParams.current,
+  })
   const [deleteBlocks] = useDeleteInfoBlocksMutation()
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     setSelectedRowKeys(newSelectedRowKeys)
   }
 
-  const handleTableChange = (pagination: IPageParams) => {
+  const handleTableChange = (pagination: TablePaginationConfig): void => {
     setPageParams(prev => ({
       ...prev,
-      currentPage: pagination.currentPage,
-      pageSize: pagination.pageSize,
+      current: pagination.current || 1,
+      pageSize: pagination.pageSize || 10,
     }))
+  }
+
+  const addBlockDrawer = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    e.stopPropagation()
+    setDrawerType('add')
+  }
+
+  const handleEditButton = (
+    e: React.MouseEvent<HTMLElement, MouseEvent>,
+    block: InfoBlock,
+  ) => {
+    e.stopPropagation()
+    setDrawerType('edit')
+    setSelectedBlock(block)
   }
 
   const onClose = () => {
@@ -73,7 +99,7 @@ export function AboutInfoBlocks(): React.ReactElement {
       key: 'action',
       render: (_: string, block: InfoBlock) => (
         <Space size='middle'>
-          <Button>
+          <Button onClick={e => handleEditButton(e, block)}>
             <FormOutlined />
           </Button>
           <Button
@@ -105,7 +131,7 @@ export function AboutInfoBlocks(): React.ReactElement {
       <RenderIf condition={!isError && !isLoading && data?.data?.length}>
         <div>
           <div className='flex justify-end items-center mb-3'>
-            {selectedRowKeys.length ? (
+            <RenderIf condition={selectedRowKeys.length}>
               <DeleteOutlined
                 className='mr-3 text-xl text-red-500 cursor-pointer'
                 onClick={() =>
@@ -115,9 +141,7 @@ export function AboutInfoBlocks(): React.ReactElement {
                   })
                 }
               />
-            ) : (
-              ''
-            )}
+            </RenderIf>
             <ConfigProvider
               theme={{
                 token: {
@@ -128,10 +152,7 @@ export function AboutInfoBlocks(): React.ReactElement {
               <Button
                 type='primary'
                 icon={<PlusOutlined />}
-                onClick={e => {
-                  e.stopPropagation()
-                  setDrawerType('add')
-                }}
+                onClick={e => addBlockDrawer(e)}
               >
                 Blok əlavə et
               </Button>
@@ -145,11 +166,11 @@ export function AboutInfoBlocks(): React.ReactElement {
             rowSelection={rowSelection}
             columns={columns}
             pagination={{
-              current: pageParams.currentPage,
+              current: pageParams.current,
               pageSize: pageParams.pageSize,
               total: data?.pagination.total,
             }}
-            onChange={() => handleTableChange}
+            onChange={handleTableChange}
             className='overflow-x-auto'
           />
 
@@ -157,6 +178,13 @@ export function AboutInfoBlocks(): React.ReactElement {
             <AddBlockDrawer
               open={!!drawerType}
               onClose={onClose}
+            />
+          )}
+          {drawerType === 'edit' && selectedBlock && (
+            <EditInfoBlock
+              open={!!drawerType}
+              onClose={onClose}
+              block={selectedBlock}
             />
           )}
         </div>
