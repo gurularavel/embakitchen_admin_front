@@ -11,12 +11,12 @@ import {
   message,
   notification,
 } from 'antd'
+import { Loading, RenderIf, ErrorMessage } from '~ek/shared/components'
+import { ConfirmModal } from '~ek/shared/helpers'
 import {
   useGetAboutQuery,
   usePostOrCreateAboutMutation,
 } from '~ek/redux/api/about'
-import { Loading, RenderIf, ErrorMessage } from '~ek/shared/components'
-import { ConfirmModal } from '~ek/shared/helpers'
 import { useFileRemoveMutation } from '~ek/redux/api/fileRemove'
 
 interface IFile {

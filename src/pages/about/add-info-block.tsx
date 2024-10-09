@@ -9,8 +9,8 @@ import {
   Space,
   theme,
 } from 'antd'
-import { usePostInfoBlockMutation } from '~ek/redux/api/about'
 import { Loading, RenderIf } from '~ek/shared/components'
+import { usePostInfoBlockMutation } from '~ek/redux/api/about'
 import { IPostBlock } from '~ek/types/about'
 
 interface IDrawerProps {

@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { FormOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons'
 import {
   Button,
   ConfigProvider,
@@ -7,15 +6,16 @@ import {
   Table,
   TablePaginationConfig,
 } from 'antd'
-import {
-  useDeleteInfoBlocksMutation,
-  useGetInfoBlocksQuery,
-} from '~ek/redux/api/about'
 import { AddBlockDrawer } from '~ek/pages/about/add-info-block'
 import { EditInfoBlock } from '~ek/pages/about/edit-info-block'
 import { Loading, RenderIf, ErrorMessage } from '~ek/shared/components'
 import { ConfirmModal } from '~ek/shared/helpers'
+import {
+  useDeleteInfoBlocksMutation,
+  useGetInfoBlocksQuery,
+} from '~ek/redux/api/about'
 import { InfoBlock } from '~ek/types/about'
+import { FormOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons'
 
 export function AboutInfoBlocks(): React.ReactElement {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([])
