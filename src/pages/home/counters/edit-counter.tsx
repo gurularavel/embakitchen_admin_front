@@ -14,7 +14,8 @@ import {
 } from 'antd'
 import { useEditCounterMutation } from '~ek/redux/api/home/counter'
 import { ICounter } from '~ek/types/home/counter'
-import { errorNotifier } from '~ek/shared/components/error-notification'
+import { Notifier } from '~ek/shared/components'
+import { NOTIFICATION } from '~ek/shared/const/constants'
 
 interface IDrawerProps {
   open: boolean
@@ -74,7 +75,7 @@ export function EditCounter({
       await editCounter(putData)
       onClose()
     } catch (e: unknown) {
-      errorNotifier(e as string)
+      Notifier(e as IError, NOTIFICATION.ERROR)
     }
   }
 

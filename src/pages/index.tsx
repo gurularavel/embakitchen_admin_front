@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
-import { URLS } from '~ek/shared/const/urls'
+import { URLS } from '~ek/shared/const/constants'
 import { AppLayout } from '~ek/pages/layout'
 import { PrivateRoutes } from '~ek/pages/private-routes'
 import { RenderIf } from '~ek/shared/components'

@@ -10,9 +10,10 @@ import {
   Space,
   theme,
 } from 'antd'
-import { Loading, RenderIf } from '~ek/shared/components'
+import { Loading, Notifier, RenderIf } from '~ek/shared/components'
 import { usePostCounterMutation } from '~ek/redux/api/home/counter'
 import { IPostCounter } from '~ek/types/home/counter'
+import { NOTIFICATION } from '~ek/shared/const/constants'
 
 interface IDrawerProps {
   open: boolean
@@ -41,7 +42,7 @@ export function AddCounterDrawer({
       await addCounter(data)
       onClose()
     } catch (e: unknown) {
-      console.error(e)
+      Notifier(e as IError, NOTIFICATION.ERROR)
     }
   }
 
@@ -139,7 +140,6 @@ export function AddCounterDrawer({
             sm={12}
             md={8}
           >
-            {' '}
             <Form.Item<IPostCounter>
               name={'count'}
               label='Sayğac'

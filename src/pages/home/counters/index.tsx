@@ -9,15 +9,20 @@ import {
 } from 'antd'
 import { AddCounterDrawer } from '~ek/pages/home/counters/add-counter'
 import { EditCounter } from '~ek/pages/home/counters/edit-counter'
-import { ErrorMessage, Loading, RenderIf } from '~ek/shared/components'
+import {
+  ErrorMessage,
+  Loading,
+  RenderIf,
+  Notifier,
+} from '~ek/shared/components'
 import { ConfirmModal } from '~ek/shared/helpers'
+import { NOTIFICATION } from '~ek/shared/const/constants'
 import {
   useDeleteCounterMutation,
   useGetCountsQuery,
 } from '~ek/redux/api/home/counter'
 import { ICounter } from '~ek/types/home/counter'
 import { PlusOutlined, DeleteOutlined, FormOutlined } from '@ant-design/icons'
-import { errorNotifier } from '~ek/shared/components/error-notification'
 
 export function Counter(): React.ReactElement {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([])
@@ -75,7 +80,7 @@ export function Counter(): React.ReactElement {
       await deleteCounter({ ids: ids })
       setSelectedRowKeys([])
     } catch (e: unknown) {
-      errorNotifier(e as string)
+      Notifier(e as IError, NOTIFICATION.ERROR)
     }
   }
 

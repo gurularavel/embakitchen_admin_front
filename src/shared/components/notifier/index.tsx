@@ -1,12 +1,12 @@
 import { notification } from 'antd'
 
-export const errorNotifier = (message?: string) => {
+export const Notifier = (error: IError, type?: string) => {
   const notificationKey = 'singleErrorNotification'
 
   notification.error({
     key: notificationKey,
-    message: 'Error',
-    description: message || 'An error occurred',
+    message: type || 'error',
+    description: error.message || 'An error occurred',
     placement: 'topRight',
     duration: 2,
   })
