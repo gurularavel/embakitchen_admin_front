@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Button, Layout } from 'antd'
 import { useAppDispatch } from '~ek/redux/store'
+import { useLogoutMutation } from '~ek/redux/api/auth'
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons'
 import { revertAll } from '~ek/redux/feature/constants'
 
@@ -16,6 +17,7 @@ export function AppHeader({
   setCollapsed,
 }: IProps): React.ReactElement {
   const dispatch = useAppDispatch()
+  const [logout] = useLogoutMutation()
   return (
     <Header
       style={{
@@ -41,6 +43,7 @@ export function AppHeader({
           danger
           onClick={e => {
             e.stopPropagation()
+            logout()
             dispatch(revertAll())
           }}
         >
