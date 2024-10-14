@@ -5,6 +5,7 @@ import {
   Space,
   Table,
   TablePaginationConfig,
+  TableProps,
 } from 'antd'
 import { AddBlockDrawer } from '~ek/pages/about/add-info-block'
 import { EditInfoBlock } from '~ek/pages/about/edit-info-block'
@@ -33,11 +34,8 @@ export function AboutInfoBlocks(): React.ReactElement {
   const { data, isLoading, isError } = useGetInfoBlocksQuery({
     page: pageParams.current,
   })
-  const [deleteBlocks] = useDeleteInfoBlocksMutation()
 
-  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    setSelectedRowKeys(newSelectedRowKeys)
-  }
+  const [deleteBlocks] = useDeleteInfoBlocksMutation()
 
   const handleTableChange = (pagination: TablePaginationConfig): void => {
     setPageParams(prev => ({
@@ -66,9 +64,19 @@ export function AboutInfoBlocks(): React.ReactElement {
     setSelectedRowKeys([])
   }
 
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange,
+  const rowSelection: TableProps<InfoBlock>['rowSelection'] = {
+    onChange: (selectedRowKeys: React.Key[]) => {
+      setSelectedRowKeys(selectedRowKeys)
+    },
+  }
+
+  const removeBlocks = async (ids: number[]): Promise<void> => {
+    try {
+      await deleteBlocks({ ids: ids })
+      setSelectedRowKeys([])
+    } catch (e) {
+      alert(e)
+    }
   }
 
   const columns = [
@@ -108,7 +116,7 @@ export function AboutInfoBlocks(): React.ReactElement {
               ConfirmModal({
                 title: 'Silmək istədiyinizdən əminsiniz?',
                 onOk: () => {
-                  deleteBlocks({ ids: [block.id] })
+                  removeBlocks([block.id])
                 },
               })
             }
@@ -137,7 +145,7 @@ export function AboutInfoBlocks(): React.ReactElement {
                 onClick={() =>
                   ConfirmModal({
                     title: 'Silmək istədiyinizdən əminsiniz?',
-                    onOk: () => deleteBlocks({ ids: selectedRowKeys }),
+                    onOk: () => removeBlocks(selectedRowKeys as number[]),
                   })
                 }
               />
@@ -159,9 +167,9 @@ export function AboutInfoBlocks(): React.ReactElement {
             </ConfigProvider>
           </div>
           <Table
-            dataSource={data?.data.map((block: InfoBlock, i) => ({
+            dataSource={data?.data.map((block: InfoBlock) => ({
               ...block,
-              key: i,
+              key: block.id,
             }))}
             rowSelection={rowSelection}
             columns={columns}
