@@ -38,10 +38,6 @@ export interface IPostBlock {
   content: ILangContent
 }
 
-export interface IDeleteBlock {
-  ids: React.Key[]
-}
-
 export interface IPutBlock {
   id: number
   data: {

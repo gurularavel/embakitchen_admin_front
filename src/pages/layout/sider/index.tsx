@@ -1,11 +1,16 @@
 import * as React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { ConfigProvider, Menu, Layout } from 'antd'
-import { URLS } from '~ek/shared/const/urls'
+import { URLS } from '~ek/shared/const/constants'
 import {
-  UsergroupAddOutlined,
   BlockOutlined,
   ExpandOutlined,
+  BarChartOutlined,
+  BankOutlined,
+  PictureOutlined,
+  ProfileOutlined,
+  ProjectOutlined,
+  GoldOutlined,
 } from '@ant-design/icons'
 import logo from '~ek/assets/images/132x20.67.svg'
 const { Sider } = Layout
@@ -25,10 +30,29 @@ interface IMenu {
 
 const items: IMenu[] = [
   {
-    key: URLS.HOME,
-    path: '/',
-    label: <Link to='/'>Home</Link>,
-    icon: <UsergroupAddOutlined className={'!text-lg'} />,
+    key: '1',
+    label: 'Əsas Səhifə',
+    icon: <BankOutlined className={'!text-lg'} />,
+    children: [
+      {
+        key: URLS.HOME_COUNTERS,
+        label: <Link to={URLS.HOME_COUNTERS}>Sayğac</Link>,
+        path: URLS.HOME_COUNTERS,
+        icon: <BarChartOutlined className={'!text-lg'} />,
+      },
+      {
+        key: URLS.HOME_SLIDERS,
+        label: <Link to={URLS.HOME_SLIDERS}>Sliders</Link>,
+        path: URLS.HOME_SLIDERS,
+        icon: <PictureOutlined className={'!text-lg'} />,
+      },
+      {
+        key: URLS.HOME_PARTNERS,
+        label: <Link to={URLS.HOME_PARTNERS}>Tərəfdaşlar</Link>,
+        path: URLS.HOME_PARTNERS,
+        icon: <GoldOutlined className={'!text-lg'} />,
+      },
+    ],
   },
   {
     key: URLS.MENU,
@@ -45,11 +69,13 @@ const items: IMenu[] = [
         key: URLS.ABOUT_CONTENT,
         label: <Link to={URLS.ABOUT_CONTENT}>Kontent</Link>,
         path: URLS.ABOUT_CONTENT,
+        icon: <ProjectOutlined className={'!text-lg'} />,
       },
       {
         key: URLS.ABOUT_INFO_BLOCKS,
         label: <Link to={URLS.ABOUT_INFO_BLOCKS}>İnfo bloklar</Link>,
         path: URLS.ABOUT_INFO_BLOCKS,
+        icon: <ProfileOutlined className={'!text-lg'} />,
       },
     ],
   },
@@ -85,7 +111,6 @@ export function AppSider({
         <Menu
           theme='dark'
           mode='inline'
-          defaultOpenKeys={['3']}
           selectedKeys={[location.pathname]}
           items={items}
         />
