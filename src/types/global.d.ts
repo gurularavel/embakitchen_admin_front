@@ -21,6 +21,10 @@ declare global {
     current: number
     pageSize: number
   }
+
+  export interface IDelete {
+    ids: React.Key[]
+  }
 }
 
 export {}

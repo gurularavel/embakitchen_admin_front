@@ -136,36 +136,36 @@ export function AboutInfoBlocks(): React.ReactElement {
       <RenderIf condition={isLoading}>
         <Loading />
       </RenderIf>
-      <RenderIf condition={!isError && !isLoading && data?.data?.length}>
-        <div>
-          <div className='flex justify-end items-center mb-3'>
-            <RenderIf condition={selectedRowKeys.length}>
-              <DeleteOutlined
-                className='mr-3 text-xl text-red-500 cursor-pointer'
-                onClick={() =>
-                  ConfirmModal({
-                    title: 'Silmək istədiyinizdən əminsiniz?',
-                    onOk: () => removeBlocks(selectedRowKeys as number[]),
-                  })
-                }
-              />
-            </RenderIf>
-            <ConfigProvider
-              theme={{
-                token: {
-                  colorPrimary: '#00b96b',
-                },
-              }}
+      <RenderIf condition={!isError && !isLoading}>
+        <div className='flex justify-end items-center mb-3'>
+          <RenderIf condition={selectedRowKeys.length}>
+            <DeleteOutlined
+              className='mr-3 text-xl text-red-500 cursor-pointer'
+              onClick={() =>
+                ConfirmModal({
+                  title: 'Silmək istədiyinizdən əminsiniz?',
+                  onOk: () => removeBlocks(selectedRowKeys as number[]),
+                })
+              }
+            />
+          </RenderIf>
+          <ConfigProvider
+            theme={{
+              token: {
+                colorPrimary: '#00b96b',
+              },
+            }}
+          >
+            <Button
+              type='primary'
+              icon={<PlusOutlined />}
+              onClick={e => addBlockDrawer(e)}
             >
-              <Button
-                type='primary'
-                icon={<PlusOutlined />}
-                onClick={e => addBlockDrawer(e)}
-              >
-                Blok əlavə et
-              </Button>
-            </ConfigProvider>
-          </div>
+              Blok əlavə et
+            </Button>
+          </ConfigProvider>
+        </div>
+        <RenderIf condition={data?.data?.length}>
           <Table
             dataSource={data?.data.map((block: InfoBlock) => ({
               ...block,
@@ -195,7 +195,7 @@ export function AboutInfoBlocks(): React.ReactElement {
               block={selectedBlock}
             />
           )}
-        </div>
+        </RenderIf>
       </RenderIf>
     </>
   )

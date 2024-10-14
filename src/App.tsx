@@ -1,5 +1,10 @@
 import { Router } from '~ek/pages'
+import { App as AntApp } from 'antd'
 
 export function App() {
-  return <Router />
+  return (
+    <AntApp>
+      <Router />
+    </AntApp>
+  )
 }

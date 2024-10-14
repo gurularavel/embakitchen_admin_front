@@ -3,7 +3,6 @@ import { APIBaseQuery } from '~ek/redux/api/axiosBase'
 import {
   IAbout,
   IGetInfoBlock,
-  IDeleteBlock,
   IPostBlock,
   IPutBlock,
   IParams,
@@ -43,7 +42,7 @@ export const aboutApi = createApi({
       },
       providesTags: () => [{ type: 'ABOUT_INFO_BLOCKS' }],
     }),
-    deleteInfoBlocks: builder.mutation<void, IDeleteBlock>({
+    deleteInfoBlocks: builder.mutation<void, IDelete>({
       query(data) {
         return {
           method: 'DELETE',
