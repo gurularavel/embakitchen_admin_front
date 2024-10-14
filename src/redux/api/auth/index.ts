@@ -23,7 +23,15 @@ export const authApi = createApi({
         }
       },
     }),
+    logout: builder.mutation<unknown, void>({
+      query() {
+        return {
+          method: 'POST',
+          url: 'logout',
+        }
+      },
+    }),
   }),
 })
 
-export const { useGetTokenMutation } = authApi
+export const { useGetTokenMutation, useLogoutMutation } = authApi

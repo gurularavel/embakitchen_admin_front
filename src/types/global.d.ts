@@ -21,6 +21,18 @@ declare global {
     current: number
     pageSize: number
   }
+
+  interface IDelete {
+    ids: React.Key[]
+  }
+
+  interface IError {
+    timestamp?: string
+    status: number
+    error: string
+    message: string
+    errors?: string[]
+  }
 }
 
 export {}
