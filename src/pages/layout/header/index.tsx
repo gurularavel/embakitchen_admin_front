@@ -1,9 +1,7 @@
 import * as React from 'react'
 import { Button, Layout } from 'antd'
-import { useAppDispatch } from '~ek/redux/store'
 import { useLogoutMutation } from '~ek/redux/api/auth'
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons'
-import { revertAll } from '~ek/redux/feature/constants'
 
 const { Header } = Layout
 
@@ -16,8 +14,12 @@ export function AppHeader({
   collapsed,
   setCollapsed,
 }: IProps): React.ReactElement {
-  const dispatch = useAppDispatch()
   const [logout] = useLogoutMutation()
+  const handleLogout = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    e.stopPropagation()
+    logout()
+  }
+
   return (
     <Header
       style={{
@@ -41,11 +43,7 @@ export function AppHeader({
         <Button
           type='primary'
           danger
-          onClick={e => {
-            e.stopPropagation()
-            logout()
-            dispatch(revertAll())
-          }}
+          onClick={e => handleLogout(e)}
         >
           Çıxış
         </Button>

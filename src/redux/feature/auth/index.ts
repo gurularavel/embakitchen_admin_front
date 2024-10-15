@@ -18,6 +18,7 @@ const initialState: IAuth = {
         en: '',
       },
     },
+    role: undefined,
   },
   token: '',
 }

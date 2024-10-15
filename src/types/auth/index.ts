@@ -16,6 +16,7 @@ export interface User {
       en: string
     }
   }
+  role: 'user' | 'admin' | undefined
 }
 
 export interface ILogin {
