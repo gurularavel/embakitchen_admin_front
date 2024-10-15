@@ -44,7 +44,7 @@ export function AddCounterDrawer({
     } catch (e: unknown) {
       const errorMessage =
         e instanceof Error ? e.message : 'An unexpected error occurred'
-      Notifier(errorMessage, NOTIFICATION.ERROR)
+      Notifier(errorMessage, NOTIFICATION.error)
     }
   }
 

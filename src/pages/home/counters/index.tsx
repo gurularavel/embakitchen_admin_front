@@ -82,7 +82,7 @@ export function Counter(): React.ReactElement {
     } catch (e: unknown) {
       const errorMessage =
         e instanceof Error ? e.message : 'An unexpected error occurred'
-      Notifier(errorMessage, NOTIFICATION.ERROR)
+      Notifier(errorMessage, NOTIFICATION.error)
     }
   }
 

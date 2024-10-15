@@ -1,5 +1,7 @@
 import { notification } from 'antd'
-type NotificationType = 'success' | 'info' | 'warning' | 'error'
+import { NOTIFICATION } from '~ek/shared/const/constants'
+
+type NotificationType = keyof typeof NOTIFICATION
 
 export const Notifier = (message: string, type: NotificationType = 'error') => {
   const notificationKey = 'singleErrorNotification'
