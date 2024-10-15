@@ -42,7 +42,9 @@ export function AddCounterDrawer({
       await addCounter(data)
       onClose()
     } catch (e: unknown) {
-      Notifier(e as IError, NOTIFICATION.ERROR)
+      const errorMessage =
+        e instanceof Error ? e.message : 'An unexpected error occurred'
+      Notifier(errorMessage, NOTIFICATION.error)
     }
   }
 

@@ -80,7 +80,9 @@ export function Counter(): React.ReactElement {
       await deleteCounter({ ids: ids })
       setSelectedRowKeys([])
     } catch (e: unknown) {
-      Notifier(e as IError, NOTIFICATION.ERROR)
+      const errorMessage =
+        e instanceof Error ? e.message : 'An unexpected error occurred'
+      Notifier(errorMessage, NOTIFICATION.error)
     }
   }
 

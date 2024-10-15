@@ -9,7 +9,13 @@ export const enum URLS {
 }
 
 export const enum NOTIFICATION {
-  WARNING = 'Warning',
-  ERROR = 'Error',
-  SUCCESS = 'Success',
+  warning = 'warning',
+  error = 'error',
+  success = 'success',
+  info = 'info',
+}
+
+export const enum USER_ROLE {
+  ADMIN = 'admin',
+  USER = 'user',
 }
