@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { Login } from '~ek/pages/login'
-import { AppLayout } from '~ek/pages/layout'
 import { PrivateRoutes } from '~ek/pages/private-routes'
 import { useAppSelector } from '~ek/redux/store'
 import { useLogoutMutation } from '~ek/redux/api/auth'
@@ -21,9 +20,7 @@ export function Router(): React.ReactElement {
   return (
     <>
       <RenderIf condition={!!token && user.role === 'admin'}>
-        <AppLayout>
-          <PrivateRoutes />
-        </AppLayout>
+        <PrivateRoutes />
       </RenderIf>
       <RenderIf condition={!token || user.role === 'user'}>
         <Routes>
