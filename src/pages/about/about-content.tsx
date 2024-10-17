@@ -19,11 +19,6 @@ import {
 } from '~ek/redux/api/about'
 import { useFileRemoveMutation } from '~ek/redux/api/fileRemove'
 
-interface IFile {
-  file: File | null
-  fileList: UploadFile[]
-}
-
 interface IFieldForm {
   content: ILangContent
   title: ILangContent

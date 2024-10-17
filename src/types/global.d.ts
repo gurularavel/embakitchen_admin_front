@@ -33,6 +33,25 @@ declare global {
     message: string
     errors?: string[]
   }
+
+  interface IFile {
+    file: File | null
+    fileList: UploadFile[]
+  }
+
+  interface IFileProperties {
+    [key: string]: {
+      name: string
+      file_name: string
+      uuid: string
+      preview_url: string
+      original_url: string
+      order: number
+      custom_properties: []
+      extension: string
+      size: number
+    }
+  }
 }
 
 export {}

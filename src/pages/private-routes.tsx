@@ -3,7 +3,7 @@ import { AppLayout } from '~ek/pages/layout'
 import { URLS } from '~ek/shared/const/constants'
 import { Menu } from '~ek/pages/menu'
 import { AboutContent, AboutInfoBlocks } from '~ek/pages/about'
-import { Counter } from '~ek/pages/home/counters'
+import { Counter, Partners } from '~ek/pages/home'
 import { NotFound } from '~ek/pages/not-found'
 
 export function PrivateRoutes(): React.ReactElement {
@@ -25,7 +25,7 @@ export function PrivateRoutes(): React.ReactElement {
           />
           <Route
             path={URLS.HOME_PARTNERS}
-            element={<h2>Home Partners</h2>}
+            element={<Partners />}
           />
           <Route
             path={URLS.MENU}
