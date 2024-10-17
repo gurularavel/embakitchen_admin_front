@@ -130,7 +130,8 @@ export function EditPartner({
     formData.append('title[az]', data.title.az)
     formData.append('title[en]', data.title.en)
     formData.append('title[ru]', data.title.ru)
-    formData.append('status', data.status.toString())
+    formData.append('status', data.status ? '1' : '0')
+    formData.append('_method', 'PUT')
     if (image.file) formData.append('image', image.file)
 
     try {

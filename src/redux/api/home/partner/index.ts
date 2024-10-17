@@ -36,11 +36,8 @@ export const partnerApi = createApi({
     editPartner: builder.mutation<void, IPutPartner>({
       query(data) {
         const { id, formData } = data
-        // for (const pair of formData.entries()) {
-        //   console.log(pair[0], pair[1])
-        // }
         return {
-          method: 'PUT',
+          method: 'POST',
           url: `partners/${id}`,
           data: formData,
         }
