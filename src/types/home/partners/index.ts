@@ -14,3 +14,8 @@ export interface IPutPartner {
   id: number
   formData: FormData
 }
+
+export interface IGetPartners {
+  data: IPartner[]
+  pagination: IPageParams
+}

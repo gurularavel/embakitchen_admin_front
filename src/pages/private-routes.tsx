@@ -1,10 +1,10 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { AppLayout } from '~ek/pages/layout'
-import { URLS } from '~ek/shared/const/constants'
 import { Menu } from '~ek/pages/menu'
 import { AboutContent, AboutInfoBlocks } from '~ek/pages/about'
-import { Counter, Partners } from '~ek/pages/home'
+import { Counter, Partners, Sliders } from '~ek/pages/home'
 import { NotFound } from '~ek/pages/not-found'
+import { URLS } from '~ek/shared/const/constants'
 
 export function PrivateRoutes(): React.ReactElement {
   return (
@@ -21,7 +21,7 @@ export function PrivateRoutes(): React.ReactElement {
           />
           <Route
             path={URLS.HOME_SLIDERS}
-            element={<h2>Home Slider</h2>}
+            element={<Sliders />}
           />
           <Route
             path={URLS.HOME_PARTNERS}

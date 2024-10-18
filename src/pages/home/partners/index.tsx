@@ -2,28 +2,28 @@ import * as React from 'react'
 import {
   Button,
   ConfigProvider,
-  Empty,
   Space,
   Table,
   TablePaginationConfig,
   TableProps,
 } from 'antd'
 import { AddPartnerDrawer } from '~ek/pages/home/partners/add-partners'
+import { EditPartner } from '~ek/pages/home/partners/edit-partners'
 import {
   ErrorMessage,
   Loading,
   RenderIf,
   Notifier,
+  NoData,
 } from '~ek/shared/components'
 import { ConfirmModal } from '~ek/shared/helpers'
+import { NOTIFICATION } from '~ek/shared/const/constants'
+import { IPartner } from '~ek/types/home/partners'
+import { PlusOutlined, DeleteOutlined, FormOutlined } from '@ant-design/icons'
 import {
   useDeletePartnerMutation,
   useGetPartnersQuery,
 } from '~ek/redux/api/home/partner'
-import { EditPartner } from '~ek/pages/home/partners/edit-partners'
-import { NOTIFICATION } from '~ek/shared/const/constants'
-import { IPartner } from '~ek/types/home/partners'
-import { PlusOutlined, DeleteOutlined, FormOutlined } from '@ant-design/icons'
 
 export function Partners(): React.ReactElement {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([])
@@ -34,6 +34,7 @@ export function Partners(): React.ReactElement {
     take: 10,
     current: 1,
     pageSize: 10,
+    total: 0,
   })
   const [drawerType, setDrawerType] = React.useState<'edit' | 'add' | null>(
     null,
@@ -79,6 +80,7 @@ export function Partners(): React.ReactElement {
   const removePartner = async (ids: number[]): Promise<void> => {
     try {
       await deletePartner({ ids: ids })
+      Notifier('Seçiminiz uğurla silindi', NOTIFICATION.success)
       setSelectedRowKeys([])
     } catch (e: unknown) {
       const errorMessage =
@@ -131,9 +133,7 @@ export function Partners(): React.ReactElement {
         <ErrorMessage message='Məlumatların yüklənməsində xəta baş verdi' />
       </RenderIf>
       <RenderIf condition={isLoading}>
-        <div className='h-full flex justify-center items-center'>
-          <Loading />
-        </div>
+        <Loading />
       </RenderIf>
       <RenderIf condition={!isError && !isLoading}>
         <div className='flex justify-end items-center mb-3'>
@@ -165,9 +165,7 @@ export function Partners(): React.ReactElement {
           </ConfigProvider>
         </div>
         <RenderIf condition={!data?.data?.length}>
-          <div className='h-full flex justify-center items-center'>
-            <Empty />
-          </div>
+          <NoData />
         </RenderIf>
         <RenderIf condition={data?.data?.length}>
           <Table

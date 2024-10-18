@@ -11,9 +11,9 @@ import {
   theme,
 } from 'antd'
 import { Loading, Notifier, RenderIf } from '~ek/shared/components'
-import { usePostCounterMutation } from '~ek/redux/api/home/counter'
-import { IPostCounter } from '~ek/types/home/counter'
 import { NOTIFICATION } from '~ek/shared/const/constants'
+import { IPostCounter } from '~ek/types/home/counter'
+import { usePostCounterMutation } from '~ek/redux/api/home/counter'
 
 interface IDrawerProps {
   open: boolean
@@ -40,6 +40,7 @@ export function AddCounterDrawer({
   ) => {
     try {
       await addCounter(data)
+      Notifier('Yeni sayğac əlavə edildi', NOTIFICATION.success)
       onClose()
     } catch (e: unknown) {
       const errorMessage =

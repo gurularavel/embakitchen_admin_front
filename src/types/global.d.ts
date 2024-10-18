@@ -20,6 +20,7 @@ declare global {
     take: number
     current: number
     pageSize: number
+    total: number
   }
 
   interface IDelete {
@@ -51,6 +52,15 @@ declare global {
       extension: string
       size: number
     }
+  }
+
+  interface IPutFormData {
+    id: number
+    formData: FormData
+  }
+
+  interface IRequestParams {
+    page?: number
   }
 }
 

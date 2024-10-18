@@ -1,13 +1,13 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { APIBaseQuery } from '~ek/redux/api/axiosBase'
-import { ICounter, IPostCounter } from '~ek/types/home/counter'
+import { ICounter, IGetCounts, IPostCounter } from '~ek/types/home/counter'
 
 export const counterApi = createApi({
   reducerPath: 'counterApi',
   baseQuery: APIBaseQuery,
   tagTypes: ['COUNTER'],
   endpoints: builder => ({
-    getCounts: builder.query({
+    getCounts: builder.query<IGetCounts, IRequestParams>({
       query(params) {
         return { url: 'counters', method: 'GET', params }
       },

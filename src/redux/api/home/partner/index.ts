@@ -1,13 +1,13 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { APIBaseQuery } from '~ek/redux/api/axiosBase'
-import { IPutPartner } from '~ek/types/home/partners'
+import { IGetPartners } from '~ek/types/home/partners'
 
 export const partnerApi = createApi({
   reducerPath: 'partnerApi',
   baseQuery: APIBaseQuery,
   tagTypes: ['PARTNER'],
   endpoints: builder => ({
-    getPartners: builder.query({
+    getPartners: builder.query<IGetPartners, IRequestParams>({
       query(params) {
         return { url: 'partners', method: 'GET', params }
       },
@@ -33,7 +33,7 @@ export const partnerApi = createApi({
       },
       invalidatesTags: () => [{ type: 'PARTNER' }],
     }),
-    editPartner: builder.mutation<void, IPutPartner>({
+    editPartner: builder.mutation<void, IPutFormData>({
       query(data) {
         const { id, formData } = data
         return {

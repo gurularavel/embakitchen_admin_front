@@ -13,10 +13,10 @@ import {
   Upload,
 } from 'antd'
 import { Loading, Notifier, RenderIf } from '~ek/shared/components'
-import { usePostPartnerMutation } from '~ek/redux/api/home/partner'
 import { NOTIFICATION } from '~ek/shared/const/constants'
 import { IFormPartner } from '~ek/types/home/partners'
 import { UploadOutlined } from '@ant-design/icons'
+import { usePostPartnerMutation } from '~ek/redux/api/home/partner'
 
 interface IDrawerProps {
   open: boolean

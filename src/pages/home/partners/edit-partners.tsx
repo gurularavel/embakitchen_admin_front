@@ -14,12 +14,12 @@ import {
   Upload,
   UploadFile,
 } from 'antd'
-import { useEditPartnerMutation } from '~ek/redux/api/home/partner'
 import { Notifier } from '~ek/shared/components'
 import { NOTIFICATION } from '~ek/shared/const/constants'
+import { ConfirmModal } from '~ek/shared/helpers'
 import { IPartner } from '~ek/types/home/partners'
 import { UploadOutlined } from '@ant-design/icons'
-import { ConfirmModal } from '~ek/shared/helpers'
+import { useEditPartnerMutation } from '~ek/redux/api/home/partner'
 import { useFileRemoveMutation } from '~ek/redux/api/fileRemove'
 
 interface IDrawerProps {
@@ -81,7 +81,7 @@ export function EditPartner({
     }
   }, [partner])
 
-  const initialValues = {
+  const initialValues: IPartner = {
     title: {
       az: partner.title.az,
       en: partner.title.en,
@@ -89,6 +89,7 @@ export function EditPartner({
     },
     status: partner.status,
     id: partner.id,
+    image: partner.image,
   }
 
   const handleSwitchChange = (checked: boolean) => {
@@ -136,6 +137,7 @@ export function EditPartner({
 
     try {
       await editPartner({ id: partner.id, formData })
+      Notifier('Yeni tərəfdaş əlavə edildi', NOTIFICATION.success)
       onClose()
     } catch (e: unknown) {
       const errorMessage =

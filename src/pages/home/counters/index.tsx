@@ -14,15 +14,16 @@ import {
   Loading,
   RenderIf,
   Notifier,
+  NoData,
 } from '~ek/shared/components'
 import { ConfirmModal } from '~ek/shared/helpers'
 import { NOTIFICATION } from '~ek/shared/const/constants'
+import { ICounter } from '~ek/types/home/counter'
+import { PlusOutlined, DeleteOutlined, FormOutlined } from '@ant-design/icons'
 import {
   useDeleteCounterMutation,
   useGetCountsQuery,
 } from '~ek/redux/api/home/counter'
-import { ICounter } from '~ek/types/home/counter'
-import { PlusOutlined, DeleteOutlined, FormOutlined } from '@ant-design/icons'
 
 export function Counter(): React.ReactElement {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([])
@@ -33,6 +34,7 @@ export function Counter(): React.ReactElement {
     take: 10,
     current: 1,
     pageSize: 10,
+    total: 0,
   })
   const [drawerType, setDrawerType] = React.useState<'edit' | 'add' | null>(
     null,
@@ -79,6 +81,7 @@ export function Counter(): React.ReactElement {
     try {
       await deleteCounter({ ids: ids })
       setSelectedRowKeys([])
+      Notifier('Seçiminiz uğurla silindi', NOTIFICATION.success)
     } catch (e: unknown) {
       const errorMessage =
         e instanceof Error ? e.message : 'An unexpected error occurred'
@@ -161,6 +164,9 @@ export function Counter(): React.ReactElement {
             </Button>
           </ConfigProvider>
         </div>
+        <RenderIf condition={!data?.data?.length}>
+          <NoData />
+        </RenderIf>
         <RenderIf condition={data?.data?.length}>
           <Table
             dataSource={data?.data.map((count: ICounter) => ({
