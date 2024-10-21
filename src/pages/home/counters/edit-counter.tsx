@@ -12,10 +12,10 @@ import {
   Switch,
   theme,
 } from 'antd'
-import { useEditCounterMutation } from '~ek/redux/api/home/counter'
-import { ICounter } from '~ek/types/home/counter'
-import { Notifier } from '~ek/shared/components'
+import { notifier } from '~ek/shared/helpers'
 import { NOTIFICATION } from '~ek/shared/const/constants'
+import { ICounter } from '~ek/types/home/counter'
+import { useEditCounterMutation } from '~ek/redux/api/home/counter'
 
 interface IDrawerProps {
   open: boolean
@@ -73,11 +73,12 @@ export function EditCounter({
     }
     try {
       await editCounter(putData)
+      notifier('Dəyişiklik uğurla icra olundu', NOTIFICATION.success)
       onClose()
     } catch (e: unknown) {
       const errorMessage =
         e instanceof Error ? e.message : 'An unexpected error occurred'
-      Notifier(errorMessage, NOTIFICATION.error)
+      notifier(errorMessage, NOTIFICATION.error)
     }
   }
 

@@ -9,20 +9,15 @@ import {
 } from 'antd'
 import { AddCounterDrawer } from '~ek/pages/home/counters/add-counter'
 import { EditCounter } from '~ek/pages/home/counters/edit-counter'
-import {
-  ErrorMessage,
-  Loading,
-  RenderIf,
-  Notifier,
-} from '~ek/shared/components'
-import { ConfirmModal } from '~ek/shared/helpers'
+import { ErrorMessage, Loading, RenderIf, NoData } from '~ek/shared/components'
+import { confirmModal, notifier } from '~ek/shared/helpers'
 import { NOTIFICATION } from '~ek/shared/const/constants'
+import { ICounter } from '~ek/types/home/counter'
+import { PlusOutlined, DeleteOutlined, FormOutlined } from '@ant-design/icons'
 import {
   useDeleteCounterMutation,
   useGetCountsQuery,
 } from '~ek/redux/api/home/counter'
-import { ICounter } from '~ek/types/home/counter'
-import { PlusOutlined, DeleteOutlined, FormOutlined } from '@ant-design/icons'
 
 export function Counter(): React.ReactElement {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([])
@@ -33,6 +28,7 @@ export function Counter(): React.ReactElement {
     take: 10,
     current: 1,
     pageSize: 10,
+    total: 0,
   })
   const [drawerType, setDrawerType] = React.useState<'edit' | 'add' | null>(
     null,
@@ -79,10 +75,11 @@ export function Counter(): React.ReactElement {
     try {
       await deleteCounter({ ids: ids })
       setSelectedRowKeys([])
+      notifier('Seçiminiz uğurla silindi', NOTIFICATION.success)
     } catch (e: unknown) {
       const errorMessage =
         e instanceof Error ? e.message : 'An unexpected error occurred'
-      Notifier(errorMessage, NOTIFICATION.error)
+      notifier(errorMessage, NOTIFICATION.error)
     }
   }
 
@@ -109,7 +106,7 @@ export function Counter(): React.ReactElement {
           <Button
             danger
             onClick={() =>
-              ConfirmModal({
+              confirmModal({
                 title: 'Silmək istədiyinizdən əminsiniz?',
                 onOk: () => {
                   removeCounter([counter.id])
@@ -138,7 +135,7 @@ export function Counter(): React.ReactElement {
             <DeleteOutlined
               className='mr-3 text-xl text-red-500 cursor-pointer'
               onClick={() =>
-                ConfirmModal({
+                confirmModal({
                   title: 'Silmək istədiyinizdən əminsiniz?',
                   onOk: () => removeCounter(selectedRowKeys as number[]),
                 })
@@ -161,6 +158,9 @@ export function Counter(): React.ReactElement {
             </Button>
           </ConfigProvider>
         </div>
+        <RenderIf condition={!data?.data?.length}>
+          <NoData />
+        </RenderIf>
         <RenderIf condition={data?.data?.length}>
           <Table
             dataSource={data?.data.map((count: ICounter) => ({

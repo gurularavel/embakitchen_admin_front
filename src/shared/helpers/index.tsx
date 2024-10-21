@@ -1,4 +1,5 @@
-import { Modal } from 'antd'
+import { Modal, notification } from 'antd'
+import { NOTIFICATION } from '~ek/shared/const/constants'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 
 type ConfirmModalOptions = {
@@ -9,8 +10,7 @@ type ConfirmModalOptions = {
   cancelText?: string
   icon?: React.ReactNode
 }
-
-export function ConfirmModal({
+export function confirmModal({
   title,
   onOk,
   onCancel,
@@ -25,5 +25,15 @@ export function ConfirmModal({
     cancelText,
     onOk,
     onCancel,
+  })
+}
+
+type NotificationType = keyof typeof NOTIFICATION
+export function notifier(message: string, type: NotificationType = 'error') {
+  notification[type]({
+    message: type,
+    description: message,
+    placement: 'topRight',
+    duration: 2,
   })
 }

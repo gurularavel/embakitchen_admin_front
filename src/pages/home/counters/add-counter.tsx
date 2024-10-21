@@ -10,10 +10,11 @@ import {
   Space,
   theme,
 } from 'antd'
-import { Loading, Notifier, RenderIf } from '~ek/shared/components'
-import { usePostCounterMutation } from '~ek/redux/api/home/counter'
-import { IPostCounter } from '~ek/types/home/counter'
+import { Loading, RenderIf } from '~ek/shared/components'
 import { NOTIFICATION } from '~ek/shared/const/constants'
+import { notifier } from '~ek/shared/helpers'
+import { IPostCounter } from '~ek/types/home/counter'
+import { usePostCounterMutation } from '~ek/redux/api/home/counter'
 
 interface IDrawerProps {
   open: boolean
@@ -40,11 +41,12 @@ export function AddCounterDrawer({
   ) => {
     try {
       await addCounter(data)
+      notifier('Yeni sayğac əlavə edildi', NOTIFICATION.success)
       onClose()
     } catch (e: unknown) {
       const errorMessage =
         e instanceof Error ? e.message : 'An unexpected error occurred'
-      Notifier(errorMessage, NOTIFICATION.error)
+      notifier(errorMessage, NOTIFICATION.error)
     }
   }
 

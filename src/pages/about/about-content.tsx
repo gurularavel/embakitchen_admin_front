@@ -12,17 +12,12 @@ import {
   notification,
 } from 'antd'
 import { Loading, RenderIf, ErrorMessage } from '~ek/shared/components'
-import { ConfirmModal } from '~ek/shared/helpers'
+import { confirmModal } from '~ek/shared/helpers'
 import {
   useGetAboutQuery,
   usePostOrCreateAboutMutation,
 } from '~ek/redux/api/about'
 import { useFileRemoveMutation } from '~ek/redux/api/fileRemove'
-
-interface IFile {
-  file: File | null
-  fileList: UploadFile[]
-}
 
 interface IFieldForm {
   content: ILangContent
@@ -118,7 +113,7 @@ export function AboutContent(): React.ReactElement {
   }
 
   const handleRemoveFile = async (file: UploadFile, type: string) => {
-    ConfirmModal({
+    confirmModal({
       title: 'Bu faylı silmək istədiyinizdən əminsiniz?',
       onOk: async () => {
         await deleteFile({

@@ -5,7 +5,8 @@ import { PrivateRoutes } from '~ek/pages/private-routes'
 import { useAppSelector } from '~ek/redux/store'
 import { useLogoutMutation } from '~ek/redux/api/auth'
 import { URLS } from '~ek/shared/const/constants'
-import { Notifier, RenderIf } from '~ek/shared/components'
+import { RenderIf } from '~ek/shared/components'
+import { notifier } from '~ek/shared/helpers'
 
 export function Router(): React.ReactElement {
   const { token, user } = useAppSelector(state => state.auth)
@@ -14,7 +15,7 @@ export function Router(): React.ReactElement {
 
   React.useEffect(() => {
     if (user?.role === 'user') {
-      Notifier('Admin panelə giriş üçün icazəniz yoxdur')
+      notifier('Admin panelə giriş üçün icazəniz yoxdur')
       logout()
     }
   }, [logout, user])
