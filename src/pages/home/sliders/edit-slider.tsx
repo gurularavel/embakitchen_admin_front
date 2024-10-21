@@ -14,11 +14,10 @@ import {
   Upload,
   UploadFile,
 } from 'antd'
-import { Notifier } from '~ek/shared/components'
 import { NOTIFICATION } from '~ek/shared/const/constants'
 import { ISlider } from '~ek/types/home/slider'
 import { UploadOutlined } from '@ant-design/icons'
-import { ConfirmModal } from '~ek/shared/helpers'
+import { confirmModal, notifier } from '~ek/shared/helpers'
 import { useFileRemoveMutation } from '~ek/redux/api/fileRemove'
 import { useEditSliderMutation } from '~ek/redux/api/home/slider'
 
@@ -112,7 +111,7 @@ export function EditSlider({
   }
 
   const handleRemoveFile = async (file: UploadFile) => {
-    ConfirmModal({
+    confirmModal({
       title: 'Bu faylı silmək istədiyinizdən əminsiniz?',
       onOk: async () => {
         await deleteFile({
@@ -149,7 +148,7 @@ export function EditSlider({
     } catch (e: unknown) {
       const errorMessage =
         e instanceof Error ? e.message : 'An unexpected error occurred'
-      Notifier(errorMessage, NOTIFICATION.error)
+      notifier(errorMessage, NOTIFICATION.error)
     }
   }
 

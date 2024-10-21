@@ -9,14 +9,8 @@ import {
 } from 'antd'
 import { AddPartnerDrawer } from '~ek/pages/home/partners/add-partners'
 import { EditPartner } from '~ek/pages/home/partners/edit-partners'
-import {
-  ErrorMessage,
-  Loading,
-  RenderIf,
-  Notifier,
-  NoData,
-} from '~ek/shared/components'
-import { ConfirmModal } from '~ek/shared/helpers'
+import { ErrorMessage, Loading, RenderIf, NoData } from '~ek/shared/components'
+import { confirmModal, notifier } from '~ek/shared/helpers'
 import { NOTIFICATION } from '~ek/shared/const/constants'
 import { IPartner } from '~ek/types/home/partners'
 import { PlusOutlined, DeleteOutlined, FormOutlined } from '@ant-design/icons'
@@ -80,12 +74,12 @@ export function Partners(): React.ReactElement {
   const removePartner = async (ids: number[]): Promise<void> => {
     try {
       await deletePartner({ ids: ids })
-      Notifier('Seçiminiz uğurla silindi', NOTIFICATION.success)
+      notifier('Seçiminiz uğurla silindi', NOTIFICATION.success)
       setSelectedRowKeys([])
     } catch (e: unknown) {
       const errorMessage =
         e instanceof Error ? e.message : 'An unexpected error occurred'
-      Notifier(errorMessage, NOTIFICATION.error)
+      notifier(errorMessage, NOTIFICATION.error)
     }
   }
 
@@ -112,7 +106,7 @@ export function Partners(): React.ReactElement {
           <Button
             danger
             onClick={() =>
-              ConfirmModal({
+              confirmModal({
                 title: 'Silmək istədiyinizdən əminsiniz?',
                 onOk: () => {
                   removePartner([partner.id])
@@ -141,7 +135,7 @@ export function Partners(): React.ReactElement {
             <DeleteOutlined
               className='mr-3 text-xl text-red-500 cursor-pointer'
               onClick={() =>
-                ConfirmModal({
+                confirmModal({
                   title: 'Silmək istədiyinizdən əminsiniz?',
                   onOk: () => removePartner(selectedRowKeys as number[]),
                 })

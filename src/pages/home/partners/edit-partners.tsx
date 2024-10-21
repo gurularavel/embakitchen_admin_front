@@ -14,9 +14,8 @@ import {
   Upload,
   UploadFile,
 } from 'antd'
-import { Notifier } from '~ek/shared/components'
 import { NOTIFICATION } from '~ek/shared/const/constants'
-import { ConfirmModal } from '~ek/shared/helpers'
+import { confirmModal, notifier } from '~ek/shared/helpers'
 import { IPartner } from '~ek/types/home/partners'
 import { UploadOutlined } from '@ant-design/icons'
 import { useEditPartnerMutation } from '~ek/redux/api/home/partner'
@@ -107,7 +106,7 @@ export function EditPartner({
   }
 
   const handleRemoveFile = async (file: UploadFile) => {
-    ConfirmModal({
+    confirmModal({
       title: 'Bu faylı silmək istədiyinizdən əminsiniz?',
       onOk: async () => {
         await deleteFile({
@@ -137,12 +136,12 @@ export function EditPartner({
 
     try {
       await editPartner({ id: partner.id, formData })
-      Notifier('Yeni tərəfdaş əlavə edildi', NOTIFICATION.success)
+      notifier('Yeni tərəfdaş əlavə edildi', NOTIFICATION.success)
       onClose()
     } catch (e: unknown) {
       const errorMessage =
         e instanceof Error ? e.message : 'An unexpected error occurred'
-      Notifier(errorMessage, NOTIFICATION.error)
+      notifier(errorMessage, NOTIFICATION.error)
     }
   }
 

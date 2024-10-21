@@ -10,7 +10,7 @@ import {
 import { AddBlockDrawer } from '~ek/pages/about/add-info-block'
 import { EditInfoBlock } from '~ek/pages/about/edit-info-block'
 import { Loading, RenderIf, ErrorMessage } from '~ek/shared/components'
-import { ConfirmModal } from '~ek/shared/helpers'
+import { confirmModal } from '~ek/shared/helpers'
 import {
   useDeleteInfoBlocksMutation,
   useGetInfoBlocksQuery,
@@ -27,6 +27,7 @@ export function AboutInfoBlocks(): React.ReactElement {
     take: 10,
     current: 1,
     pageSize: 10,
+    total: 0,
   })
   const [drawerType, setDrawerType] = React.useState<'edit' | 'add' | null>(
     null,
@@ -113,7 +114,7 @@ export function AboutInfoBlocks(): React.ReactElement {
           <Button
             danger
             onClick={() =>
-              ConfirmModal({
+              confirmModal({
                 title: 'Silmək istədiyinizdən əminsiniz?',
                 onOk: () => {
                   removeBlocks([block.id])
@@ -142,7 +143,7 @@ export function AboutInfoBlocks(): React.ReactElement {
             <DeleteOutlined
               className='mr-3 text-xl text-red-500 cursor-pointer'
               onClick={() =>
-                ConfirmModal({
+                confirmModal({
                   title: 'Silmək istədiyinizdən əminsiniz?',
                   onOk: () => removeBlocks(selectedRowKeys as number[]),
                 })

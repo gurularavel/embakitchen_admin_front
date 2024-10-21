@@ -9,14 +9,8 @@ import {
 } from 'antd'
 import { AddCounterDrawer } from '~ek/pages/home/counters/add-counter'
 import { EditCounter } from '~ek/pages/home/counters/edit-counter'
-import {
-  ErrorMessage,
-  Loading,
-  RenderIf,
-  Notifier,
-  NoData,
-} from '~ek/shared/components'
-import { ConfirmModal } from '~ek/shared/helpers'
+import { ErrorMessage, Loading, RenderIf, NoData } from '~ek/shared/components'
+import { confirmModal, notifier } from '~ek/shared/helpers'
 import { NOTIFICATION } from '~ek/shared/const/constants'
 import { ICounter } from '~ek/types/home/counter'
 import { PlusOutlined, DeleteOutlined, FormOutlined } from '@ant-design/icons'
@@ -81,11 +75,11 @@ export function Counter(): React.ReactElement {
     try {
       await deleteCounter({ ids: ids })
       setSelectedRowKeys([])
-      Notifier('Seçiminiz uğurla silindi', NOTIFICATION.success)
+      notifier('Seçiminiz uğurla silindi', NOTIFICATION.success)
     } catch (e: unknown) {
       const errorMessage =
         e instanceof Error ? e.message : 'An unexpected error occurred'
-      Notifier(errorMessage, NOTIFICATION.error)
+      notifier(errorMessage, NOTIFICATION.error)
     }
   }
 
@@ -112,7 +106,7 @@ export function Counter(): React.ReactElement {
           <Button
             danger
             onClick={() =>
-              ConfirmModal({
+              confirmModal({
                 title: 'Silmək istədiyinizdən əminsiniz?',
                 onOk: () => {
                   removeCounter([counter.id])
@@ -141,7 +135,7 @@ export function Counter(): React.ReactElement {
             <DeleteOutlined
               className='mr-3 text-xl text-red-500 cursor-pointer'
               onClick={() =>
-                ConfirmModal({
+                confirmModal({
                   title: 'Silmək istədiyinizdən əminsiniz?',
                   onOk: () => removeCounter(selectedRowKeys as number[]),
                 })

@@ -12,7 +12,8 @@ import {
   theme,
   Upload,
 } from 'antd'
-import { Loading, Notifier, RenderIf } from '~ek/shared/components'
+import { Loading, RenderIf } from '~ek/shared/components'
+import { notifier } from '~ek/shared/helpers'
 import { NOTIFICATION } from '~ek/shared/const/constants'
 import { IFormPartner } from '~ek/types/home/partners'
 import { UploadOutlined } from '@ant-design/icons'
@@ -69,12 +70,12 @@ export function AddPartnerDrawer({
 
     try {
       await addPartner(formData).unwrap()
-      Notifier('Dəyişiklik uğurla icra edildi', 'success')
+      notifier('Dəyişiklik uğurla icra edildi', 'success')
       onClose()
     } catch (e: unknown) {
       const errorMessage =
         e instanceof Error ? e.message : 'An unexpected error occurred'
-      Notifier(errorMessage, NOTIFICATION.error)
+      notifier(errorMessage, NOTIFICATION.error)
     }
   }
   return (

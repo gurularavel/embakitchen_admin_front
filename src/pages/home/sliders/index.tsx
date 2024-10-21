@@ -9,15 +9,9 @@ import {
 } from 'antd'
 import { AddSlider } from '~ek/pages/home/sliders/add-slider'
 import { EditSlider } from '~ek/pages/home/sliders/edit-slider'
-import {
-  ErrorMessage,
-  Loading,
-  RenderIf,
-  Notifier,
-  NoData,
-} from '~ek/shared/components'
+import { ErrorMessage, Loading, RenderIf, NoData } from '~ek/shared/components'
 import { NOTIFICATION } from '~ek/shared/const/constants'
-import { ConfirmModal } from '~ek/shared/helpers'
+import { confirmModal, notifier } from '~ek/shared/helpers'
 import { ISlider } from '~ek/types/home/slider'
 import { PlusOutlined, DeleteOutlined, FormOutlined } from '@ant-design/icons'
 import {
@@ -81,11 +75,11 @@ export function Sliders(): React.ReactElement {
     try {
       await deleteSldier({ ids: ids })
       setSelectedRowKeys([])
-      Notifier('Seçiminiz uğurla silindi', NOTIFICATION.success)
+      notifier('Seçiminiz uğurla silindi', NOTIFICATION.success)
     } catch (e: unknown) {
       const errorMessage =
         e instanceof Error ? e.message : 'An unexpected error occurred'
-      Notifier(errorMessage, NOTIFICATION.error)
+      notifier(errorMessage, NOTIFICATION.error)
     }
   }
 
@@ -112,7 +106,7 @@ export function Sliders(): React.ReactElement {
           <Button
             danger
             onClick={() =>
-              ConfirmModal({
+              confirmModal({
                 title: 'Silmək istədiyinizdən əminsiniz?',
                 onOk: () => {
                   removeSlider([slider.id])
@@ -141,7 +135,7 @@ export function Sliders(): React.ReactElement {
             <DeleteOutlined
               className='mr-3 text-xl text-red-500 cursor-pointer'
               onClick={() =>
-                ConfirmModal({
+                confirmModal({
                   title: 'Silmək istədiyinizdən əminsiniz?',
                   onOk: () => removeSlider(selectedRowKeys as number[]),
                 })
