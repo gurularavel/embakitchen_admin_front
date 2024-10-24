@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import { Modal, notification } from 'antd'
 import { NOTIFICATION } from '~ek/shared/const/constants'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
@@ -37,3 +38,9 @@ export function notifier(message: string, type: NotificationType = 'error') {
     duration: 2,
   })
 }
+
+export const formatDate = (
+  date: dayjs.ConfigType,
+  dateFormat: string,
+  format: string,
+) => dayjs(date, dateFormat).format(format)

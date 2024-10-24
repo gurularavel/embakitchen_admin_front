@@ -7,6 +7,7 @@ import { fileRemoveApi } from '~ek/redux/api/fileRemove'
 import { counterApi } from '~ek/redux/api/home/counter'
 import { partnerApi } from '~ek/redux/api/home/partner'
 import { sliderApi } from '~ek/redux/api/home/slider'
+import { campaignApi } from '~ek/redux/api/campaign'
 
 export const reducer = {
   auth: AuthReducer,
@@ -17,6 +18,7 @@ export const reducer = {
   [counterApi.reducerPath]: counterApi.reducer,
   [partnerApi.reducerPath]: partnerApi.reducer,
   [sliderApi.reducerPath]: sliderApi.reducer,
+  [campaignApi.reducerPath]: campaignApi.reducer,
 }
 export const middlewares = [
   authApi.middleware,
@@ -26,4 +28,5 @@ export const middlewares = [
   counterApi.middleware,
   partnerApi.middleware,
   sliderApi.middleware,
+  campaignApi.middleware,
 ]

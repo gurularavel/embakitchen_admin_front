@@ -79,6 +79,12 @@ const items: IMenu[] = [
       },
     ],
   },
+  {
+    key: URLS.COMPAIGN,
+    path: URLS.COMPAIGN,
+    label: <Link to={URLS.COMPAIGN}>Kampaniyalar</Link>,
+    icon: <BlockOutlined className={'!text-lg'} />,
+  },
 ]
 
 export function AppSider({
@@ -111,6 +117,7 @@ export function AppSider({
         <Menu
           theme='dark'
           mode='inline'
+          defaultOpenKeys={['1']}
           selectedKeys={[location.pathname]}
           items={items}
         />
