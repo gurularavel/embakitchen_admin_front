@@ -3,27 +3,23 @@ import { UploadOutlined } from '@ant-design/icons'
 import {
   Button,
   Form,
+  FormProps,
   Input,
   Space,
   Upload,
   UploadFile,
   message,
-  notification,
 } from 'antd'
+import { Loading, RenderIf, ErrorMessage } from '~ek/shared/components'
+import { NOTIFICATION } from '~ek/shared/const/constants'
+import { confirmModal, notifier } from '~ek/shared/helpers'
 import {
   useGetAboutQuery,
   usePostOrCreateAboutMutation,
 } from '~ek/redux/api/about'
-import { Loading, RenderIf, ErrorMessage } from '~ek/shared/components'
-import { ConfirmModal } from '~ek/shared/helpers'
 import { useFileRemoveMutation } from '~ek/redux/api/fileRemove'
 
-interface IFile {
-  file: File | null
-  fileList: UploadFile[]
-}
-
-interface IForm {
+interface IFieldForm {
   content: ILangContent
   title: ILangContent
   video?: IFile
@@ -117,28 +113,29 @@ export function AboutContent(): React.ReactElement {
   }
 
   const handleRemoveFile = async (file: UploadFile, type: string) => {
-    ConfirmModal({
+    confirmModal({
       title: 'Bu faylı silmək istədiyinizdən əminsiniz?',
-      onOk: () => {
-        deleteFile({
+      onOk: async () => {
+        await deleteFile({
           mediaIDS: [file.uid],
-        }).then(() => {
-          if (type === 'video') {
-            setVideo({ file: null, fileList: [] })
-          } else if (type === 'image') {
-            setImage({ file: null, fileList: [] })
-          }
         })
+        if (type === 'video') {
+          setVideo({ file: null, fileList: [] })
+        } else if (type === 'image') {
+          setImage({ file: null, fileList: [] })
+        }
       },
       onCancel: () => {},
     })
   }
 
-  const onFinish = async (values: IForm) => {
-    if (video.file?.size === 0 || !video.fileList.length) {
-      message.error('Please select video first!')
-      return
-    }
+  const onFinish: FormProps<IFieldForm>['onFinish'] = async (
+    values: IFieldForm,
+  ) => {
+    // if (video.file?.size === 0 || !video.fileList.length) {
+    //   message.error('Please select video first!')
+    //   return
+    // }
 
     if (image.file?.size === 0 || !image.fileList.length) {
       message.error('Please select image first!')
@@ -158,11 +155,7 @@ export function AboutContent(): React.ReactElement {
 
     try {
       await postAbout(formData).unwrap()
-      notification.success({
-        message: 'Dəyişiklik uğurla icra edildi',
-        placement: 'topRight',
-        duration: 2,
-      })
+      notifier('Dəyişiklik uğurla icra edildi.', NOTIFICATION.success)
     } catch (error) {
       console.error(error)
     }
@@ -186,7 +179,7 @@ export function AboutContent(): React.ReactElement {
           className='ml-auto mr-auto'
           initialValues={initialValues}
         >
-          <Form.Item
+          <Form.Item<IFieldForm>
             name='image'
             label='Banner Photo'
             valuePropName='image'
@@ -217,7 +210,7 @@ export function AboutContent(): React.ReactElement {
               <Button icon={<UploadOutlined />}>Click to upload</Button>
             </Upload>
           </Form.Item>
-          <Form.Item
+          <Form.Item<IFieldForm>
             label='Başlıq(az)'
             name={['title', 'az']}
             rules={[
@@ -235,7 +228,7 @@ export function AboutContent(): React.ReactElement {
           >
             <Input />
           </Form.Item>
-          <Form.Item
+          <Form.Item<IFieldForm>
             label='Başlıq(ru)'
             name={['title', 'ru']}
             rules={[
@@ -245,7 +238,7 @@ export function AboutContent(): React.ReactElement {
             <Input />
           </Form.Item>
 
-          <Form.Item
+          <Form.Item<IFieldForm>
             name={['content', 'az']}
             label='Kontent(az)'
             rules={[
@@ -255,7 +248,7 @@ export function AboutContent(): React.ReactElement {
             <Input.TextArea />
           </Form.Item>
 
-          <Form.Item
+          <Form.Item<IFieldForm>
             name={['content', 'en']}
             label='Kontent(en)'
             rules={[
@@ -265,7 +258,7 @@ export function AboutContent(): React.ReactElement {
             <Input.TextArea />
           </Form.Item>
 
-          <Form.Item
+          <Form.Item<IFieldForm>
             name={['content', 'ru']}
             label='Kontent(ru)'
             rules={[
@@ -275,21 +268,21 @@ export function AboutContent(): React.ReactElement {
             <Input.TextArea />
           </Form.Item>
 
-          <Form.Item
+          <Form.Item<IFieldForm>
             name='video'
             label='Upload Video'
             valuePropName='video'
-            rules={[
-              {
-                required: true,
-                validator: () =>
-                  video.fileList.length > 0
-                    ? Promise.resolve()
-                    : Promise.reject(
-                      new Error('Zəhmət olmasa video fayl yükləyin!'),
-                    ),
-              },
-            ]}
+            // rules={[
+            //   {
+            //     required: true,
+            //     validator: () =>
+            //       video.fileList.length > 0
+            //         ? Promise.resolve()
+            //         : Promise.reject(
+            //           new Error('Zəhmət olmasa video fayl yükləyin!'),
+            //         ),
+            //   },
+            // ]}
           >
             <Upload
               name='video'

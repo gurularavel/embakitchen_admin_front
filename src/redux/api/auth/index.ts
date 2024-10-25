@@ -1,6 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { APIBaseQuery } from '~ek/redux/api/axiosBase'
 import { setUser } from '~ek/redux/feature/auth'
+import { revertAll } from '~ek/redux/feature/constants'
 
 export const authApi = createApi({
   reducerPath: 'authApi',
@@ -18,12 +19,28 @@ export const authApi = createApi({
         try {
           const { data } = await queryFulfilled
           dispatch(setUser(data))
-        } catch (e) {
-          alert(e)
+        } catch {
+          return
+        }
+      },
+    }),
+    logout: builder.mutation<void, void>({
+      query() {
+        return {
+          url: 'logout',
+          method: 'POST',
+        }
+      },
+      onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
+        try {
+          await queryFulfilled
+          dispatch(revertAll())
+        } catch {
+          return
         }
       },
     }),
   }),
 })
 
-export const { useGetTokenMutation } = authApi
+export const { useGetTokenMutation, useLogoutMutation } = authApi

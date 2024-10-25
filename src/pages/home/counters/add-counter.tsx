@@ -1,33 +1,58 @@
-import { Button, Col, Drawer, Form, Input, Row, Space } from 'antd'
-import { usePostInfoBlockMutation } from '~ek/redux/api/about'
+import {
+  Button,
+  Col,
+  Drawer,
+  Form,
+  FormProps,
+  Input,
+  InputNumber,
+  Row,
+  Space,
+  theme,
+} from 'antd'
 import { Loading, RenderIf } from '~ek/shared/components'
-import { IPostBlock } from '~ek/types/about'
+import { NOTIFICATION } from '~ek/shared/const/constants'
+import { notifier } from '~ek/shared/helpers'
+import { IPostCounter } from '~ek/types/home/counter'
+import { usePostCounterMutation } from '~ek/redux/api/home/counter'
 
 interface IDrawerProps {
   open: boolean
   onClose: () => void
 }
 
-export function AddBlockDrawer({
+export function AddCounterDrawer({
   open,
   onClose,
 }: IDrawerProps): React.ReactElement {
-  const [addBlock, { isLoading }] = usePostInfoBlockMutation()
+  const { token } = theme.useToken()
+  const [addCounter, { isLoading }] = usePostCounterMutation()
   const [form] = Form.useForm()
 
-  const handleSubmit = (data: IPostBlock) => {
-    addBlock(data)
-      .then(() => {
-        onClose()
-      })
-      .catch((error: unknown) => {
-        console.error(error)
-      })
+  const formStyle: React.CSSProperties = {
+    maxWidth: 'none',
+    background: token.colorFillAlter,
+    borderRadius: token.borderRadiusLG,
+    padding: 24,
+  }
+
+  const handleSubmit: FormProps<IPostCounter>['onFinish'] = async (
+    data: IPostCounter,
+  ) => {
+    try {
+      await addCounter(data)
+      notifier('Yeni sayğac əlavə edildi', NOTIFICATION.success)
+      onClose()
+    } catch (e: unknown) {
+      const errorMessage =
+        e instanceof Error ? e.message : 'An unexpected error occurred'
+      notifier(errorMessage, NOTIFICATION.error)
+    }
   }
 
   return (
     <Drawer
-      title='Yeni blok'
+      title='Yeni sayğac'
       onClose={onClose}
       open={open}
       size={'large'}
@@ -52,17 +77,18 @@ export function AddBlockDrawer({
         layout='vertical'
         form={form}
         onFinish={handleSubmit}
+        style={formStyle}
       >
         <RenderIf condition={isLoading}>
           <Loading />
         </RenderIf>
-        <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+        <Row gutter={{ xs: 8, sm: 16 }}>
           <Col
             xs={24}
             sm={12}
             md={8}
           >
-            <Form.Item
+            <Form.Item<IPostCounter>
               name={['title', 'az']}
               label='Başlıq(az)'
               rules={[
@@ -80,7 +106,7 @@ export function AddBlockDrawer({
             sm={12}
             md={8}
           >
-            <Form.Item
+            <Form.Item<IPostCounter>
               name={['title', 'en']}
               label='Başlıq(en)'
               rules={[
@@ -98,7 +124,7 @@ export function AddBlockDrawer({
             sm={12}
             md={8}
           >
-            <Form.Item
+            <Form.Item<IPostCounter>
               name={['title', 'ru']}
               label='Başlıq(ru)'
               rules={[
@@ -112,67 +138,25 @@ export function AddBlockDrawer({
             </Form.Item>
           </Col>
         </Row>
-        <Row gutter={16}>
+        <Row>
           <Col
             xs={24}
             sm={12}
             md={8}
           >
-            <Form.Item
-              name={['content', 'az']}
-              label='Açıqlama(az)'
+            <Form.Item<IPostCounter>
+              name={'count'}
+              label='Sayğac'
               rules={[
                 {
                   required: true,
-                  message: 'Zəhmət olmasa açıqlama daxil edin(az)',
+                  message: 'Zəhmət olmasa rəqəm daxil edin',
                 },
               ]}
             >
-              <Input.TextArea
-                rows={4}
-                placeholder='Açıqlama (az)'
-              />
-            </Form.Item>
-          </Col>
-          <Col
-            xs={24}
-            sm={12}
-            md={8}
-          >
-            <Form.Item
-              name={['content', 'en']}
-              label='Açıqlama(en)'
-              rules={[
-                {
-                  required: true,
-                  message: 'Zəhmət olmasa açıqlama daxil edin(en)',
-                },
-              ]}
-            >
-              <Input.TextArea
-                rows={4}
-                placeholder='Açıqlama (en)'
-              />
-            </Form.Item>
-          </Col>
-          <Col
-            xs={24}
-            sm={12}
-            md={8}
-          >
-            <Form.Item
-              name={['content', 'ru']}
-              label='Açıqlama(ru)'
-              rules={[
-                {
-                  required: true,
-                  message: 'Zəhmət olmasa açıqlama daxil edin(ru)',
-                },
-              ]}
-            >
-              <Input.TextArea
-                rows={4}
-                placeholder='Açıqlama (ru)'
+              <InputNumber
+                min={1}
+                stringMode={false}
               />
             </Form.Item>
           </Col>

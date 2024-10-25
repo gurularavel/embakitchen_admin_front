@@ -1,4 +1,6 @@
-import { Modal } from 'antd'
+import dayjs from 'dayjs'
+import { Modal, notification } from 'antd'
+import { NOTIFICATION } from '~ek/shared/const/constants'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 
 type ConfirmModalOptions = {
@@ -9,8 +11,7 @@ type ConfirmModalOptions = {
   cancelText?: string
   icon?: React.ReactNode
 }
-
-export function ConfirmModal({
+export function confirmModal({
   title,
   onOk,
   onCancel,
@@ -27,3 +28,19 @@ export function ConfirmModal({
     onCancel,
   })
 }
+
+type NotificationType = keyof typeof NOTIFICATION
+export function notifier(message: string, type: NotificationType = 'error') {
+  notification[type]({
+    message: type,
+    description: message,
+    placement: 'topRight',
+    duration: 2,
+  })
+}
+
+export const formatDate = (
+  date: dayjs.ConfigType,
+  dateFormat: string,
+  format: string,
+) => dayjs(date, dateFormat).format(format)

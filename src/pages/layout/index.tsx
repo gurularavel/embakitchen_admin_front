@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Layout, theme } from 'antd'
+import { Outlet } from 'react-router-dom'
 import { AppFooter } from '~ek/pages/layout/footer'
 import { AppSider } from '~ek/pages/layout/sider'
 import { AppHeader } from '~ek/pages/layout/header'
@@ -7,7 +8,7 @@ import { AppHeader } from '~ek/pages/layout/header'
 const { Content } = Layout
 
 interface IProps {
-  children: React.ReactNode
+  children?: React.ReactNode
 }
 
 export function AppLayout({ children }: IProps): React.ReactElement {
@@ -37,7 +38,7 @@ export function AppLayout({ children }: IProps): React.ReactElement {
             flexGrow: 1,
           }}
         >
-          {children}
+          {children || <Outlet />}
         </Content>
         <AppFooter />
       </Layout>

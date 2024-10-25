@@ -1,38 +1,72 @@
 import * as React from 'react'
-import { FormOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons'
-import { Button, ConfigProvider, Space, Table } from 'antd'
+import {
+  Button,
+  ConfigProvider,
+  Space,
+  Table,
+  TablePaginationConfig,
+  TableProps,
+} from 'antd'
+import { AddBlockDrawer } from '~ek/pages/about/add-info-block'
+import { EditInfoBlock } from '~ek/pages/about/edit-info-block'
+import { Loading, RenderIf, ErrorMessage, NoData } from '~ek/shared/components'
+import { NOTIFICATION } from '~ek/shared/const/constants'
+import { confirmModal, notifier } from '~ek/shared/helpers'
 import {
   useDeleteInfoBlocksMutation,
+  useEditInfoBlockMutation,
   useGetInfoBlocksQuery,
 } from '~ek/redux/api/about'
-import { AddBlockDrawer } from '~ek/pages/about/add-block-drawer'
-import { Loading, RenderIf, ErrorMessage } from '~ek/shared/components'
-import { ConfirmModal } from '~ek/shared/helpers'
-import { InfoBlock } from '~ek/types/about'
+import type { InfoBlock } from '~ek/types/about'
+import {
+  FormOutlined,
+  PlusOutlined,
+  DeleteOutlined,
+  PoweroffOutlined,
+} from '@ant-design/icons'
 
 export function AboutInfoBlocks(): React.ReactElement {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([])
+  const [selectedBlock, setSelectedBlock] = React.useState<InfoBlock | null>(
+    null,
+  )
   const [pageParams, setPageParams] = React.useState<IPageParams>({
     take: 10,
-    currentPage: 1,
+    current: 1,
     pageSize: 10,
+    total: 0,
   })
   const [drawerType, setDrawerType] = React.useState<'edit' | 'add' | null>(
     null,
   )
-  const { data, isLoading, isError } = useGetInfoBlocksQuery()
+  const { data, isLoading, isError } = useGetInfoBlocksQuery({
+    page: pageParams.current,
+  })
+
   const [deleteBlocks] = useDeleteInfoBlocksMutation()
+  const [changeBlockStatus, { isLoading: changeStatusLoading }] =
+    useEditInfoBlockMutation()
 
-  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    setSelectedRowKeys(newSelectedRowKeys)
-  }
-
-  const handleTableChange = (pagination: IPageParams) => {
+  const handleTableChange = (pagination: TablePaginationConfig): void => {
     setPageParams(prev => ({
       ...prev,
-      currentPage: pagination.currentPage,
-      pageSize: pagination.pageSize,
+      current: pagination.current || 1,
+      pageSize: pagination.pageSize || 10,
     }))
+  }
+
+  const addBlockDrawer = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    e.stopPropagation()
+    setDrawerType('add')
+  }
+
+  const handleEditButton = (
+    e: React.MouseEvent<HTMLElement, MouseEvent>,
+    block: InfoBlock,
+  ) => {
+    e.stopPropagation()
+    setDrawerType('edit')
+    setSelectedBlock(block)
   }
 
   const onClose = () => {
@@ -40,9 +74,31 @@ export function AboutInfoBlocks(): React.ReactElement {
     setSelectedRowKeys([])
   }
 
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange,
+  const rowSelection: TableProps<InfoBlock>['rowSelection'] = {
+    onChange: (selectedRowKeys: React.Key[]) => {
+      setSelectedRowKeys(selectedRowKeys)
+    },
+  }
+
+  const removeBlocks = async (ids: number[]): Promise<void> => {
+    try {
+      await deleteBlocks({ ids: ids })
+      setSelectedRowKeys([])
+    } catch (e) {
+      alert(e)
+    }
+  }
+
+  const handleBlockStatus = async (block: InfoBlock) => {
+    try {
+      await changeBlockStatus({ id: block.id, status: !block.status })
+      notifier('Dəyişiklik uğurla icra edildi', NOTIFICATION.success)
+      onClose()
+    } catch (e: unknown) {
+      const errorMessage =
+        e instanceof Error ? e.message : 'An unexpected error occurred'
+      notifier(errorMessage, NOTIFICATION.error)
+    }
   }
 
   const columns = [
@@ -60,12 +116,20 @@ export function AboutInfoBlocks(): React.ReactElement {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      render: (_: string, block: InfoBlock) =>
-        block.status ? (
-          <span className={'text-teal-500'}>Active</span>
-        ) : (
-          <span className={'text-red-500'}>Deactive</span>
-        ),
+      render: (_: string, block: InfoBlock) => (
+        <Button
+          type='default'
+          className={
+            block.status
+              ? 'border-green-600 text-green-600 hover:!border-green-600 hover:!text-green-600'
+              : 'border-red-500 text-red-500 hover:!border-red-500 hover:!text-red-500'
+          }
+          icon={<PoweroffOutlined />}
+          size={'middle'}
+          disabled={changeStatusLoading}
+          onClick={() => handleBlockStatus(block)}
+        />
+      ),
     },
     {
       title: 'Actions',
@@ -73,16 +137,16 @@ export function AboutInfoBlocks(): React.ReactElement {
       key: 'action',
       render: (_: string, block: InfoBlock) => (
         <Space size='middle'>
-          <Button>
+          <Button onClick={e => handleEditButton(e, block)}>
             <FormOutlined />
           </Button>
           <Button
             danger
             onClick={() =>
-              ConfirmModal({
+              confirmModal({
                 title: 'Silmək istədiyinizdən əminsiniz?',
                 onOk: () => {
-                  deleteBlocks({ ids: [block.id] })
+                  removeBlocks([block.id])
                 },
               })
             }
@@ -102,54 +166,52 @@ export function AboutInfoBlocks(): React.ReactElement {
       <RenderIf condition={isLoading}>
         <Loading />
       </RenderIf>
-      <RenderIf condition={!isError && !isLoading && data?.data?.length}>
-        <div>
-          <div className='flex justify-end items-center mb-3'>
-            {selectedRowKeys.length ? (
-              <DeleteOutlined
-                className='mr-3 text-xl text-red-500 cursor-pointer'
-                onClick={() =>
-                  ConfirmModal({
-                    title: 'Silmək istədiyinizdən əminsiniz?',
-                    onOk: () => deleteBlocks({ ids: selectedRowKeys }),
-                  })
-                }
-              />
-            ) : (
-              ''
-            )}
-            <ConfigProvider
-              theme={{
-                token: {
-                  colorPrimary: '#00b96b',
-                },
-              }}
+      <RenderIf condition={!isError && !isLoading}>
+        <div className='flex justify-end items-center mb-3'>
+          <RenderIf condition={selectedRowKeys.length}>
+            <DeleteOutlined
+              className='mr-3 text-xl text-red-500 cursor-pointer'
+              onClick={() =>
+                confirmModal({
+                  title: 'Silmək istədiyinizdən əminsiniz?',
+                  onOk: () => removeBlocks(selectedRowKeys as number[]),
+                })
+              }
+            />
+          </RenderIf>
+          <ConfigProvider
+            theme={{
+              token: {
+                colorPrimary: '#00b96b',
+              },
+            }}
+          >
+            <Button
+              type='primary'
+              icon={<PlusOutlined />}
+              onClick={e => addBlockDrawer(e)}
             >
-              <Button
-                type='primary'
-                icon={<PlusOutlined />}
-                onClick={e => {
-                  e.stopPropagation()
-                  setDrawerType('add')
-                }}
-              >
-                Blok əlavə et
-              </Button>
-            </ConfigProvider>
-          </div>
+              Blok əlavə et
+            </Button>
+          </ConfigProvider>
+        </div>
+        <RenderIf condition={!data?.data?.length}>
+          <NoData />
+        </RenderIf>
+        <RenderIf condition={data?.data?.length}>
           <Table
-            dataSource={data?.data.map((block: InfoBlock, i) => ({
+            dataSource={data?.data.map((block: InfoBlock) => ({
               ...block,
-              key: i,
+              key: block.id,
             }))}
             rowSelection={rowSelection}
             columns={columns}
             pagination={{
-              current: pageParams.currentPage,
+              current: pageParams.current,
               pageSize: pageParams.pageSize,
               total: data?.pagination.total,
             }}
-            onChange={() => handleTableChange}
+            onChange={handleTableChange}
             className='overflow-x-auto'
           />
 
@@ -159,7 +221,14 @@ export function AboutInfoBlocks(): React.ReactElement {
               onClose={onClose}
             />
           )}
-        </div>
+          {drawerType === 'edit' && selectedBlock && (
+            <EditInfoBlock
+              open={!!drawerType}
+              onClose={onClose}
+              block={selectedBlock}
+            />
+          )}
+        </RenderIf>
       </RenderIf>
     </>
   )
