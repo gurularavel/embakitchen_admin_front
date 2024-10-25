@@ -12,7 +12,9 @@ import {
   theme,
 } from 'antd'
 import { useEditInfoBlockMutation } from '~ek/redux/api/about'
-import { InfoBlock } from '~ek/types/about'
+import type { InfoBlock } from '~ek/types/about'
+import { notifier } from '~ek/shared/helpers'
+import { NOTIFICATION } from '~ek/shared/const/constants'
 
 interface IDrawerProps {
   open: boolean
@@ -73,11 +75,9 @@ export function EditInfoBlock({
     data: IFieldForm,
   ) => {
     try {
-      const postData = {
-        id: block.id,
-        data: data,
-      }
+      const postData = { id: block.id, ...data }
       await editBlock(postData)
+      notifier('Dəyişiklik uğurla icra edilir', NOTIFICATION.success)
       onClose()
     } catch (e: unknown) {
       console.error(e)

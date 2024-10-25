@@ -9,10 +9,10 @@ import {
   Upload,
   UploadFile,
   message,
-  notification,
 } from 'antd'
 import { Loading, RenderIf, ErrorMessage } from '~ek/shared/components'
-import { confirmModal } from '~ek/shared/helpers'
+import { NOTIFICATION } from '~ek/shared/const/constants'
+import { confirmModal, notifier } from '~ek/shared/helpers'
 import {
   useGetAboutQuery,
   usePostOrCreateAboutMutation,
@@ -132,10 +132,10 @@ export function AboutContent(): React.ReactElement {
   const onFinish: FormProps<IFieldForm>['onFinish'] = async (
     values: IFieldForm,
   ) => {
-    if (video.file?.size === 0 || !video.fileList.length) {
-      message.error('Please select video first!')
-      return
-    }
+    // if (video.file?.size === 0 || !video.fileList.length) {
+    //   message.error('Please select video first!')
+    //   return
+    // }
 
     if (image.file?.size === 0 || !image.fileList.length) {
       message.error('Please select image first!')
@@ -155,11 +155,7 @@ export function AboutContent(): React.ReactElement {
 
     try {
       await postAbout(formData).unwrap()
-      notification.success({
-        message: 'Dəyişiklik uğurla icra edildi',
-        placement: 'topRight',
-        duration: 2,
-      })
+      notifier('Dəyişiklik uğurla icra edildi.', NOTIFICATION.success)
     } catch (error) {
       console.error(error)
     }
@@ -276,17 +272,17 @@ export function AboutContent(): React.ReactElement {
             name='video'
             label='Upload Video'
             valuePropName='video'
-            rules={[
-              {
-                required: true,
-                validator: () =>
-                  video.fileList.length > 0
-                    ? Promise.resolve()
-                    : Promise.reject(
-                      new Error('Zəhmət olmasa video fayl yükləyin!'),
-                    ),
-              },
-            ]}
+            // rules={[
+            //   {
+            //     required: true,
+            //     validator: () =>
+            //       video.fileList.length > 0
+            //         ? Promise.resolve()
+            //         : Promise.reject(
+            //           new Error('Zəhmət olmasa video fayl yükləyin!'),
+            //         ),
+            //   },
+            // ]}
           >
             <Upload
               name='video'

@@ -9,14 +9,21 @@ import {
 } from 'antd'
 import { AddBlockDrawer } from '~ek/pages/about/add-info-block'
 import { EditInfoBlock } from '~ek/pages/about/edit-info-block'
-import { Loading, RenderIf, ErrorMessage } from '~ek/shared/components'
-import { confirmModal } from '~ek/shared/helpers'
+import { Loading, RenderIf, ErrorMessage, NoData } from '~ek/shared/components'
+import { NOTIFICATION } from '~ek/shared/const/constants'
+import { confirmModal, notifier } from '~ek/shared/helpers'
 import {
   useDeleteInfoBlocksMutation,
+  useEditInfoBlockMutation,
   useGetInfoBlocksQuery,
 } from '~ek/redux/api/about'
-import { InfoBlock } from '~ek/types/about'
-import { FormOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons'
+import type { InfoBlock } from '~ek/types/about'
+import {
+  FormOutlined,
+  PlusOutlined,
+  DeleteOutlined,
+  PoweroffOutlined,
+} from '@ant-design/icons'
 
 export function AboutInfoBlocks(): React.ReactElement {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([])
@@ -37,6 +44,8 @@ export function AboutInfoBlocks(): React.ReactElement {
   })
 
   const [deleteBlocks] = useDeleteInfoBlocksMutation()
+  const [changeBlockStatus, { isLoading: changeStatusLoading }] =
+    useEditInfoBlockMutation()
 
   const handleTableChange = (pagination: TablePaginationConfig): void => {
     setPageParams(prev => ({
@@ -80,6 +89,18 @@ export function AboutInfoBlocks(): React.ReactElement {
     }
   }
 
+  const handleBlockStatus = async (block: InfoBlock) => {
+    try {
+      await changeBlockStatus({ id: block.id, status: !block.status })
+      notifier('Dəyişiklik uğurla icra edildi', NOTIFICATION.success)
+      onClose()
+    } catch (e: unknown) {
+      const errorMessage =
+        e instanceof Error ? e.message : 'An unexpected error occurred'
+      notifier(errorMessage, NOTIFICATION.error)
+    }
+  }
+
   const columns = [
     {
       title: 'Info Blok',
@@ -95,12 +116,20 @@ export function AboutInfoBlocks(): React.ReactElement {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      render: (_: string, block: InfoBlock) =>
-        block.status ? (
-          <span className={'text-teal-500'}>Active</span>
-        ) : (
-          <span className={'text-red-500'}>Deactive</span>
-        ),
+      render: (_: string, block: InfoBlock) => (
+        <Button
+          type='default'
+          className={
+            block.status
+              ? 'border-green-600 text-green-600 hover:!border-green-600 hover:!text-green-600'
+              : 'border-red-500 text-red-500 hover:!border-red-500 hover:!text-red-500'
+          }
+          icon={<PoweroffOutlined />}
+          size={'middle'}
+          disabled={changeStatusLoading}
+          onClick={() => handleBlockStatus(block)}
+        />
+      ),
     },
     {
       title: 'Actions',
@@ -166,6 +195,9 @@ export function AboutInfoBlocks(): React.ReactElement {
             </Button>
           </ConfigProvider>
         </div>
+        <RenderIf condition={!data?.data?.length}>
+          <NoData />
+        </RenderIf>
         <RenderIf condition={data?.data?.length}>
           <Table
             dataSource={data?.data.map((block: InfoBlock) => ({
