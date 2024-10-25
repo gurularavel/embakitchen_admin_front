@@ -26,11 +26,9 @@ export interface IPostBlock {
 
 export interface IPutBlock {
   id: number
-  data: {
-    title: ILangContent
-    content: ILangContent
-    status: boolean
-  }
+  title?: ILangContent
+  content?: ILangContent
+  status?: boolean
 }
 
 export interface IParams {
