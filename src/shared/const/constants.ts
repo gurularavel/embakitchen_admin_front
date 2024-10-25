@@ -6,6 +6,7 @@ export const enum URLS {
   MENU = '/menu',
   ABOUT_CONTENT = '/about/content',
   ABOUT_INFO_BLOCKS = '/about/info_blocks',
+  COMPAIGN = '/compaigns',
 }
 
 export const enum NOTIFICATION {
@@ -18,4 +19,9 @@ export const enum NOTIFICATION {
 export const enum USER_ROLE {
   ADMIN = 'admin',
   USER = 'user',
+}
+
+export const enum DATE_FORMAT {
+  VIEW = 'DD.MM.YY HH:mm',
+  SEND = 'YYYY-MM-DDTHH:mm:ss[Z]',
 }

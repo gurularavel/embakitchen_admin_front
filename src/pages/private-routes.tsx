@@ -4,6 +4,8 @@ import { Menu } from '~ek/pages/menu'
 import { AboutContent, AboutInfoBlocks } from '~ek/pages/about'
 import { Counter, Partners, Sliders } from '~ek/pages/home'
 import { NotFound } from '~ek/pages/not-found'
+import { Campaigns } from '~ek/pages/campaigns'
+
 import { URLS } from '~ek/shared/const/constants'
 
 export function PrivateRoutes(): React.ReactElement {
@@ -39,8 +41,11 @@ export function PrivateRoutes(): React.ReactElement {
             path={URLS.ABOUT_INFO_BLOCKS}
             element={<AboutInfoBlocks />}
           />
+          <Route
+            path={URLS.COMPAIGN}
+            element={<Campaigns />}
+          />
         </Route>
-
         <Route
           path='*'
           element={<NotFound />}
