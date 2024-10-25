@@ -11,6 +11,8 @@ import {
   ProfileOutlined,
   ProjectOutlined,
   GoldOutlined,
+  BgColorsOutlined,
+  FundOutlined,
 } from '@ant-design/icons'
 import logo from '~ek/assets/images/132x20.67.svg'
 const { Sider } = Layout
@@ -83,7 +85,13 @@ const items: IMenu[] = [
     key: URLS.COMPAIGN,
     path: URLS.COMPAIGN,
     label: <Link to={URLS.COMPAIGN}>Kampaniyalar</Link>,
-    icon: <BlockOutlined className={'!text-lg'} />,
+    icon: <FundOutlined className={'!text-lg'} />,
+  },
+  {
+    key: URLS.COLOR,
+    path: URLS.COLOR,
+    label: <Link to={URLS.COLOR}>Rənglər</Link>,
+    icon: <BgColorsOutlined className={'!text-lg'} />,
   },
 ]
 
