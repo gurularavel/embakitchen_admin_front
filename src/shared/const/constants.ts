@@ -7,6 +7,7 @@ export const enum URLS {
   ABOUT_CONTENT = '/about/content',
   ABOUT_INFO_BLOCKS = '/about/info_blocks',
   COMPAIGN = '/compaigns',
+  COLOR = '/colors',
 }
 
 export const enum NOTIFICATION {
