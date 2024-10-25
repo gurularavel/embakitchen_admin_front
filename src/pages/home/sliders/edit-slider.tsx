@@ -144,6 +144,7 @@ export function EditSlider({
 
     try {
       await editSlider({ id: slider.id, formData })
+      notifier('Dəyişiklik uğurla icra edildi', 'success')
       onClose()
     } catch (e: unknown) {
       const errorMessage =
