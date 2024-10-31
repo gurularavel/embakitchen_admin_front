@@ -214,7 +214,6 @@ export function AboutInfoBlocks(): React.ReactElement {
             onChange={handleTableChange}
             className='overflow-x-auto'
           />
-
           {drawerType === 'add' && (
             <AddBlockDrawer
               open={!!drawerType}

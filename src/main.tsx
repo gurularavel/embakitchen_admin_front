@@ -6,6 +6,7 @@ import { PersistGate } from 'redux-persist/integration/react'
 import { store, persistor } from '~ek/redux/store'
 import { App } from '~ek/App'
 import '~ek/index.css'
+import '~ek/assets/css/ckeditor.css'
 
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
