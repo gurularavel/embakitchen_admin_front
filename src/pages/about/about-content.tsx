@@ -132,11 +132,6 @@ export function AboutContent(): React.ReactElement {
   const onFinish: FormProps<IFieldForm>['onFinish'] = async (
     values: IFieldForm,
   ) => {
-    // if (video.file?.size === 0 || !video.fileList.length) {
-    //   message.error('Please select video first!')
-    //   return
-    // }
-
     if (image.file?.size === 0 || !image.fileList.length) {
       message.error('Please select image first!')
       return
@@ -272,17 +267,6 @@ export function AboutContent(): React.ReactElement {
             name='video'
             label='Upload Video'
             valuePropName='video'
-            // rules={[
-            //   {
-            //     required: true,
-            //     validator: () =>
-            //       video.fileList.length > 0
-            //         ? Promise.resolve()
-            //         : Promise.reject(
-            //           new Error('Zəhmət olmasa video fayl yükləyin!'),
-            //         ),
-            //   },
-            // ]}
           >
             <Upload
               name='video'
