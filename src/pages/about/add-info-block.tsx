@@ -22,7 +22,6 @@ interface IFieldForm {
   title: ILangContent
   content: ILangContent
 }
-
 export function AddBlockDrawer({
   open,
   onClose,
