@@ -17,7 +17,7 @@ import {
 import { NOTIFICATION } from '~ek/shared/const/constants'
 import { ISlider } from '~ek/types/home/slider'
 import { UploadOutlined } from '@ant-design/icons'
-import { confirmModal, notifier } from '~ek/shared/helpers'
+import { confirmModal, handleFileData, notifier } from '~ek/shared/helpers'
 import { useFileRemoveMutation } from '~ek/redux/api/fileRemove'
 import { useEditSliderMutation } from '~ek/redux/api/home/slider'
 
@@ -60,25 +60,7 @@ export function EditSlider({
   }
 
   React.useEffect(() => {
-    if (slider?.image && typeof slider.image === 'object') {
-      const imageKeys = Object.keys(slider.image)
-      if (imageKeys.length > 0) {
-        const firstImageKey = imageKeys[0]
-        const imageData = slider.image[firstImageKey]
-
-        setImage({
-          file: null,
-          fileList: [
-            {
-              uid: imageData.uuid,
-              name: imageData.file_name,
-              status: 'done',
-              url: imageData.original_url,
-            },
-          ],
-        })
-      }
-    }
+    handleFileData(slider.image, setImage)
   }, [slider])
 
   const initialValues = {

@@ -15,7 +15,7 @@ import {
   UploadFile,
 } from 'antd'
 import { NOTIFICATION } from '~ek/shared/const/constants'
-import { confirmModal, notifier } from '~ek/shared/helpers'
+import { confirmModal, handleFileData, notifier } from '~ek/shared/helpers'
 import { IPartner } from '~ek/types/home/partners'
 import { UploadOutlined } from '@ant-design/icons'
 import { useEditPartnerMutation } from '~ek/redux/api/home/partner'
@@ -59,25 +59,7 @@ export function EditPartner({
   }
 
   React.useEffect(() => {
-    if (partner?.image && typeof partner.image === 'object') {
-      const imageKeys = Object.keys(partner.image)
-      if (imageKeys.length > 0) {
-        const firstImageKey = imageKeys[0]
-        const imageData = partner.image[firstImageKey]
-
-        setImage({
-          file: null,
-          fileList: [
-            {
-              uid: imageData.uuid,
-              name: imageData.file_name,
-              status: 'done',
-              url: imageData.original_url,
-            },
-          ],
-        })
-      }
-    }
+    handleFileData(partner.image, setImage)
   }, [partner])
 
   const initialValues: IPartner = {

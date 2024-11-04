@@ -16,7 +16,12 @@ import {
   Upload,
 } from 'antd'
 import { Loading, RenderIf } from '~ek/shared/components'
-import { confirmModal, formatDate, notifier } from '~ek/shared/helpers'
+import {
+  confirmModal,
+  formatDate,
+  handleFileData,
+  notifier,
+} from '~ek/shared/helpers'
 import { NOTIFICATION, DATE_FORMAT } from '~ek/shared/const/constants'
 import type { ICampaign, IFormCampaign } from '~ek/types/campaigns'
 import type { GetProps, UploadFile } from 'antd'
@@ -66,25 +71,7 @@ export function EditCampaign({
   }
 
   React.useEffect(() => {
-    if (campaign?.image && typeof campaign.image === 'object') {
-      const imageKeys = Object.keys(campaign.image)
-      if (imageKeys.length > 0) {
-        const firstImageKey = imageKeys[0]
-        const imageData = campaign.image[firstImageKey]
-
-        setImage({
-          file: null,
-          fileList: [
-            {
-              uid: imageData.uuid,
-              name: imageData.file_name,
-              status: 'done',
-              url: imageData.original_url,
-            },
-          ],
-        })
-      }
-    }
+    handleFileData(campaign.image, setImage)
   }, [campaign])
 
   const initialValues = {

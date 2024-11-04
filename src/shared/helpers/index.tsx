@@ -44,3 +44,22 @@ export const formatDate = (
   dateFormat: string,
   format: string,
 ) => dayjs(date, dateFormat).format(format)
+
+export const handleFileData = (
+  fileData: IFileProperties[],
+  setState: React.Dispatch<React.SetStateAction<IFile>>,
+) => {
+  if (fileData && fileData.length > 0) {
+    const fileList = fileData.map(file => ({
+      uid: file.uuid,
+      name: file.file_name,
+      status: 'done',
+      url: file.original_url,
+    }))
+
+    setState({
+      file: null,
+      fileList: fileList,
+    })
+  }
+}

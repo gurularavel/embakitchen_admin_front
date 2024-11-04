@@ -12,7 +12,7 @@ import {
 } from 'antd'
 import { Loading, RenderIf, ErrorMessage } from '~ek/shared/components'
 import { NOTIFICATION } from '~ek/shared/const/constants'
-import { confirmModal, notifier } from '~ek/shared/helpers'
+import { confirmModal, handleFileData, notifier } from '~ek/shared/helpers'
 import {
   useGetAboutQuery,
   usePostOrCreateAboutMutation,
@@ -56,45 +56,8 @@ export function AboutContent(): React.ReactElement {
     : {}
 
   React.useEffect(() => {
-    if (data?.image && typeof data.image === 'object') {
-      const imageKeys = Object.keys(data.image)
-      if (imageKeys.length > 0) {
-        const firstImageKey = imageKeys[0]
-        const imageData = data.image[firstImageKey]
-
-        setImage({
-          file: null,
-          fileList: [
-            {
-              uid: imageData.uuid,
-              name: imageData.file_name,
-              status: 'done',
-              url: imageData.original_url,
-            },
-          ],
-        })
-      }
-    }
-
-    if (data?.video && typeof data.video === 'object') {
-      const videoKeys = Object.keys(data.video)
-      if (videoKeys.length > 0) {
-        const firstVideoKey = videoKeys[0]
-        const videoData = data.video[firstVideoKey]
-
-        setVideo({
-          file: null,
-          fileList: [
-            {
-              uid: videoData.uuid,
-              name: videoData.file_name,
-              status: 'done',
-              url: videoData.original_url,
-            },
-          ],
-        })
-      }
-    }
+    handleFileData(data?.image as IFileProperties[], setImage)
+    handleFileData(data?.video as IFileProperties[], setVideo)
   }, [data])
 
   const beforeUpload = (file: File, type: string) => {

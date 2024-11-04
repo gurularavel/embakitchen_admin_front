@@ -14,7 +14,7 @@ import {
   UploadFile,
 } from 'antd'
 import { Loading, RenderIf } from '~ek/shared/components'
-import { confirmModal, notifier } from '~ek/shared/helpers'
+import { confirmModal, handleFileData, notifier } from '~ek/shared/helpers'
 import { NOTIFICATION } from '~ek/shared/const/constants'
 import { RichTextEditor } from '~ek/shared/components/richtext'
 import type { IBlog, IFormBlog } from '~ek/types/blog'
@@ -64,20 +64,7 @@ export function EditBlog({
   })
 
   React.useEffect(() => {
-    if (blog?.image && blog.image.length > 0) {
-      const imageData = blog.image[0]
-      setBannerImage({
-        file: null,
-        fileList: [
-          {
-            uid: imageData.uuid,
-            name: imageData.file_name,
-            status: 'done',
-            url: imageData.original_url,
-          },
-        ],
-      })
-    }
+    handleFileData(blog.image, setBannerImage)
   }, [blog])
 
   const initialValues = {
