@@ -1,19 +1,10 @@
-import {
-  Button,
-  Col,
-  Drawer,
-  Form,
-  FormProps,
-  Input,
-  Row,
-  Space,
-  theme,
-} from 'antd'
+import { Button, Col, Drawer, Form, FormProps, Input, Row, Space } from 'antd'
 import { Loading, RenderIf } from '~ek/shared/components'
 import { NOTIFICATION } from '~ek/shared/const/constants'
 import { notifier } from '~ek/shared/helpers'
 import type { IPostColor } from '~ek/types/colors'
 import { usePostColorMutation } from '~ek/redux/api/colors'
+import { useFormStyle } from '~ek/shared/utilities/formStyles'
 
 interface IDrawerProps {
   open: boolean
@@ -21,22 +12,24 @@ interface IDrawerProps {
 }
 
 export function AddColor({ open, onClose }: IDrawerProps): React.ReactElement {
-  const { token } = theme.useToken()
   const [addColor, { isLoading }] = usePostColorMutation()
   const [form] = Form.useForm()
+  const formStyle = useFormStyle()
 
-  const formStyle: React.CSSProperties = {
-    maxWidth: 'none',
-    background: token.colorFillAlter,
-    borderRadius: token.borderRadiusLG,
-    padding: 24,
+  const initialValues = {
+    title: {
+      az: '',
+      en: '',
+      ru: '',
+    },
+    hex: '',
   }
 
   const handleSubmit: FormProps<IPostColor>['onFinish'] = async (
     data: IPostColor,
   ) => {
     try {
-      await addColor(data)
+      await addColor(data).unwrap()
       notifier('Yeni rəng əlavə edildi', NOTIFICATION.success)
       onClose()
     } catch (e: unknown) {
@@ -72,6 +65,7 @@ export function AddColor({ open, onClose }: IDrawerProps): React.ReactElement {
       <Form
         layout='vertical'
         form={form}
+        initialValues={initialValues}
         onFinish={handleSubmit}
         style={formStyle}
       >

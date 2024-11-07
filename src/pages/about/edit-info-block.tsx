@@ -9,12 +9,12 @@ import {
   Row,
   Space,
   Switch,
-  theme,
 } from 'antd'
 import { useEditInfoBlockMutation } from '~ek/redux/api/about'
 import type { InfoBlock } from '~ek/types/about'
 import { notifier } from '~ek/shared/helpers'
 import { NOTIFICATION } from '~ek/shared/const/constants'
+import { useFormStyle } from '~ek/shared/utilities/formStyles'
 
 interface IDrawerProps {
   open: boolean
@@ -33,20 +33,13 @@ export function EditInfoBlock({
   onClose,
   block,
 }: IDrawerProps): React.ReactElement {
-  const { token } = theme.useToken()
   const [form] = Form.useForm()
+  const formStyle = useFormStyle()
   const [switchChecked, setSwitchChecked] = React.useState<boolean>(
     block.status,
   )
-
   const [editBlock, { isLoading }] = useEditInfoBlockMutation()
 
-  const formStyle: React.CSSProperties = {
-    maxWidth: 'none',
-    background: token.colorFillAlter,
-    borderRadius: token.borderRadiusLG,
-    padding: 24,
-  }
   const initialValues: InfoBlock = {
     content: {
       az: block.content.az,
@@ -66,6 +59,7 @@ export function EditInfoBlock({
       ru: block.slug.ru,
     },
   }
+
   const handleSwitchChange = (checked: boolean) => {
     setSwitchChecked(checked)
     form.setFieldsValue({ status: checked })
@@ -76,7 +70,7 @@ export function EditInfoBlock({
   ) => {
     try {
       const postData = { id: block.id, ...data }
-      await editBlock(postData)
+      await editBlock(postData).unwrap()
       notifier('Dəyişiklik uğurla icra edilir', NOTIFICATION.success)
       onClose()
     } catch (e: unknown) {

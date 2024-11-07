@@ -8,13 +8,13 @@ import {
   InputNumber,
   Row,
   Space,
-  theme,
 } from 'antd'
 import { Loading, RenderIf } from '~ek/shared/components'
 import { NOTIFICATION } from '~ek/shared/const/constants'
 import { notifier } from '~ek/shared/helpers'
 import { IPostCounter } from '~ek/types/home/counter'
 import { usePostCounterMutation } from '~ek/redux/api/home/counter'
+import { useFormStyle } from '~ek/shared/utilities/formStyles'
 
 interface IDrawerProps {
   open: boolean
@@ -25,22 +25,24 @@ export function AddCounterDrawer({
   open,
   onClose,
 }: IDrawerProps): React.ReactElement {
-  const { token } = theme.useToken()
   const [addCounter, { isLoading }] = usePostCounterMutation()
   const [form] = Form.useForm()
+  const formStyle = useFormStyle()
 
-  const formStyle: React.CSSProperties = {
-    maxWidth: 'none',
-    background: token.colorFillAlter,
-    borderRadius: token.borderRadiusLG,
-    padding: 24,
+  const initialValues = {
+    title: {
+      az: '',
+      en: '',
+      ru: '',
+    },
+    count: '',
   }
 
   const handleSubmit: FormProps<IPostCounter>['onFinish'] = async (
     data: IPostCounter,
   ) => {
     try {
-      await addCounter(data)
+      await addCounter(data).unwrap()
       notifier('Yeni sayğac əlavə edildi', NOTIFICATION.success)
       onClose()
     } catch (e: unknown) {
@@ -76,6 +78,7 @@ export function AddCounterDrawer({
       <Form
         layout='vertical'
         form={form}
+        initialValues={initialValues}
         onFinish={handleSubmit}
         style={formStyle}
       >
@@ -94,6 +97,7 @@ export function AddCounterDrawer({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(az)',
                 },
               ]}
@@ -112,6 +116,7 @@ export function AddCounterDrawer({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(en)',
                 },
               ]}
@@ -130,6 +135,7 @@ export function AddCounterDrawer({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(ru)',
                 },
               ]}
@@ -150,6 +156,7 @@ export function AddCounterDrawer({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa rəqəm daxil edin',
                 },
               ]}

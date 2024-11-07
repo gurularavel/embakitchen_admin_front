@@ -8,26 +8,27 @@ import {
   Form,
   FormProps,
   Input,
-  message,
   Row,
   Space,
   Switch,
-  theme,
   Upload,
 } from 'antd'
 import { Loading, RenderIf } from '~ek/shared/components'
 import {
-  confirmModal,
+  beforeUploadHandler,
+  createFormData,
   formatDate,
   handleFileData,
+  handleRemoveFile,
   notifier,
 } from '~ek/shared/helpers'
 import { NOTIFICATION, DATE_FORMAT } from '~ek/shared/const/constants'
 import type { ICampaign, IFormCampaign } from '~ek/types/campaigns'
-import type { GetProps, UploadFile } from 'antd'
+import type { GetProps } from 'antd'
 import { UploadOutlined } from '@ant-design/icons'
 import { useEditCampaignMutation } from '~ek/redux/api/campaign'
 import { useFileRemoveMutation } from '~ek/redux/api/fileRemove'
+import { useFormStyle } from '~ek/shared/utilities/formStyles'
 
 interface IDrawerProps {
   open: boolean
@@ -41,16 +42,15 @@ export function EditCampaign({
   onClose,
   campaign,
 }: IDrawerProps): React.ReactElement {
-  const { token } = theme.useToken()
   const { RangePicker } = DatePicker
   const { TextArea } = Input
   const [form] = Form.useForm()
-
+  const formStyle = useFormStyle()
   const [switchChecked, setSwitchChecked] = React.useState<boolean>(
     campaign.status,
   )
   const [image, setImage] = React.useState<IFile>({
-    file: null,
+    file: [],
     fileList: [],
   })
   const [dateRange, setDateRange] = React.useState<{
@@ -62,13 +62,6 @@ export function EditCampaign({
   })
   const [editCampaign, { isLoading }] = useEditCampaignMutation()
   const [deleteFile] = useFileRemoveMutation()
-
-  const formStyle: React.CSSProperties = {
-    maxWidth: 'none',
-    background: token.colorFillAlter,
-    borderRadius: token.borderRadiusLG,
-    padding: 24,
-  }
 
   React.useEffect(() => {
     handleFileData(campaign.image, setImage)
@@ -107,36 +100,9 @@ export function EditCampaign({
     }
   }
 
-  const handleRemoveFile = async (file: UploadFile) => {
-    confirmModal({
-      title: 'Bu faylı silmək istədiyinizdən əminsiniz?',
-      onOk: async () => {
-        await deleteFile({
-          mediaIDS: [file.uid],
-        })
-        setImage({ file: null, fileList: [] })
-      },
-      onCancel: () => {},
-    })
-  }
-
-  const beforeUpload = (file: File, type: string) => {
-    if (type === 'image') {
-      setImage({
-        file,
-        fileList: [{ uid: file.name, name: file.name, status: 'done' }],
-      })
-    }
-    return false
-  }
-
   const onFinish: FormProps<IFormCampaign>['onFinish'] = async (
     values: IFormCampaign,
   ) => {
-    if (image.file?.size === 0 || !image.fileList.length) {
-      message.error('Please select image first!')
-      return
-    }
     const formatStartDate =
       dateRange.startDate &&
       formatDate(dateRange.startDate, DATE_FORMAT.VIEW, DATE_FORMAT.SEND)
@@ -144,22 +110,19 @@ export function EditCampaign({
       dateRange.endDate &&
       formatDate(dateRange.endDate, DATE_FORMAT.VIEW, DATE_FORMAT.SEND)
 
-    const formData = new FormData()
-    formData.append('title[az]', values.title.az)
-    formData.append('title[en]', values.title.en)
-    formData.append('title[ru]', values.title.ru)
-    formData.append('content[az]', values.content.az)
-    formData.append('content[en]', values.content.en)
-    formData.append('content[ru]', values.content.ru)
-    formData.append('startDate', formatStartDate)
-    formData.append('endDate', formatEndDate)
-    formData.append('status', switchChecked ? '1' : '0')
-    formData.append('_method', 'PUT')
-    if (image.file) formData.append('image', image.file)
+    const formValues = {
+      ...values,
+      startDate: formatStartDate,
+      endDate: formatEndDate,
+      status: switchChecked ? '1' : '0',
+      _method: 'PUT',
+      image: image.file,
+    }
+    const formData = createFormData(formValues)
 
     try {
       await editCampaign({ id: campaign.id, formData }).unwrap()
-      notifier('Dəyişiklik uğurla icra edildi', 'success')
+      notifier('Dəyişiklik uğurla icra edildi', NOTIFICATION.success)
       onClose()
     } catch (e: unknown) {
       const errorMessage =
@@ -213,6 +176,7 @@ export function EditCampaign({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(az)',
                 },
               ]}
@@ -231,6 +195,7 @@ export function EditCampaign({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(en)',
                 },
               ]}
@@ -249,6 +214,7 @@ export function EditCampaign({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(ru)',
                 },
               ]}
@@ -269,6 +235,7 @@ export function EditCampaign({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa kontent əlavə edin(az)',
                 },
               ]}
@@ -290,6 +257,7 @@ export function EditCampaign({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa kontent əlavə edin(en)',
                 },
               ]}
@@ -311,6 +279,7 @@ export function EditCampaign({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa kontent əlavə edin(ru)',
                 },
               ]}
@@ -351,9 +320,9 @@ export function EditCampaign({
                 accept='image/*'
                 maxCount={1}
                 listType='picture'
-                beforeUpload={file => beforeUpload(file, 'image')}
+                beforeUpload={file => beforeUploadHandler(file, setImage)}
                 fileList={image.fileList}
-                onRemove={file => handleRemoveFile(file)}
+                onRemove={file => handleRemoveFile(deleteFile, file, setImage)}
               >
                 <Button icon={<UploadOutlined />}>Click to upload</Button>
               </Upload>
@@ -382,6 +351,7 @@ export function EditCampaign({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa müddət seçin',
                 },
               ]}

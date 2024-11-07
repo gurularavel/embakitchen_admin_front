@@ -6,21 +6,26 @@ import {
   Form,
   FormProps,
   Input,
-  message,
   Row,
   Space,
-  theme,
   Upload,
   UploadFile,
 } from 'antd'
 import { Loading, RenderIf } from '~ek/shared/components'
-import { confirmModal, handleFileData, notifier } from '~ek/shared/helpers'
+import {
+  beforeUploadHandler,
+  createFormData,
+  handleFileData,
+  handleRemoveFile,
+  notifier,
+} from '~ek/shared/helpers'
 import { NOTIFICATION } from '~ek/shared/const/constants'
 import { RichTextEditor } from '~ek/shared/components/richtext'
 import type { IBlog, IFormBlog } from '~ek/types/blog'
 import { UploadOutlined } from '@ant-design/icons'
 import { useEditBlogMutation } from '~ek/redux/api/blog'
 import { useFileRemoveMutation } from '~ek/redux/api/fileRemove'
+import { useFormStyle } from '~ek/shared/utilities/formStyles'
 
 interface IDrawerProps {
   open: boolean
@@ -28,33 +33,24 @@ interface IDrawerProps {
   blog: IBlog
 }
 
-type IFileType = 'bannerImage' | 'contentFile'
-
 export function EditBlog({
   open,
   onClose,
   blog,
 }: IDrawerProps): React.ReactElement {
-  const { token } = theme.useToken()
   const { TextArea } = Input
-
-  const formStyle: React.CSSProperties = {
-    maxWidth: 'none',
-    background: token.colorFillAlter,
-    borderRadius: token.borderRadiusLG,
-    padding: 24,
-  }
+  const formStyle = useFormStyle()
+  const [form] = Form.useForm()
 
   const [editBlog, { isLoading }] = useEditBlogMutation()
   const [deleteFile] = useFileRemoveMutation()
 
-  const [form] = Form.useForm()
   const [bannerImage, setBannerImage] = React.useState<IFile>({
-    file: null,
+    file: [],
     fileList: [],
   })
   const [image, setImage] = React.useState<IFile>({
-    file: null,
+    file: [],
     fileList: [],
   })
   const [contentRichText, setContentRichText] = React.useState<ILangContent>({
@@ -65,6 +61,7 @@ export function EditBlog({
 
   React.useEffect(() => {
     handleFileData(blog.image, setBannerImage)
+    handleFileData(blog.image2, setImage)
   }, [blog])
 
   const initialValues = {
@@ -84,69 +81,24 @@ export function EditBlog({
       ru: blog.content2.ru,
     },
     status: blog.status,
-    id: blog.id,
-  }
-
-  const beforeUpload = (file: File, type: string) => {
-    if (type === 'bannerImage') {
-      setBannerImage({
-        file,
-        fileList: [{ uid: file.name, name: file.name, status: 'done' }],
-      })
-    }
-    if (type === 'image') {
-      setImage({
-        file,
-        fileList: [{ uid: file.name, name: file.name, status: 'done' }],
-      })
-    }
-    return false
   }
 
   const handleRichContent = (field: 'az' | 'ru' | 'en', content: string) => {
     setContentRichText(prevState => ({ ...prevState, [field]: content }))
   }
 
-  const handleRemoveFile = async (file: UploadFile, fileType: IFileType) => {
-    confirmModal({
-      title: 'Bu faylı silmək istədiyinizdən əminsiniz?',
-      onOk: async () => {
-        await deleteFile({
-          mediaIDS: [file.uid],
-        })
-        if (fileType === 'bannerImage')
-          setBannerImage({ file: null, fileList: [] })
-        if (fileType === 'contentFile') setImage({ file: null, fileList: [] })
-      },
-      onCancel: () => {},
-    })
-  }
-
   const onFinish: FormProps<IFormBlog>['onFinish'] = async (
     values: IFormBlog,
   ) => {
-    if (bannerImage.file?.size === 0 || !bannerImage.fileList.length) {
-      message.error('Please select image first!')
-      return
+    const formValues = {
+      ...values,
+      image: bannerImage.file,
+      image2: image.file,
     }
-
-    const formData = new FormData()
-    formData.append('title[az]', values.title.az)
-    formData.append('title[en]', values.title.en)
-    formData.append('title[ru]', values.title.ru)
-    formData.append('content[az]', contentRichText.az)
-    formData.append('content[en]', contentRichText.en)
-    formData.append('content[ru]', contentRichText.ru)
-    formData.append('_method', 'PUT')
-    if (values.content2.az) formData.append('content2[az]', values.content2.az)
-    if (values.content2.en) formData.append('content2[en]', values.content2.en)
-    if (values.content2.ru) formData.append('content2[ru]', values.content2.ru)
-    if (bannerImage.file) formData.append('image', bannerImage.file)
-    if (image.file) formData.append('image2', image.file)
-
+    const formData = createFormData(formValues)
     try {
       await editBlog({ id: blog.id, formData }).unwrap()
-      notifier('Dəyişiklik uğurla icra edildi', 'success')
+      notifier('Dəyişiklik uğurla icra edildi', NOTIFICATION.success)
       onClose()
     } catch (e: IError | unknown) {
       const error = e as IError
@@ -195,6 +147,7 @@ export function EditBlog({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(az)',
                 },
               ]}
@@ -213,6 +166,7 @@ export function EditBlog({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(en)',
                 },
               ]}
@@ -231,6 +185,7 @@ export function EditBlog({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(ru)',
                 },
               ]}
@@ -380,9 +335,11 @@ export function EditBlog({
                 accept='image/*'
                 maxCount={1}
                 listType='picture'
-                beforeUpload={file => beforeUpload(file, 'bannerImage')}
+                beforeUpload={file => beforeUploadHandler(file, setBannerImage)}
                 fileList={bannerImage.fileList}
-                onRemove={file => handleRemoveFile(file, 'bannerImage')}
+                onRemove={(file: UploadFile) =>
+                  handleRemoveFile(deleteFile, file, setBannerImage)
+                }
               >
                 <Button icon={<UploadOutlined />}>Click to upload</Button>
               </Upload>
@@ -405,9 +362,11 @@ export function EditBlog({
                 accept='image/*'
                 maxCount={1}
                 listType='picture'
-                beforeUpload={file => beforeUpload(file, 'image')}
+                beforeUpload={file => beforeUploadHandler(file, setImage)}
                 fileList={image.fileList}
-                onRemove={file => handleRemoveFile(file, 'contentFile')}
+                onRemove={(file: UploadFile) =>
+                  handleRemoveFile(deleteFile, file, setImage)
+                }
               >
                 <Button icon={<UploadOutlined />}>Click to upload</Button>
               </Upload>

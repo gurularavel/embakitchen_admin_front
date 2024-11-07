@@ -1,18 +1,15 @@
 import * as React from 'react'
 import { UploadOutlined } from '@ant-design/icons'
-import {
-  Button,
-  Form,
-  FormProps,
-  Input,
-  Space,
-  Upload,
-  UploadFile,
-  message,
-} from 'antd'
+import { Button, Form, FormProps, Input, Space, Upload } from 'antd'
 import { Loading, RenderIf, ErrorMessage } from '~ek/shared/components'
 import { NOTIFICATION } from '~ek/shared/const/constants'
-import { confirmModal, handleFileData, notifier } from '~ek/shared/helpers'
+import {
+  beforeUploadHandler,
+  createFormData,
+  handleFileData,
+  handleRemoveFile,
+  notifier,
+} from '~ek/shared/helpers'
 import {
   useGetAboutQuery,
   usePostOrCreateAboutMutation,
@@ -28,11 +25,11 @@ interface IFieldForm {
 
 export function AboutContent(): React.ReactElement {
   const [image, setImage] = React.useState<IFile>({
-    file: null,
+    file: [],
     fileList: [],
   })
   const [video, setVideo] = React.useState<IFile>({
-    file: null,
+    file: [],
     fileList: [],
   })
 
@@ -60,56 +57,15 @@ export function AboutContent(): React.ReactElement {
     handleFileData(data?.video as IFileProperties[], setVideo)
   }, [data])
 
-  const beforeUpload = (file: File, type: string) => {
-    if (type === 'image') {
-      setImage({
-        file,
-        fileList: [{ uid: file.name, name: file.name, status: 'done' }],
-      })
-    } else {
-      setVideo({
-        file,
-        fileList: [{ uid: file.name, name: file.name, status: 'done' }],
-      })
-    }
-    return false
-  }
-
-  const handleRemoveFile = async (file: UploadFile, type: string) => {
-    confirmModal({
-      title: 'Bu faylı silmək istədiyinizdən əminsiniz?',
-      onOk: async () => {
-        await deleteFile({
-          mediaIDS: [file.uid],
-        })
-        if (type === 'video') {
-          setVideo({ file: null, fileList: [] })
-        } else if (type === 'image') {
-          setImage({ file: null, fileList: [] })
-        }
-      },
-      onCancel: () => {},
-    })
-  }
-
   const onFinish: FormProps<IFieldForm>['onFinish'] = async (
     values: IFieldForm,
   ) => {
-    if (image.file?.size === 0 || !image.fileList.length) {
-      message.error('Please select image first!')
-      return
+    const formValues = {
+      ...values,
+      image: image.file,
+      video: video.file,
     }
-
-    const formData = new FormData()
-    formData.append('title[az]', values.title.az)
-    formData.append('title[en]', values.title.en)
-    formData.append('title[ru]', values.title.ru)
-
-    formData.append('content[az]', values.content.az)
-    formData.append('content[en]', values.content.en)
-    formData.append('content[ru]', values.content.ru)
-    if (video.file) formData.append('video', video.file)
-    if (image.file) formData.append('image', image.file)
+    const formData = createFormData(formValues)
 
     try {
       await postAbout(formData).unwrap()
@@ -161,9 +117,9 @@ export function AboutContent(): React.ReactElement {
               accept='image/*'
               maxCount={1}
               listType='picture'
-              beforeUpload={file => beforeUpload(file, 'image')}
+              beforeUpload={file => beforeUploadHandler(file, setImage)}
               fileList={image.fileList}
-              onRemove={file => handleRemoveFile(file, 'image')}
+              onRemove={file => handleRemoveFile(deleteFile, file, setImage)}
             >
               <Button icon={<UploadOutlined />}>Click to upload</Button>
             </Upload>
@@ -181,7 +137,11 @@ export function AboutContent(): React.ReactElement {
             label='Başlıq(en)'
             name={['title', 'en']}
             rules={[
-              { required: true, message: 'Zəhmət olmasa boş saxlamayın' },
+              {
+                required: true,
+                message: 'Zəhmət olmasa boş saxlamayın',
+                whitespace: true,
+              },
             ]}
           >
             <Input />
@@ -190,7 +150,11 @@ export function AboutContent(): React.ReactElement {
             label='Başlıq(ru)'
             name={['title', 'ru']}
             rules={[
-              { required: true, message: 'Zəhmət olmasa boş saxlamayın' },
+              {
+                required: true,
+                message: 'Zəhmət olmasa boş saxlamayın',
+                whitespace: true,
+              },
             ]}
           >
             <Input />
@@ -200,7 +164,11 @@ export function AboutContent(): React.ReactElement {
             name={['content', 'az']}
             label='Kontent(az)'
             rules={[
-              { required: true, message: 'Zəhmət olmasa boş saxlamayın' },
+              {
+                required: true,
+                message: 'Zəhmət olmasa boş saxlamayın',
+                whitespace: true,
+              },
             ]}
           >
             <Input.TextArea />
@@ -210,7 +178,11 @@ export function AboutContent(): React.ReactElement {
             name={['content', 'en']}
             label='Kontent(en)'
             rules={[
-              { required: true, message: 'Zəhmət olmasa boş saxlamayın' },
+              {
+                required: true,
+                message: 'Zəhmət olmasa boş saxlamayın',
+                whitespace: true,
+              },
             ]}
           >
             <Input.TextArea />
@@ -220,7 +192,11 @@ export function AboutContent(): React.ReactElement {
             name={['content', 'ru']}
             label='Kontent(ru)'
             rules={[
-              { required: true, message: 'Zəhmət olmasa boş saxlamayın' },
+              {
+                required: true,
+                message: 'Zəhmət olmasa boş saxlamayın',
+                whitespace: true,
+              },
             ]}
           >
             <Input.TextArea />
@@ -236,9 +212,9 @@ export function AboutContent(): React.ReactElement {
               accept='video/*'
               maxCount={1}
               listType='picture'
-              beforeUpload={file => beforeUpload(file, 'video')}
+              beforeUpload={file => beforeUploadHandler(file, setVideo)}
               fileList={video.fileList}
-              onRemove={file => handleRemoveFile(file, 'video')}
+              onRemove={file => handleRemoveFile(deleteFile, file, setVideo)}
             >
               <Button icon={<UploadOutlined />}>Click to upload</Button>
             </Upload>

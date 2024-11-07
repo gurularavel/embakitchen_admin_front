@@ -89,7 +89,7 @@ export function AboutInfoBlocks(): React.ReactElement {
       key: 'title',
       render: (_: string, block: InfoBlock, i: number) => (
         <h2>
-          {i + 1}. {block.title['az']}
+          {i}. {block.title['az']}
         </h2>
       ),
     },

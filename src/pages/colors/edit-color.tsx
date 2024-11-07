@@ -9,12 +9,12 @@ import {
   Row,
   Space,
   Switch,
-  theme,
 } from 'antd'
 import { notifier } from '~ek/shared/helpers'
 import { NOTIFICATION } from '~ek/shared/const/constants'
 import type { IColor } from '~ek/types/colors'
 import { useEditColorMutation } from '~ek/redux/api/colors'
+import { useFormStyle } from '~ek/shared/utilities/formStyles'
 
 interface IDrawerProps {
   open: boolean
@@ -33,20 +33,14 @@ export function EditColor({
   onClose,
   color,
 }: IDrawerProps): React.ReactElement {
-  const { token } = theme.useToken()
   const [form] = Form.useForm()
+  const formStyle = useFormStyle()
   const [switchChecked, setSwitchChecked] = React.useState<boolean>(
     color.status,
   )
 
   const [editColor, { isLoading }] = useEditColorMutation()
 
-  const formStyle: React.CSSProperties = {
-    maxWidth: 'none',
-    background: token.colorFillAlter,
-    borderRadius: token.borderRadiusLG,
-    padding: 24,
-  }
   const initialValues: IColor = {
     title: {
       az: color.title.az,

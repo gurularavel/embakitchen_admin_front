@@ -7,52 +7,62 @@ import {
   Form,
   FormProps,
   Input,
-  message,
   Row,
   Space,
-  theme,
   Upload,
 } from 'antd'
 import { Loading, RenderIf } from '~ek/shared/components'
-import { formatDate, notifier } from '~ek/shared/helpers'
+import {
+  beforeUploadHandler,
+  createFormData,
+  formatDate,
+  notifier,
+} from '~ek/shared/helpers'
 import { DATE_FORMAT, NOTIFICATION } from '~ek/shared/const/constants'
 import type { IFormCampaign } from '~ek/types/campaigns'
 import type { GetProps } from 'antd'
 import { UploadOutlined } from '@ant-design/icons'
 import { usePostCampaignMutation } from '~ek/redux/api/campaign'
+import { useFormStyle } from '~ek/shared/utilities/formStyles'
 
 interface IDrawerProps {
   open: boolean
   onClose: () => void
 }
 type RangePickerProps = GetProps<typeof DatePicker.RangePicker>
+const initialValues = {
+  title: {
+    az: '',
+    en: '',
+    ru: '',
+  },
+  content: {
+    az: '',
+    en: '',
+    ru: '',
+  },
+  campaignDates: [],
+}
 
 export function AddCampaign({
   open,
   onClose,
 }: IDrawerProps): React.ReactElement {
-  const { token } = theme.useToken()
-  const [addCampaign, { isLoading }] = usePostCampaignMutation()
   const [form] = Form.useForm()
-  const [image, setImage] = React.useState<IFile>({
-    file: null,
-    fileList: [],
-  })
-
+  const formStyle = useFormStyle()
   const { RangePicker } = DatePicker
   const { TextArea } = Input
 
-  const formStyle: React.CSSProperties = {
-    maxWidth: 'none',
-    background: token.colorFillAlter,
-    borderRadius: token.borderRadiusLG,
-    padding: 24,
-  }
+  const [image, setImage] = React.useState<IFile>({
+    file: [],
+    fileList: [],
+  })
 
   const [dateRange, setDateRange] = React.useState<{
     startDate: string
     endDate: string
   }>({ startDate: '', endDate: '' })
+  const [addCampaign, { isLoading }] = usePostCampaignMutation()
 
   const handleDateChange = (
     dates: RangePickerProps['value'],
@@ -63,23 +73,9 @@ export function AddCampaign({
     }
   }
 
-  const beforeUpload = (file: File, type: string) => {
-    if (type === 'image') {
-      setImage({
-        file,
-        fileList: [{ uid: file.name, name: file.name, status: 'done' }],
-      })
-    }
-    return false
-  }
-
   const onFinish: FormProps<IFormCampaign>['onFinish'] = async (
     values: IFormCampaign,
   ) => {
-    if (image.file?.size === 0 || !image.fileList.length) {
-      message.error('Please select image first!')
-      return
-    }
     const formatStartDate =
       dateRange.startDate &&
       formatDate(dateRange.startDate, DATE_FORMAT.VIEW, DATE_FORMAT.SEND)
@@ -87,20 +83,16 @@ export function AddCampaign({
       dateRange.endDate &&
       formatDate(dateRange.endDate, DATE_FORMAT.VIEW, DATE_FORMAT.SEND)
 
-    const formData = new FormData()
-    formData.append('title[az]', values.title.az)
-    formData.append('title[en]', values.title.en)
-    formData.append('title[ru]', values.title.ru)
-    formData.append('content[az]', values.content.az)
-    formData.append('content[en]', values.content.en)
-    formData.append('content[ru]', values.content.ru)
-    formData.append('startDate', formatStartDate)
-    formData.append('endDate', formatEndDate)
-    if (image.file) formData.append('image', image.file)
-
+    const formValues = {
+      ...values,
+      image: image.file,
+      startDate: formatStartDate,
+      endDate: formatEndDate,
+    }
+    const formData = createFormData(formValues)
     try {
       await addCampaign(formData).unwrap()
-      notifier('Dəyişiklik uğurla icra edildi', 'success')
+      notifier('Dəyişiklik uğurla icra edildi', NOTIFICATION.success)
       onClose()
     } catch (e: unknown) {
       const errorMessage =
@@ -135,6 +127,7 @@ export function AddCampaign({
         layout='vertical'
         form={form}
         onFinish={onFinish}
+        initialValues={initialValues}
         style={formStyle}
       >
         <RenderIf condition={isLoading}>
@@ -152,6 +145,7 @@ export function AddCampaign({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(az)',
                 },
               ]}
@@ -170,6 +164,7 @@ export function AddCampaign({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(en)',
                 },
               ]}
@@ -188,6 +183,7 @@ export function AddCampaign({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(ru)',
                 },
               ]}
@@ -208,6 +204,7 @@ export function AddCampaign({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa kontent əlavə edin(az)',
                 },
               ]}
@@ -229,6 +226,7 @@ export function AddCampaign({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa kontent əlavə edin(en)',
                 },
               ]}
@@ -250,6 +248,7 @@ export function AddCampaign({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa kontent əlavə edin(ru)',
                 },
               ]}
@@ -290,9 +289,9 @@ export function AddCampaign({
                 accept='image/*'
                 maxCount={1}
                 listType='picture'
-                beforeUpload={file => beforeUpload(file, 'image')}
+                beforeUpload={file => beforeUploadHandler(file, setImage)}
                 fileList={image.fileList}
-                onRemove={() => setImage({ file: null, fileList: [] })}
+                onRemove={() => setImage({ file: [], fileList: [] })}
               >
                 <Button icon={<UploadOutlined />}>Click to upload</Button>
               </Upload>
@@ -308,6 +307,7 @@ export function AddCampaign({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa müddət seçin',
                 },
               ]}

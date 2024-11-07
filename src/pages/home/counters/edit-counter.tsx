@@ -10,12 +10,12 @@ import {
   Row,
   Space,
   Switch,
-  theme,
 } from 'antd'
 import { notifier } from '~ek/shared/helpers'
 import { NOTIFICATION } from '~ek/shared/const/constants'
 import { ICounter } from '~ek/types/home/counter'
 import { useEditCounterMutation } from '~ek/redux/api/home/counter'
+import { useFormStyle } from '~ek/shared/utilities/formStyles'
 
 interface IDrawerProps {
   open: boolean
@@ -34,20 +34,13 @@ export function EditCounter({
   onClose,
   counter,
 }: IDrawerProps): React.ReactElement {
-  const { token } = theme.useToken()
   const [form] = Form.useForm()
+  const formStyle = useFormStyle()
   const [switchChecked, setSwitchChecked] = React.useState<boolean>(
     counter.status,
   )
-
   const [editCounter, { isLoading }] = useEditCounterMutation()
 
-  const formStyle: React.CSSProperties = {
-    maxWidth: 'none',
-    background: token.colorFillAlter,
-    borderRadius: token.borderRadiusLG,
-    padding: 24,
-  }
   const initialValues: ICounter = {
     title: {
       az: counter.title.az,
@@ -72,7 +65,7 @@ export function EditCounter({
       ...data,
     }
     try {
-      await editCounter(putData)
+      await editCounter(putData).unwrap()
       notifier('Dəyişiklik uğurla icra olundu', NOTIFICATION.success)
       onClose()
     } catch (e: unknown) {
@@ -125,6 +118,7 @@ export function EditCounter({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(az)',
                 },
               ]}
@@ -143,6 +137,7 @@ export function EditCounter({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(en)',
                 },
               ]}
@@ -161,6 +156,7 @@ export function EditCounter({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(ru)',
                 },
               ]}
@@ -177,6 +173,7 @@ export function EditCounter({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa rəqəm daxil edin',
                 },
               ]}

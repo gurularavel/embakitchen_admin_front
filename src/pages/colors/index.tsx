@@ -71,7 +71,7 @@ export function Color(): React.ReactElement {
   }
   const removeColor = async (ids: number[]): Promise<void> => {
     try {
-      await deleteColor({ ids: ids })
+      await deleteColor({ ids: ids }).unwrap()
       setSelectedRowKeys([])
       notifier('Seçiminiz uğurla silindi', NOTIFICATION.success)
     } catch (e: unknown) {

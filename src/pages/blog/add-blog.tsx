@@ -6,19 +6,22 @@ import {
   Form,
   FormProps,
   Input,
-  message,
   Row,
   Space,
-  theme,
   Upload,
 } from 'antd'
 import { Loading, RenderIf } from '~ek/shared/components'
-import { notifier } from '~ek/shared/helpers'
+import {
+  beforeUploadHandler,
+  createFormData,
+  notifier,
+} from '~ek/shared/helpers'
 import { NOTIFICATION } from '~ek/shared/const/constants'
 import type { IFormBlog } from '~ek/types/blog'
 import { UploadOutlined } from '@ant-design/icons'
 import { usePostBlogMutation } from '~ek/redux/api/blog'
 import { RichTextEditor } from '~ek/shared/components/richtext'
+import { useFormStyle } from '~ek/shared/utilities/formStyles'
 
 interface IDrawerProps {
   open: boolean
@@ -26,15 +29,15 @@ interface IDrawerProps {
 }
 
 export function AddBlog({ open, onClose }: IDrawerProps): React.ReactElement {
-  const { token } = theme.useToken()
   const [addBlog, { isLoading }] = usePostBlogMutation()
   const [form] = Form.useForm()
+  const formStyle = useFormStyle()
   const [bannerImage, setBannerImage] = React.useState<IFile>({
-    file: null,
+    file: [],
     fileList: [],
   })
   const [image, setImage] = React.useState<IFile>({
-    file: null,
+    file: [],
     fileList: [],
   })
   const [contentRichText, setContentRichText] = React.useState<ILangContent>({
@@ -45,27 +48,22 @@ export function AddBlog({ open, onClose }: IDrawerProps): React.ReactElement {
 
   const { TextArea } = Input
 
-  const formStyle: React.CSSProperties = {
-    maxWidth: 'none',
-    background: token.colorFillAlter,
-    borderRadius: token.borderRadiusLG,
-    padding: 24,
-  }
-
-  const beforeUpload = (file: File, type: string) => {
-    if (type === 'bannerImage') {
-      setBannerImage({
-        file,
-        fileList: [{ uid: file.name, name: file.name, status: 'done' }],
-      })
-    }
-    if (type === 'image') {
-      setImage({
-        file,
-        fileList: [{ uid: file.name, name: file.name, status: 'done' }],
-      })
-    }
-    return false
+  const initialValues = {
+    title: {
+      az: '',
+      en: '',
+      ru: '',
+    },
+    content: {
+      az: '',
+      en: '',
+      ru: '',
+    },
+    content2: {
+      az: '',
+      en: '',
+      ru: '',
+    },
   }
 
   const handleRichContent = (field: 'az' | 'ru' | 'en', content: string) => {
@@ -75,27 +73,20 @@ export function AddBlog({ open, onClose }: IDrawerProps): React.ReactElement {
   const onFinish: FormProps<IFormBlog>['onFinish'] = async (
     values: IFormBlog,
   ) => {
-    if (bannerImage.file?.size === 0 || !bannerImage.fileList.length) {
-      message.error('Please select image first!')
-      return
+    const formValues = {
+      ...values,
+      content: {
+        az: contentRichText.az,
+        en: contentRichText.en,
+        ru: contentRichText.ru,
+      },
+      image: bannerImage.file,
+      image2: image.file,
     }
-
-    const formData = new FormData()
-    formData.append('title[az]', values.title.az)
-    formData.append('title[en]', values.title.en)
-    formData.append('title[ru]', values.title.ru)
-    formData.append('content[az]', contentRichText.az)
-    formData.append('content[en]', contentRichText.en)
-    formData.append('content[ru]', contentRichText.ru)
-    if (values.content2.az) formData.append('content2[az]', values.content2.az)
-    if (values.content2.en) formData.append('content2[en]', values.content2.en)
-    if (values.content2.ru) formData.append('content2[ru]', values.content2.ru)
-    if (bannerImage.file) formData.append('image', bannerImage.file)
-    if (image.file) formData.append('image2', image.file)
-
+    const formData = createFormData(formValues)
     try {
-      await addBlog(formData)
-      notifier('Dəyişiklik uğurla icra edildi', 'success')
+      await addBlog(formData).unwrap()
+      notifier('Yeni blog uğurla əlavə edildi', NOTIFICATION.success)
       onClose()
     } catch (e: unknown) {
       const errorMessage =
@@ -131,6 +122,7 @@ export function AddBlog({ open, onClose }: IDrawerProps): React.ReactElement {
         layout='vertical'
         form={form}
         onFinish={onFinish}
+        initialValues={initialValues}
         style={formStyle}
       >
         <RenderIf condition={isLoading}>
@@ -145,6 +137,7 @@ export function AddBlog({ open, onClose }: IDrawerProps): React.ReactElement {
                 {
                   required: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(az)',
+                  whitespace: true,
                 },
               ]}
             >
@@ -162,6 +155,7 @@ export function AddBlog({ open, onClose }: IDrawerProps): React.ReactElement {
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(en)',
                 },
               ]}
@@ -180,6 +174,7 @@ export function AddBlog({ open, onClose }: IDrawerProps): React.ReactElement {
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(ru)',
                 },
               ]}
@@ -329,9 +324,9 @@ export function AddBlog({ open, onClose }: IDrawerProps): React.ReactElement {
                 accept='image/*'
                 maxCount={1}
                 listType='picture'
-                beforeUpload={file => beforeUpload(file, 'bannerImage')}
+                beforeUpload={file => beforeUploadHandler(file, setBannerImage)}
                 fileList={bannerImage.fileList}
-                onRemove={() => setBannerImage({ file: null, fileList: [] })}
+                onRemove={() => setBannerImage({ file: [], fileList: [] })}
               >
                 <Button icon={<UploadOutlined />}>Click to upload</Button>
               </Upload>
@@ -354,9 +349,9 @@ export function AddBlog({ open, onClose }: IDrawerProps): React.ReactElement {
                 accept='image/*'
                 maxCount={1}
                 listType='picture'
-                beforeUpload={file => beforeUpload(file, 'image')}
+                beforeUpload={file => beforeUploadHandler(file, setImage)}
                 fileList={image.fileList}
-                onRemove={() => setImage({ file: null, fileList: [] })}
+                onRemove={() => setImage({ file: [], fileList: [] })}
               >
                 <Button icon={<UploadOutlined />}>Click to upload</Button>
               </Upload>

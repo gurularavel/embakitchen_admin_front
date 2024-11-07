@@ -97,7 +97,7 @@ export function Campaigns(): React.ReactElement {
 
     try {
       await changeCampaignStatus({ id: campaign.id, formData }).unwrap()
-      notifier('Dəyişiklik uğurla icra edildi', 'success')
+      notifier('Dəyişiklik uğurla icra edildi', NOTIFICATION.success)
       onClose()
     } catch (e: unknown) {
       const errorMessage =
