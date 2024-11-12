@@ -173,8 +173,12 @@ export function EditCounter({
               rules={[
                 {
                   required: true,
-                  whitespace: true,
-                  message: 'Zəhmət olmasa rəqəm daxil edin',
+                  validator: (_, value) => {
+                    if (value === null || value.toString().trim() === '') {
+                      return Promise.reject('Zəhmət olmasa rəqəm daxil edin')
+                    }
+                    return Promise.resolve()
+                  },
                 },
               ]}
             >

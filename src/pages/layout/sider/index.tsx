@@ -3,7 +3,6 @@ import { Link, useLocation } from 'react-router-dom'
 import { ConfigProvider, Menu, Layout } from 'antd'
 import { URLS } from '~ek/shared/const/constants'
 import {
-  BlockOutlined,
   ExpandOutlined,
   BarChartOutlined,
   BankOutlined,
@@ -56,12 +55,6 @@ const items: IMenu[] = [
         icon: <GoldOutlined className={'!text-lg'} />,
       },
     ],
-  },
-  {
-    key: URLS.MENU,
-    path: URLS.MENU,
-    label: <Link to={URLS.MENU}>Menu</Link>,
-    icon: <BlockOutlined className={'!text-lg'} />,
   },
   {
     key: '3',
