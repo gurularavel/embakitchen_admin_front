@@ -9,12 +9,19 @@ import {
   Row,
   Space,
   Switch,
-  theme,
+  Upload,
 } from 'antd'
-import { notifier } from '~ek/shared/helpers'
+import {
+  beforeUploadHandler,
+  createFormData,
+  handleFileData,
+  notifier,
+} from '~ek/shared/helpers'
 import { NOTIFICATION } from '~ek/shared/const/constants'
 import type { IColor } from '~ek/types/colors'
 import { useEditColorMutation } from '~ek/redux/api/colors'
+import { useFormStyle } from '~ek/shared/utilities/formStyles'
+import { UploadOutlined } from '@ant-design/icons'
 
 interface IDrawerProps {
   open: boolean
@@ -24,7 +31,7 @@ interface IDrawerProps {
 
 interface IFieldForm {
   title: ILangContent
-  hex: string
+  image: IFile
   status: boolean
 }
 
@@ -33,30 +40,32 @@ export function EditColor({
   onClose,
   color,
 }: IDrawerProps): React.ReactElement {
-  const { token } = theme.useToken()
   const [form] = Form.useForm()
+  const formStyle = useFormStyle()
   const [switchChecked, setSwitchChecked] = React.useState<boolean>(
     color.status,
   )
+  const [image, setImage] = React.useState<IFile>({
+    file: [],
+    fileList: [],
+  })
 
   const [editColor, { isLoading }] = useEditColorMutation()
 
-  const formStyle: React.CSSProperties = {
-    maxWidth: 'none',
-    background: token.colorFillAlter,
-    borderRadius: token.borderRadiusLG,
-    padding: 24,
-  }
   const initialValues: IColor = {
     title: {
       az: color.title.az,
       en: color.title.en,
       ru: color.title.ru,
     },
-    hex: color.hex,
+    image: color.image,
     status: color.status,
     id: color.id,
   }
+
+  React.useEffect(() => {
+    handleFileData(color.image, setImage)
+  }, [color])
 
   const handleSwitchChange = (checked: boolean) => {
     setSwitchChecked(checked)
@@ -66,12 +75,15 @@ export function EditColor({
   const handleSubmit: FormProps<IFieldForm>['onFinish'] = async (
     data: IFieldForm,
   ) => {
-    const putData = {
-      id: color.id,
+    const formValues = {
       ...data,
+      image: image.file,
+      status: switchChecked ? '1' : '0',
+      _method: 'PUT',
     }
+    const formData = createFormData(formValues)
     try {
-      await editColor(putData)
+      await editColor({ id: color.id, formData }).unwrap()
       notifier('Dəyişiklik uğurla icra olundu', NOTIFICATION.success)
       onClose()
     } catch (e: unknown) {
@@ -172,19 +184,41 @@ export function EditColor({
           </Col>
         </Row>
         <Row gutter={16}>
-          <Col xs={4}>
+          <Col
+            xs={24}
+            sm={12}
+            md={8}
+          >
             <Form.Item<IFieldForm>
-              name={'hex'}
-              label='Hexcode'
+              name='image'
+              label='Image'
+              valuePropName='image'
               rules={[
                 {
                   required: true,
-                  whitespace: true,
-                  message: 'Zəhmət olmasa hexcode daxil edin',
+                  validator: () =>
+                    image.fileList.length > 0
+                      ? Promise.resolve()
+                      : Promise.reject(
+                        new Error('Zəhmət olmasa image fayl yükləyin!'),
+                      ),
                 },
               ]}
+              getValueFromEvent={e => {
+                return e?.fileList
+              }}
             >
-              <Input placeholder='Hexcode' />
+              <Upload
+                name='image'
+                accept='image/*'
+                maxCount={1}
+                listType='picture'
+                beforeUpload={file => beforeUploadHandler(file, setImage)}
+                fileList={image.fileList}
+                onRemove={() => setImage({ file: [], fileList: [] })}
+              >
+                <Button icon={<UploadOutlined />}>Click to upload</Button>
+              </Upload>
             </Form.Item>
           </Col>
           <Col xs={4}>

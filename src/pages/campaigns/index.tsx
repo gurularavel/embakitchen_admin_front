@@ -80,7 +80,7 @@ export function Campaigns(): React.ReactElement {
   }
   const removeCampaign = async (ids: number[]): Promise<void> => {
     try {
-      await deleteCampaign({ ids: ids })
+      await deleteCampaign({ ids: ids }).unwrap()
       notifier('Seçiminiz uğurla silindi', NOTIFICATION.success)
       setSelectedRowKeys([])
     } catch (e: unknown) {
@@ -97,7 +97,7 @@ export function Campaigns(): React.ReactElement {
 
     try {
       await changeCampaignStatus({ id: campaign.id, formData }).unwrap()
-      notifier('Dəyişiklik uğurla icra edildi', 'success')
+      notifier('Dəyişiklik uğurla icra edildi', NOTIFICATION.success)
       onClose()
     } catch (e: unknown) {
       const errorMessage =

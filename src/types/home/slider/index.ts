@@ -2,7 +2,7 @@ export interface ISlider {
   id: number
   title: ILangContent
   excerpt: ILangContent
-  image: IFileProperties
+  image: IFileProperties[]
   status: boolean
 }
 

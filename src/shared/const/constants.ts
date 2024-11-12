@@ -8,6 +8,7 @@ export const enum URLS {
   ABOUT_INFO_BLOCKS = '/about/info_blocks',
   COMPAIGN = '/compaigns',
   COLOR = '/colors',
+  BLOG = '/blogs',
 }
 
 export const enum NOTIFICATION {
@@ -23,6 +24,6 @@ export const enum USER_ROLE {
 }
 
 export const enum DATE_FORMAT {
-  VIEW = 'DD.MM.YY HH:mm',
+  VIEW = 'DD.MM.YYYY HH:mm',
   SEND = 'YYYY-MM-DDTHH:mm:ss[Z]',
 }

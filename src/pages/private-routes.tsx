@@ -6,6 +6,7 @@ import { AboutContent, AboutInfoBlocks } from '~ek/pages/about'
 import { Counter, Partners, Sliders } from '~ek/pages/home'
 import { Campaigns } from '~ek/pages/campaigns'
 import { Color } from '~ek/pages/colors'
+import { Blogs } from '~ek/pages/blog'
 import { URLS } from '~ek/shared/const/constants'
 
 export function PrivateRoutes(): React.ReactElement {
@@ -48,6 +49,10 @@ export function PrivateRoutes(): React.ReactElement {
           <Route
             path={URLS.COLOR}
             element={<Color />}
+          />
+          <Route
+            path={URLS.BLOG}
+            element={<Blogs />}
           />
         </Route>
         <Route

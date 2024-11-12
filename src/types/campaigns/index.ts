@@ -5,7 +5,7 @@ export interface ICampaign {
   content: ILangContent
   startDate: string
   endDate: string
-  image: IFileProperties
+  image: IFileProperties[]
   status: boolean
 }
 
