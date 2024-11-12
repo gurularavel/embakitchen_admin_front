@@ -12,6 +12,7 @@ import {
   Space,
   Switch,
   Upload,
+  type GetProps,
 } from 'antd'
 import { Loading, RenderIf } from '~ek/shared/components'
 import {
@@ -24,7 +25,6 @@ import {
 } from '~ek/shared/helpers'
 import { NOTIFICATION, DATE_FORMAT } from '~ek/shared/const/constants'
 import type { ICampaign, IFormCampaign } from '~ek/types/campaigns'
-import type { GetProps } from 'antd'
 import { UploadOutlined } from '@ant-design/icons'
 import { useEditCampaignMutation } from '~ek/redux/api/campaign'
 import { useFileRemoveMutation } from '~ek/redux/api/fileRemove'
