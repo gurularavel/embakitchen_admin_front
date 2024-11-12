@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { APIBaseQuery } from '~ek/redux/api/axiosBase'
-import type { IColor, IGetColors, IPostColor } from '~ek/types/colors'
+import type { IGetColors } from '~ek/types/colors'
 
 export const colorsApi = createApi({
   reducerPath: 'colorsApi',
@@ -23,7 +23,7 @@ export const colorsApi = createApi({
       },
       invalidatesTags: () => [{ type: 'COLOR' }],
     }),
-    postColor: builder.mutation<void, IPostColor>({
+    postColor: builder.mutation<void, FormData>({
       query(data) {
         return {
           url: 'colors',
@@ -33,13 +33,13 @@ export const colorsApi = createApi({
       },
       invalidatesTags: () => [{ type: 'COLOR' }],
     }),
-    editColor: builder.mutation<void, IColor>({
+    editColor: builder.mutation<void, IPutFormData>({
       query(data) {
-        const { id, ...colorData } = data
+        const { id, formData } = data
         return {
-          method: 'PUT',
+          method: 'POST',
           url: `colors/${id}`,
-          data: colorData,
+          data: formData,
         }
       },
       invalidatesTags: () => [{ type: 'COLOR' }],
