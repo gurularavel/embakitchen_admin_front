@@ -91,7 +91,7 @@ export function RichTextEditor({
           options: ['left', 'center', 'right', 'justify'],
         },
       }}
-      onChange={(_, editor) => {
+      onChange={(_, editor: ClassicEditor) => {
         const data = editor.getData()
         onChangeValue(data)
       }}
