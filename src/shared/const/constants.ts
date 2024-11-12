@@ -24,6 +24,6 @@ export const enum USER_ROLE {
 }
 
 export const enum DATE_FORMAT {
-  VIEW = 'DD.MM.YY HH:mm',
+  VIEW = 'DD.MM.YYYY HH:mm',
   SEND = 'YYYY-MM-DDTHH:mm:ss[Z]',
 }

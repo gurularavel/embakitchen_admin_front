@@ -2,8 +2,8 @@ export interface IAbout {
   id: number
   title: ILangContent
   content: ILangContent
-  video: IFileProperties
-  image: IFileProperties
+  video: IFileProperties[]
+  image: IFileProperties[]
 }
 
 export interface InfoBlock {
