@@ -12,7 +12,7 @@
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
-    "types": ["@ckeditor/ckeditor5-core"],
+    "types": ["node"],
 
     /* Linting */
     "strict": true,
