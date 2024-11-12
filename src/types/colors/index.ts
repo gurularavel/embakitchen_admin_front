@@ -1,13 +1,13 @@
 export interface IColor {
   id: number
   title: ILangContent
-  hex: string
+  image: IFileProperties[]
   status: boolean
 }
 
 export interface IPostColor {
   title: ILangContent
-  hex: string
+  image: IFileProperties[]
 }
 
 export interface IGetColors {

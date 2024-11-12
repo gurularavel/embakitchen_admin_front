@@ -94,6 +94,7 @@ export function EditBlog({
       ...values,
       image: bannerImage.file,
       image2: image.file,
+      _method: 'PUT',
     }
     const formData = createFormData(formValues)
     try {
