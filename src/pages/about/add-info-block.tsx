@@ -78,6 +78,7 @@ export function AddBlockDrawer({
               label='Başlıq(az)'
               rules={[
                 {
+                  whitespace: true,
                   required: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(az)',
                 },
@@ -96,6 +97,7 @@ export function AddBlockDrawer({
               label='Başlıq(en)'
               rules={[
                 {
+                  whitespace: true,
                   required: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(en)',
                 },
@@ -114,6 +116,7 @@ export function AddBlockDrawer({
               label='Başlıq(ru)'
               rules={[
                 {
+                  whitespace: true,
                   required: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(ru)',
                 },
@@ -134,6 +137,7 @@ export function AddBlockDrawer({
               label='Açıqlama(az)'
               rules={[
                 {
+                  whitespace: true,
                   required: true,
                   message: 'Zəhmət olmasa açıqlama daxil edin(az)',
                 },
@@ -155,6 +159,7 @@ export function AddBlockDrawer({
               label='Açıqlama(en)'
               rules={[
                 {
+                  whitespace: true,
                   required: true,
                   message: 'Zəhmət olmasa açıqlama daxil edin(en)',
                 },
@@ -176,6 +181,7 @@ export function AddBlockDrawer({
               label='Açıqlama(ru)'
               rules={[
                 {
+                  whitespace: true,
                   required: true,
                   message: 'Zəhmət olmasa açıqlama daxil edin(ru)',
                 },

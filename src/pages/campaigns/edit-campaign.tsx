@@ -351,7 +351,6 @@ export function EditCampaign({
               rules={[
                 {
                   required: true,
-                  whitespace: true,
                   message: 'Zəhmət olmasa müddət seçin',
                 },
               ]}

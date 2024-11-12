@@ -120,6 +120,7 @@ export function EditInfoBlock({
               label='Başlıq(az)'
               rules={[
                 {
+                  whitespace: true,
                   required: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(az)',
                 },
@@ -138,6 +139,7 @@ export function EditInfoBlock({
               label='Başlıq(en)'
               rules={[
                 {
+                  whitespace: true,
                   required: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(en)',
                 },
@@ -156,6 +158,7 @@ export function EditInfoBlock({
               label='Başlıq(ru)'
               rules={[
                 {
+                  whitespace: true,
                   required: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(ru)',
                 },
@@ -176,6 +179,7 @@ export function EditInfoBlock({
               label='Açıqlama(az)'
               rules={[
                 {
+                  whitespace: true,
                   required: true,
                   message: 'Zəhmət olmasa açıqlama daxil edin(az)',
                 },
@@ -197,6 +201,7 @@ export function EditInfoBlock({
               label='Açıqlama(en)'
               rules={[
                 {
+                  whitespace: true,
                   required: true,
                   message: 'Zəhmət olmasa açıqlama daxil edin(en)',
                 },
@@ -218,6 +223,7 @@ export function EditInfoBlock({
               label='Açıqlama(ru)'
               rules={[
                 {
+                  whitespace: true,
                   required: true,
                   message: 'Zəhmət olmasa açıqlama daxil edin(ru)',
                 },
