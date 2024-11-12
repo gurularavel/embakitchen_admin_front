@@ -36,9 +36,11 @@ declare global {
   }
 
   interface IFile {
-    file: File | null
+    file: File[] | null
     fileList: UploadFile[]
   }
+
+  type IFileType = 'image' | 'video'
 
   interface IFileProperties {
     name: string

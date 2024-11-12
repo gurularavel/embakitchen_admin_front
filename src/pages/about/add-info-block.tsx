@@ -1,17 +1,10 @@
-import {
-  Button,
-  Col,
-  Drawer,
-  Form,
-  FormProps,
-  Input,
-  Row,
-  Space,
-  theme,
-} from 'antd'
+import { Button, Col, Drawer, Form, FormProps, Input, Row, Space } from 'antd'
 import { Loading, RenderIf } from '~ek/shared/components'
 import { usePostInfoBlockMutation } from '~ek/redux/api/about'
 import type { IPostBlock } from '~ek/types/about'
+import { useFormStyle } from '~ek/shared/utilities/formStyles'
+import { notifier } from '~ek/shared/helpers'
+import { NOTIFICATION } from '~ek/shared/const/constants'
 
 interface IDrawerProps {
   open: boolean
@@ -26,22 +19,16 @@ export function AddBlockDrawer({
   open,
   onClose,
 }: IDrawerProps): React.ReactElement {
-  const { token } = theme.useToken()
   const [addBlock, { isLoading }] = usePostInfoBlockMutation()
   const [form] = Form.useForm()
-
-  const formStyle: React.CSSProperties = {
-    maxWidth: 'none',
-    background: token.colorFillAlter,
-    borderRadius: token.borderRadiusLG,
-    padding: 24,
-  }
+  const formStyle = useFormStyle()
 
   const handleSubmit: FormProps<IFieldForm>['onFinish'] = async (
     data: IPostBlock,
   ) => {
     try {
-      await addBlock(data)
+      await addBlock(data).unwrap()
+      notifier('Yeni blok əlavə edildi', NOTIFICATION.success)
       onClose()
     } catch (e: unknown) {
       console.error(e)
@@ -91,6 +78,7 @@ export function AddBlockDrawer({
               label='Başlıq(az)'
               rules={[
                 {
+                  whitespace: true,
                   required: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(az)',
                 },
@@ -109,6 +97,7 @@ export function AddBlockDrawer({
               label='Başlıq(en)'
               rules={[
                 {
+                  whitespace: true,
                   required: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(en)',
                 },
@@ -127,6 +116,7 @@ export function AddBlockDrawer({
               label='Başlıq(ru)'
               rules={[
                 {
+                  whitespace: true,
                   required: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(ru)',
                 },
@@ -147,6 +137,7 @@ export function AddBlockDrawer({
               label='Açıqlama(az)'
               rules={[
                 {
+                  whitespace: true,
                   required: true,
                   message: 'Zəhmət olmasa açıqlama daxil edin(az)',
                 },
@@ -168,6 +159,7 @@ export function AddBlockDrawer({
               label='Açıqlama(en)'
               rules={[
                 {
+                  whitespace: true,
                   required: true,
                   message: 'Zəhmət olmasa açıqlama daxil edin(en)',
                 },
@@ -189,6 +181,7 @@ export function AddBlockDrawer({
               label='Açıqlama(ru)'
               rules={[
                 {
+                  whitespace: true,
                   required: true,
                   message: 'Zəhmət olmasa açıqlama daxil edin(ru)',
                 },
