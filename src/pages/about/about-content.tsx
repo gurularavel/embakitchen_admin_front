@@ -15,6 +15,7 @@ import {
   usePostOrCreateAboutMutation,
 } from '~ek/redux/api/about'
 import { useFileRemoveMutation } from '~ek/redux/api/fileRemove'
+import { RichTextEditor } from '~ek/shared/components/richtext'
 
 interface IFieldForm {
   content: ILangContent
@@ -31,6 +32,11 @@ export function AboutContent(): React.ReactElement {
   const [video, setVideo] = React.useState<IFile>({
     file: [],
     fileList: [],
+  })
+  const [contentRichText, setContentRichText] = React.useState<ILangContent>({
+    az: '',
+    ru: '',
+    en: '',
   })
 
   const { data, isLoading, isError } = useGetAboutQuery()
@@ -55,13 +61,27 @@ export function AboutContent(): React.ReactElement {
   React.useEffect(() => {
     handleFileData(data?.image as IFileProperties[], setImage)
     handleFileData(data?.video as IFileProperties[], setVideo)
+    setContentRichText(() => ({
+      az: data?.content.az as string,
+      en: data?.content.en as string,
+      ru: data?.content.ru as string,
+    }))
   }, [data])
+
+  const handleRichContent = (field: 'az' | 'ru' | 'en', content: string) => {
+    setContentRichText(prevState => ({ ...prevState, [field]: content }))
+  }
 
   const onFinish: FormProps<IFieldForm>['onFinish'] = async (
     values: IFieldForm,
   ) => {
     const formValues = {
       ...values,
+      content: {
+        az: contentRichText.az,
+        en: contentRichText.en,
+        ru: contentRichText.ru,
+      },
       image: image.file,
       video: video.file,
     }
@@ -159,47 +179,62 @@ export function AboutContent(): React.ReactElement {
           >
             <Input />
           </Form.Item>
-
           <Form.Item<IFieldForm>
             name={['content', 'az']}
-            label='Kontent(az)'
+            label='Kontent (az)'
             rules={[
               {
                 required: true,
-                message: 'Zəhmət olmasa boş saxlamayın',
-                whitespace: true,
+                validator: () => {
+                  return contentRichText.az.trim().length > 0
+                    ? Promise.resolve()
+                    : Promise.reject('Zəhmət olmasa mətn daxil edin(az)')
+                },
               },
             ]}
           >
-            <Input.TextArea />
+            <RichTextEditor
+              onChangeValue={data => handleRichContent('az', data)}
+              editorData={contentRichText.az}
+            />
           </Form.Item>
-
           <Form.Item<IFieldForm>
             name={['content', 'en']}
-            label='Kontent(en)'
+            label='Kontent (en)'
             rules={[
               {
                 required: true,
-                message: 'Zəhmət olmasa boş saxlamayın',
-                whitespace: true,
+                validator: () => {
+                  return contentRichText.en.trim().length > 0
+                    ? Promise.resolve()
+                    : Promise.reject('Zəhmət olmasa mətn daxil edin(en)')
+                },
               },
             ]}
           >
-            <Input.TextArea />
+            <RichTextEditor
+              onChangeValue={data => handleRichContent('en', data)}
+              editorData={contentRichText.en}
+            />
           </Form.Item>
-
           <Form.Item<IFieldForm>
             name={['content', 'ru']}
-            label='Kontent(ru)'
+            label='Kontent (ru)'
             rules={[
               {
                 required: true,
-                message: 'Zəhmət olmasa boş saxlamayın',
-                whitespace: true,
+                validator: () => {
+                  return contentRichText.ru.trim().length > 0
+                    ? Promise.resolve()
+                    : Promise.reject('Zəhmət olmasa mətn daxil edin(ru)')
+                },
               },
             ]}
           >
-            <Input.TextArea />
+            <RichTextEditor
+              onChangeValue={data => handleRichContent('ru', data)}
+              editorData={contentRichText.ru}
+            />
           </Form.Item>
 
           <Form.Item<IFieldForm>

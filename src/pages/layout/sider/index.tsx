@@ -30,6 +30,17 @@ interface IMenu {
   children?: IMenu[]
 }
 
+const siderStyle: React.CSSProperties = {
+  overflow: 'auto',
+  height: '100vh',
+  position: 'fixed',
+  insetInlineStart: 0,
+  top: 0,
+  bottom: 0,
+  scrollbarWidth: 'thin',
+  scrollbarGutter: 'stable',
+}
+
 const items: IMenu[] = [
   {
     key: '1',
@@ -102,6 +113,7 @@ export function AppSider({
   const location = useLocation()
   return (
     <Sider
+      style={siderStyle}
       trigger={null}
       collapsible
       collapsed={collapsed}
