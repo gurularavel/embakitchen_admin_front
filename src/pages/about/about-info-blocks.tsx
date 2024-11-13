@@ -9,20 +9,20 @@ import {
 } from 'antd'
 import { AddBlockDrawer } from '~ek/pages/about/add-info-block'
 import { EditInfoBlock } from '~ek/pages/about/edit-info-block'
-import { Loading, RenderIf, ErrorMessage } from '~ek/shared/components'
-import { confirmModal } from '~ek/shared/helpers'
+import { ErrorMessage, Loading, RenderIf, NoData } from '~ek/shared/components'
+import { confirmModal, notifier } from '~ek/shared/helpers'
+import { NOTIFICATION } from '~ek/shared/const/constants'
+import type { InfoBlock } from '~ek/types/about'
+import { PlusOutlined, DeleteOutlined, FormOutlined } from '@ant-design/icons'
 import {
   useDeleteInfoBlocksMutation,
   useGetInfoBlocksQuery,
 } from '~ek/redux/api/about'
-import { InfoBlock } from '~ek/types/about'
-import { FormOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons'
 
 export function AboutInfoBlocks(): React.ReactElement {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([])
-  const [selectedBlock, setSelectedBlock] = React.useState<InfoBlock | null>(
-    null,
-  )
+  const [selectedInfoBlock, setSelectedInfoBlock] =
+    React.useState<InfoBlock | null>(null)
   const [pageParams, setPageParams] = React.useState<IPageParams>({
     take: 10,
     current: 1,
@@ -36,7 +36,7 @@ export function AboutInfoBlocks(): React.ReactElement {
     page: pageParams.current,
   })
 
-  const [deleteBlocks] = useDeleteInfoBlocksMutation()
+  const [deleteInfoBlock] = useDeleteInfoBlocksMutation()
 
   const handleTableChange = (pagination: TablePaginationConfig): void => {
     setPageParams(prev => ({
@@ -46,7 +46,7 @@ export function AboutInfoBlocks(): React.ReactElement {
     }))
   }
 
-  const addBlockDrawer = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+  const addInfoBlockDrawer = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     e.stopPropagation()
     setDrawerType('add')
   }
@@ -57,7 +57,7 @@ export function AboutInfoBlocks(): React.ReactElement {
   ) => {
     e.stopPropagation()
     setDrawerType('edit')
-    setSelectedBlock(block)
+    setSelectedInfoBlock(block)
   }
 
   const onClose = () => {
@@ -70,19 +70,21 @@ export function AboutInfoBlocks(): React.ReactElement {
       setSelectedRowKeys(selectedRowKeys)
     },
   }
-
-  const removeBlocks = async (ids: number[]): Promise<void> => {
+  const removeBlock = async (ids: number[]): Promise<void> => {
     try {
-      await deleteBlocks({ ids: ids })
+      await deleteInfoBlock({ ids: ids }).unwrap()
+      notifier('Seçiminiz uğurla silindi', NOTIFICATION.success)
       setSelectedRowKeys([])
-    } catch (e) {
-      alert(e)
+    } catch (e: unknown) {
+      const errorMessage =
+        e instanceof Error ? e.message : 'An unexpected error occurred'
+      notifier(errorMessage, NOTIFICATION.error)
     }
   }
 
   const columns = [
     {
-      title: 'Info Blok',
+      title: 'Info Bloklar',
       dataIndex: 'title',
       key: 'title',
       render: (_: string, block: InfoBlock, i: number) => (
@@ -90,17 +92,6 @@ export function AboutInfoBlocks(): React.ReactElement {
           {i + 1}. {block.title['az']}
         </h2>
       ),
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      render: (_: string, block: InfoBlock) =>
-        block.status ? (
-          <span className={'text-teal-500'}>Active</span>
-        ) : (
-          <span className={'text-red-500'}>Deactive</span>
-        ),
     },
     {
       title: 'Actions',
@@ -117,7 +108,7 @@ export function AboutInfoBlocks(): React.ReactElement {
               confirmModal({
                 title: 'Silmək istədiyinizdən əminsiniz?',
                 onOk: () => {
-                  removeBlocks([block.id])
+                  removeBlock([block.id])
                 },
               })
             }
@@ -145,7 +136,7 @@ export function AboutInfoBlocks(): React.ReactElement {
               onClick={() =>
                 confirmModal({
                   title: 'Silmək istədiyinizdən əminsiniz?',
-                  onOk: () => removeBlocks(selectedRowKeys as number[]),
+                  onOk: () => removeBlock(selectedRowKeys as number[]),
                 })
               }
             />
@@ -160,12 +151,15 @@ export function AboutInfoBlocks(): React.ReactElement {
             <Button
               type='primary'
               icon={<PlusOutlined />}
-              onClick={e => addBlockDrawer(e)}
+              onClick={e => addInfoBlockDrawer(e)}
             >
-              Blok əlavə et
+              Block əlavə et
             </Button>
           </ConfigProvider>
         </div>
+        <RenderIf condition={!data?.data?.length}>
+          <NoData />
+        </RenderIf>
         <RenderIf condition={data?.data?.length}>
           <Table
             dataSource={data?.data.map((block: InfoBlock) => ({
@@ -182,21 +176,20 @@ export function AboutInfoBlocks(): React.ReactElement {
             onChange={handleTableChange}
             className='overflow-x-auto'
           />
-
-          {drawerType === 'add' && (
-            <AddBlockDrawer
-              open={!!drawerType}
-              onClose={onClose}
-            />
-          )}
-          {drawerType === 'edit' && selectedBlock && (
-            <EditInfoBlock
-              open={!!drawerType}
-              onClose={onClose}
-              block={selectedBlock}
-            />
-          )}
         </RenderIf>
+        {drawerType === 'add' && (
+          <AddBlockDrawer
+            open={!!drawerType}
+            onClose={onClose}
+          />
+        )}
+        {drawerType === 'edit' && selectedInfoBlock && (
+          <EditInfoBlock
+            open={!!drawerType}
+            onClose={onClose}
+            block={selectedInfoBlock}
+          />
+        )}
       </RenderIf>
     </>
   )

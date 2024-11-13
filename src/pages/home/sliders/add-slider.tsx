@@ -6,18 +6,21 @@ import {
   Form,
   FormProps,
   Input,
-  message,
   Row,
   Space,
-  theme,
   Upload,
 } from 'antd'
 import { Loading, RenderIf } from '~ek/shared/components'
-import { notifier } from '~ek/shared/helpers'
+import {
+  beforeUploadHandler,
+  createFormData,
+  notifier,
+} from '~ek/shared/helpers'
 import { NOTIFICATION } from '~ek/shared/const/constants'
 import type { IFormSlider } from '~ek/types/home/slider'
 import { UploadOutlined } from '@ant-design/icons'
 import { usePostSliderMutation } from '~ek/redux/api/home/slider'
+import { useFormStyle } from '~ek/shared/utilities/formStyles'
 
 interface IDrawerProps {
   open: boolean
@@ -25,51 +28,38 @@ interface IDrawerProps {
 }
 
 export function AddSlider({ open, onClose }: IDrawerProps): React.ReactElement {
-  const { token } = theme.useToken()
-  const [addSlider, { isLoading }] = usePostSliderMutation()
   const [form] = Form.useForm()
+  const formStyle = useFormStyle()
+  const [addSlider, { isLoading }] = usePostSliderMutation()
   const [image, setImage] = React.useState<IFile>({
-    file: null,
+    file: [],
     fileList: [],
   })
 
-  const formStyle: React.CSSProperties = {
-    maxWidth: 'none',
-    background: token.colorFillAlter,
-    borderRadius: token.borderRadiusLG,
-    padding: 24,
-  }
-
-  const beforeUpload = (file: File, type: string) => {
-    if (type === 'image') {
-      setImage({
-        file,
-        fileList: [{ uid: file.name, name: file.name, status: 'done' }],
-      })
-    }
-    return false
+  const initialValues = {
+    title: {
+      az: '',
+      en: '',
+      ru: '',
+    },
+    excerpt: {
+      az: '',
+      en: '',
+      ru: '',
+    },
   }
 
   const onFinish: FormProps<IFormSlider>['onFinish'] = async (
     values: IFormSlider,
   ) => {
-    if (image.file?.size === 0 || !image.fileList.length) {
-      message.error('Please select image first!')
-      return
+    const formValues = {
+      ...values,
+      image: image.file,
     }
-
-    const formData = new FormData()
-    formData.append('title[az]', values.title.az)
-    formData.append('title[en]', values.title.en)
-    formData.append('title[ru]', values.title.ru)
-    formData.append('excerpt[az]', values.title.az)
-    formData.append('excerpt[en]', values.title.en)
-    formData.append('excerpt[ru]', values.title.ru)
-    if (image.file) formData.append('image', image.file)
-
+    const formData = createFormData(formValues)
     try {
       await addSlider(formData).unwrap()
-      notifier('Dəyişiklik uğurla icra edildi', 'success')
+      notifier('Dəyişiklik uğurla icra edildi', NOTIFICATION.success)
       onClose()
     } catch (e: unknown) {
       const errorMessage =
@@ -103,6 +93,7 @@ export function AddSlider({ open, onClose }: IDrawerProps): React.ReactElement {
       <Form
         layout='vertical'
         form={form}
+        initialValues={initialValues}
         onFinish={onFinish}
         style={formStyle}
       >
@@ -121,6 +112,7 @@ export function AddSlider({ open, onClose }: IDrawerProps): React.ReactElement {
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(az)',
                 },
               ]}
@@ -139,6 +131,7 @@ export function AddSlider({ open, onClose }: IDrawerProps): React.ReactElement {
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(en)',
                 },
               ]}
@@ -157,6 +150,7 @@ export function AddSlider({ open, onClose }: IDrawerProps): React.ReactElement {
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(ru)',
                 },
               ]}
@@ -177,6 +171,7 @@ export function AddSlider({ open, onClose }: IDrawerProps): React.ReactElement {
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(az)',
                 },
               ]}
@@ -195,6 +190,7 @@ export function AddSlider({ open, onClose }: IDrawerProps): React.ReactElement {
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(en)',
                 },
               ]}
@@ -213,6 +209,7 @@ export function AddSlider({ open, onClose }: IDrawerProps): React.ReactElement {
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(ru)',
                 },
               ]}
@@ -250,9 +247,9 @@ export function AddSlider({ open, onClose }: IDrawerProps): React.ReactElement {
                 accept='image/*'
                 maxCount={1}
                 listType='picture'
-                beforeUpload={file => beforeUpload(file, 'image')}
+                beforeUpload={file => beforeUploadHandler(file, setImage)}
                 fileList={image.fileList}
-                onRemove={() => setImage({ file: null, fileList: [] })}
+                onRemove={() => setImage({ file: [], fileList: [] })}
               >
                 <Button icon={<UploadOutlined />}>Click to upload</Button>
               </Upload>

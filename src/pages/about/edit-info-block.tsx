@@ -9,10 +9,12 @@ import {
   Row,
   Space,
   Switch,
-  theme,
 } from 'antd'
 import { useEditInfoBlockMutation } from '~ek/redux/api/about'
-import { InfoBlock } from '~ek/types/about'
+import type { InfoBlock } from '~ek/types/about'
+import { notifier } from '~ek/shared/helpers'
+import { NOTIFICATION } from '~ek/shared/const/constants'
+import { useFormStyle } from '~ek/shared/utilities/formStyles'
 
 interface IDrawerProps {
   open: boolean
@@ -31,20 +33,13 @@ export function EditInfoBlock({
   onClose,
   block,
 }: IDrawerProps): React.ReactElement {
-  const { token } = theme.useToken()
   const [form] = Form.useForm()
+  const formStyle = useFormStyle()
   const [switchChecked, setSwitchChecked] = React.useState<boolean>(
     block.status,
   )
-
   const [editBlock, { isLoading }] = useEditInfoBlockMutation()
 
-  const formStyle: React.CSSProperties = {
-    maxWidth: 'none',
-    background: token.colorFillAlter,
-    borderRadius: token.borderRadiusLG,
-    padding: 24,
-  }
   const initialValues: InfoBlock = {
     content: {
       az: block.content.az,
@@ -64,6 +59,7 @@ export function EditInfoBlock({
       ru: block.slug.ru,
     },
   }
+
   const handleSwitchChange = (checked: boolean) => {
     setSwitchChecked(checked)
     form.setFieldsValue({ status: checked })
@@ -73,11 +69,9 @@ export function EditInfoBlock({
     data: IFieldForm,
   ) => {
     try {
-      const postData = {
-        id: block.id,
-        data: data,
-      }
-      await editBlock(postData)
+      const postData = { id: block.id, ...data }
+      await editBlock(postData).unwrap()
+      notifier('Dəyişiklik uğurla icra edilir', NOTIFICATION.success)
       onClose()
     } catch (e: unknown) {
       console.error(e)
@@ -126,6 +120,7 @@ export function EditInfoBlock({
               label='Başlıq(az)'
               rules={[
                 {
+                  whitespace: true,
                   required: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(az)',
                 },
@@ -144,6 +139,7 @@ export function EditInfoBlock({
               label='Başlıq(en)'
               rules={[
                 {
+                  whitespace: true,
                   required: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(en)',
                 },
@@ -162,6 +158,7 @@ export function EditInfoBlock({
               label='Başlıq(ru)'
               rules={[
                 {
+                  whitespace: true,
                   required: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(ru)',
                 },
@@ -182,6 +179,7 @@ export function EditInfoBlock({
               label='Açıqlama(az)'
               rules={[
                 {
+                  whitespace: true,
                   required: true,
                   message: 'Zəhmət olmasa açıqlama daxil edin(az)',
                 },
@@ -203,6 +201,7 @@ export function EditInfoBlock({
               label='Açıqlama(en)'
               rules={[
                 {
+                  whitespace: true,
                   required: true,
                   message: 'Zəhmət olmasa açıqlama daxil edin(en)',
                 },
@@ -224,6 +223,7 @@ export function EditInfoBlock({
               label='Açıqlama(ru)'
               rules={[
                 {
+                  whitespace: true,
                   required: true,
                   message: 'Zəhmət olmasa açıqlama daxil edin(ru)',
                 },

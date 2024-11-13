@@ -154,7 +154,7 @@ export function Partners(): React.ReactElement {
               icon={<PlusOutlined />}
               onClick={e => addPartnerDrawer(e)}
             >
-              Sayğac əlavə et
+              Tərəfdaş əlavə et
             </Button>
           </ConfigProvider>
         </div>

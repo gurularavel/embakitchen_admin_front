@@ -2,8 +2,8 @@ export interface IAbout {
   id: number
   title: ILangContent
   content: ILangContent
-  video: IFileProperties
-  image: IFileProperties
+  video: IFileProperties[]
+  image: IFileProperties[]
 }
 
 export interface InfoBlock {
@@ -26,11 +26,9 @@ export interface IPostBlock {
 
 export interface IPutBlock {
   id: number
-  data: {
-    title: ILangContent
-    content: ILangContent
-    status: boolean
-  }
+  title?: ILangContent
+  content?: ILangContent
+  status?: boolean
 }
 
 export interface IParams {

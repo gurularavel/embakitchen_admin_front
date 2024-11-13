@@ -64,7 +64,7 @@ export const aboutApi = createApi({
     }),
     editInfoBlock: builder.mutation<void, IPutBlock>({
       query(data) {
-        const { id, data: putData } = data
+        const { id, ...putData } = data
         return {
           method: 'PUT',
           url: `about-info-blocks/${id}`,

@@ -6,20 +6,24 @@ import {
   Form,
   FormProps,
   Input,
-  message,
   Row,
   Space,
   Switch,
-  theme,
   Upload,
-  UploadFile,
 } from 'antd'
 import { NOTIFICATION } from '~ek/shared/const/constants'
 import { ISlider } from '~ek/types/home/slider'
 import { UploadOutlined } from '@ant-design/icons'
-import { confirmModal, notifier } from '~ek/shared/helpers'
+import {
+  beforeUploadHandler,
+  createFormData,
+  handleFileData,
+  handleRemoveFile,
+  notifier,
+} from '~ek/shared/helpers'
 import { useFileRemoveMutation } from '~ek/redux/api/fileRemove'
 import { useEditSliderMutation } from '~ek/redux/api/home/slider'
+import { useFormStyle } from '~ek/shared/utilities/formStyles'
 
 interface IDrawerProps {
   open: boolean
@@ -39,46 +43,21 @@ export function EditSlider({
   onClose,
   slider,
 }: IDrawerProps): React.ReactElement {
-  const { token } = theme.useToken()
   const [form] = Form.useForm()
+  const formStyle = useFormStyle()
   const [switchChecked, setSwitchChecked] = React.useState<boolean>(
     slider.status,
   )
   const [image, setImage] = React.useState<IFile>({
-    file: null,
+    file: [],
     fileList: [],
   })
 
   const [editSlider, { isLoading }] = useEditSliderMutation()
   const [deleteFile] = useFileRemoveMutation()
 
-  const formStyle: React.CSSProperties = {
-    maxWidth: 'none',
-    background: token.colorFillAlter,
-    borderRadius: token.borderRadiusLG,
-    padding: 24,
-  }
-
   React.useEffect(() => {
-    if (slider?.image && typeof slider.image === 'object') {
-      const imageKeys = Object.keys(slider.image)
-      if (imageKeys.length > 0) {
-        const firstImageKey = imageKeys[0]
-        const imageData = slider.image[firstImageKey]
-
-        setImage({
-          file: null,
-          fileList: [
-            {
-              uid: imageData.uuid,
-              name: imageData.file_name,
-              status: 'done',
-              url: imageData.original_url,
-            },
-          ],
-        })
-      }
-    }
+    handleFileData(slider.image, setImage)
   }, [slider])
 
   const initialValues = {
@@ -101,50 +80,19 @@ export function EditSlider({
     form.setFieldsValue({ status: checked })
   }
 
-  const beforeUpload = (file: File) => {
-    setImage({
-      file,
-      fileList: [{ uid: file.name, name: file.name, status: 'done' }],
-    })
-
-    return false
-  }
-
-  const handleRemoveFile = async (file: UploadFile) => {
-    confirmModal({
-      title: 'Bu faylı silmək istədiyinizdən əminsiniz?',
-      onOk: async () => {
-        await deleteFile({
-          mediaIDS: [file.uid],
-        })
-        setImage({ file: null, fileList: [] })
-      },
-      onCancel: () => {},
-    })
-  }
-
   const handleSubmit: FormProps<IFieldForm>['onFinish'] = async (
     data: IFieldForm,
   ) => {
-    if (image.file?.size === 0 || !image.fileList.length) {
-      message.error('Please select image first!')
-      return
+    const formValues = {
+      ...data,
+      status: data.status ? '1' : '0',
+      _method: 'PUT',
+      image: image.file,
     }
-
-    const formData = new FormData()
-    formData.append('title[az]', data.title.az)
-    formData.append('title[en]', data.title.en)
-    formData.append('title[ru]', data.title.ru)
-    formData.append('excerpt[az]', data.excerpt.az)
-    formData.append('excerpt[en]', data.excerpt.en)
-    formData.append('excerpt[ru]', data.excerpt.ru)
-    formData.append('status', data.status ? '1' : '0')
-    formData.append('_method', 'PUT')
-    if (image.file) formData.append('image', image.file)
-
+    const formData = createFormData(formValues)
     try {
       await editSlider({ id: slider.id, formData })
-      notifier('Dəyişiklik uğurla icra edildi', 'success')
+      notifier('Dəyişiklik uğurla icra edildi', NOTIFICATION.success)
       onClose()
     } catch (e: unknown) {
       const errorMessage =
@@ -196,6 +144,7 @@ export function EditSlider({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(az)',
                 },
               ]}
@@ -214,6 +163,7 @@ export function EditSlider({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(en)',
                 },
               ]}
@@ -232,6 +182,7 @@ export function EditSlider({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(ru)',
                 },
               ]}
@@ -252,6 +203,7 @@ export function EditSlider({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa alt başlıq əlavə edin(az)',
                 },
               ]}
@@ -270,6 +222,7 @@ export function EditSlider({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa alt başlıq əlavə edin(en)',
                 },
               ]}
@@ -288,6 +241,7 @@ export function EditSlider({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa alt başlıq əlavə edin(ru)',
                 },
               ]}
@@ -321,9 +275,9 @@ export function EditSlider({
               accept='image/*'
               maxCount={1}
               listType='picture'
-              beforeUpload={file => beforeUpload(file)}
+              beforeUpload={file => beforeUploadHandler(file, setImage)}
               fileList={image.fileList}
-              onRemove={file => handleRemoveFile(file)}
+              onRemove={file => handleRemoveFile(deleteFile, file, setImage)}
             >
               <Button icon={<UploadOutlined />}>Click to upload</Button>
             </Upload>

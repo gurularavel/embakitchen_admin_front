@@ -31,7 +31,7 @@ export const authApi = createApi({
           method: 'POST',
         }
       },
-      onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
+      onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         try {
           await queryFulfilled
           dispatch(revertAll())

@@ -3,7 +3,6 @@ import { Link, useLocation } from 'react-router-dom'
 import { ConfigProvider, Menu, Layout } from 'antd'
 import { URLS } from '~ek/shared/const/constants'
 import {
-  BlockOutlined,
   ExpandOutlined,
   BarChartOutlined,
   BankOutlined,
@@ -11,6 +10,9 @@ import {
   ProfileOutlined,
   ProjectOutlined,
   GoldOutlined,
+  BgColorsOutlined,
+  FundOutlined,
+  GroupOutlined,
 } from '@ant-design/icons'
 import logo from '~ek/assets/images/132x20.67.svg'
 const { Sider } = Layout
@@ -55,12 +57,6 @@ const items: IMenu[] = [
     ],
   },
   {
-    key: URLS.MENU,
-    path: URLS.MENU,
-    label: <Link to={URLS.MENU}>Menu</Link>,
-    icon: <BlockOutlined className={'!text-lg'} />,
-  },
-  {
     key: '3',
     label: 'Haqqımızda',
     icon: <ExpandOutlined className={'!text-lg'} />,
@@ -83,7 +79,19 @@ const items: IMenu[] = [
     key: URLS.COMPAIGN,
     path: URLS.COMPAIGN,
     label: <Link to={URLS.COMPAIGN}>Kampaniyalar</Link>,
-    icon: <BlockOutlined className={'!text-lg'} />,
+    icon: <FundOutlined className={'!text-lg'} />,
+  },
+  {
+    key: URLS.COLOR,
+    path: URLS.COLOR,
+    label: <Link to={URLS.COLOR}>Rənglər</Link>,
+    icon: <BgColorsOutlined className={'!text-lg'} />,
+  },
+  {
+    key: URLS.BLOG,
+    path: URLS.BLOG,
+    label: <Link to={URLS.BLOG}>Blog</Link>,
+    icon: <GroupOutlined className={'!text-lg'} />,
   },
 ]
 
