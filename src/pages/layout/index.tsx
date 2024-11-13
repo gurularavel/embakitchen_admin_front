@@ -23,7 +23,7 @@ export function AppLayout({ children }: IProps): React.ReactElement {
         collapsed={collapsed}
         setCollapsed={setCollapsed}
       />
-      <Layout>
+      <Layout style={{ marginInlineStart: 250 }}>
         <AppHeader
           collapsed={collapsed}
           setCollapsed={setCollapsed}

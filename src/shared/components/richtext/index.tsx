@@ -12,6 +12,7 @@ import {
   List,
 } from 'ckeditor5'
 import 'ckeditor5/ckeditor5.css'
+import '~ek/assets/css/ckeditor.css'
 
 interface RichTextProps {
   editorData: string
