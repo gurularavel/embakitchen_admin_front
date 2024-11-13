@@ -92,6 +92,11 @@ export function EditBlog({
   ) => {
     const formValues = {
       ...values,
+      content: {
+        az: contentRichText.az,
+        en: contentRichText.en,
+        ru: contentRichText.ru,
+      },
       image: bannerImage.file,
       image2: image.file,
       _method: 'PUT',

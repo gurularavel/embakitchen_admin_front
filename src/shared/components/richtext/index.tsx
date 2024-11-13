@@ -10,6 +10,14 @@ import {
   Heading,
   BlockQuote,
   List,
+  Link,
+  Image,
+  ImageCaption,
+  ImageResize,
+  ImageStyle,
+  ImageToolbar,
+  ImageUpload,
+  Base64UploadAdapter,
 } from 'ckeditor5'
 import 'ckeditor5/ckeditor5.css'
 import '~ek/assets/css/ckeditor.css'
@@ -38,6 +46,14 @@ export function RichTextEditor({
           Heading,
           BlockQuote,
           List,
+          Link,
+          Image,
+          ImageCaption,
+          ImageResize,
+          ImageStyle,
+          ImageToolbar,
+          ImageUpload,
+          Base64UploadAdapter,
         ],
         toolbar: [
           'heading',
@@ -51,6 +67,9 @@ export function RichTextEditor({
           '|',
           'bulletedList',
           'numberedList',
+          '|',
+          'link',
+          'uploadImage',
           '|',
           'undo',
           'redo',
@@ -87,6 +106,39 @@ export function RichTextEditor({
               class: 'ck-heading_heading4',
             },
           ],
+        },
+        image: {
+          resizeOptions: [
+            {
+              name: 'resizeImage:original',
+              label: 'Default image width',
+              value: null,
+            },
+            {
+              name: 'resizeImage:50',
+              label: '50% page width',
+              value: '50',
+            },
+            {
+              name: 'resizeImage:75',
+              label: '75% page width',
+              value: '75',
+            },
+          ],
+          toolbar: [
+            'imageTextAlternative',
+            'toggleImageCaption',
+            '|',
+            'imageStyle:inline',
+            'imageStyle:wrapText',
+            'imageStyle:breakText',
+            '|',
+            'resizeImage',
+          ],
+        },
+        link: {
+          addTargetToExternalLinks: true,
+          defaultProtocol: 'https://',
         },
         alignment: {
           options: ['left', 'center', 'right', 'justify'],
