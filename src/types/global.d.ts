@@ -9,6 +9,11 @@ declare global {
     ru: string
   }
 
+  interface ITitleContent {
+    title: ILangContent
+    content: ILangContent
+  }
+
   interface IPagination {
     current_page: number
     last_page: number

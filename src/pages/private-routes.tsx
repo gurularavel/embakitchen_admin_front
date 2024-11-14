@@ -3,7 +3,7 @@ import { AppLayout } from '~ek/pages/layout'
 import { Menu } from '~ek/pages/menu'
 import { NotFound } from '~ek/pages/not-found'
 import { AboutContent, AboutInfoBlocks } from '~ek/pages/about'
-import { Counter, Partners, Sliders } from '~ek/pages/home'
+import { Counter, HomeCommonInfo, Partners, Sliders } from '~ek/pages/home'
 import { Campaigns } from '~ek/pages/campaigns'
 import { Color } from '~ek/pages/colors'
 import { Blogs } from '~ek/pages/blog'
@@ -16,7 +16,11 @@ export function PrivateRoutes(): React.ReactElement {
         <Route element={<AppLayout />}>
           <Route
             path='/'
-            element={<Navigate to={URLS.HOME_COUNTERS} />}
+            element={<Navigate to={URLS.HOME_COMMON_INFO} />}
+          />
+          <Route
+            path={URLS.HOME_COMMON_INFO}
+            element={<HomeCommonInfo />}
           />
           <Route
             path={URLS.HOME_COUNTERS}

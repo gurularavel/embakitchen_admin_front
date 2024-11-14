@@ -22,7 +22,7 @@ export function Router(): React.ReactElement {
 
   React.useLayoutEffect(() => {
     if (!!token && user?.role === 'admin') {
-      navigate(URLS.HOME_COUNTERS)
+      navigate(URLS.HOME_COMMON_INFO)
     }
   }, [token, user])
 
