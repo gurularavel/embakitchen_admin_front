@@ -1,9 +1,14 @@
-export interface IAbout {
+export interface IAbout<T = IFileProperties[]> {
   id: number
   title: ILangContent
   content: ILangContent
-  video: IFileProperties[]
-  image: IFileProperties[]
+  counter_info: ILangContent
+  solutions: {
+    title: ILangContent
+    options: ILangContent[]
+  }
+  video: T
+  image: T
 }
 
 export interface InfoBlock {

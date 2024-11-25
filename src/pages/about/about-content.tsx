@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { UploadOutlined } from '@ant-design/icons'
-import { Button, Form, FormProps, Input, Space, Upload } from 'antd'
+import { DeleteOutlined, PlusOutlined, UploadOutlined } from '@ant-design/icons'
+import { Button, Col, Form, FormProps, Input, Row, Space, Upload } from 'antd'
 import { Loading, RenderIf, ErrorMessage } from '~ek/shared/components'
 import { NOTIFICATION } from '~ek/shared/const/constants'
 import {
@@ -9,6 +9,7 @@ import {
   handleFileData,
   handleRemoveFile,
   notifier,
+  pick,
 } from '~ek/shared/helpers'
 import {
   useGetAboutQuery,
@@ -16,13 +17,9 @@ import {
 } from '~ek/redux/api/about'
 import { useFileRemoveMutation } from '~ek/redux/api/fileRemove'
 import { RichTextEditor } from '~ek/shared/components/richtext'
+import type { IAbout } from '~ek/types/about'
 
-interface IFieldForm {
-  content: ILangContent
-  title: ILangContent
-  video?: IFile
-  image: IFile
-}
+type FormField = Omit<IAbout<IFile>, 'id'>
 
 export function AboutContent(): React.ReactElement {
   const [image, setImage] = React.useState<IFile>({
@@ -43,20 +40,12 @@ export function AboutContent(): React.ReactElement {
   const [postAbout, { isLoading: postLoading }] = usePostOrCreateAboutMutation()
   const [deleteFile] = useFileRemoveMutation()
 
-  const initialValues = data
-    ? {
-      title: {
-        az: data.title.az,
-        en: data.title.en,
-        ru: data.title.ru,
-      },
-      content: {
-        az: data.content.az,
-        en: data.content.en,
-        ru: data.content.ru,
-      },
-    }
-    : {}
+  const initialValues = pick(data as IAbout, [
+    'title',
+    'content',
+    'counter_info',
+    'solutions',
+  ])
 
   React.useEffect(() => {
     handleFileData(data?.image as IFileProperties[], setImage)
@@ -72,16 +61,12 @@ export function AboutContent(): React.ReactElement {
     setContentRichText(prevState => ({ ...prevState, [field]: content }))
   }
 
-  const onFinish: FormProps<IFieldForm>['onFinish'] = async (
-    values: IFieldForm,
+  const onFinish: FormProps<FormField>['onFinish'] = async (
+    values: FormField,
   ) => {
     const formValues = {
       ...values,
-      content: {
-        az: contentRichText.az,
-        en: contentRichText.en,
-        ru: contentRichText.ru,
-      },
+      content: contentRichText,
       image: image.file,
       video: video.file,
     }
@@ -106,14 +91,12 @@ export function AboutContent(): React.ReactElement {
       <RenderIf condition={!isError && !isLoading}>
         <Form
           name='about_form'
-          labelCol={{ span: 6 }}
-          wrapperCol={{ span: 18 }}
+          layout='vertical'
           onFinish={onFinish}
-          style={{ maxWidth: 600 }}
           className='ml-auto mr-auto'
           initialValues={initialValues}
         >
-          <Form.Item<IFieldForm>
+          <Form.Item<FormField>
             name='image'
             label='Banner Photo'
             valuePropName='image'
@@ -144,42 +127,234 @@ export function AboutContent(): React.ReactElement {
               <Button icon={<UploadOutlined />}>Click to upload</Button>
             </Upload>
           </Form.Item>
-          <Form.Item<IFieldForm>
-            label='Başlıq(az)'
-            name={['title', 'az']}
-            rules={[
-              { required: true, message: 'Zəhmət olmasa boş saxlamayın' },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label='Başlıq(en)'
-            name={['title', 'en']}
-            rules={[
-              {
-                required: true,
-                message: 'Zəhmət olmasa boş saxlamayın',
-                whitespace: true,
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item<IFieldForm>
-            label='Başlıq(ru)'
-            name={['title', 'ru']}
-            rules={[
-              {
-                required: true,
-                message: 'Zəhmət olmasa boş saxlamayın',
-                whitespace: true,
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item<IFieldForm>
+
+          <Row gutter={16}>
+            <Col span={8}>
+              <Form.Item<FormField>
+                label='Başlıq(az)'
+                name={['title', 'az']}
+                rules={[
+                  { required: true, message: 'Zəhmət olmasa boş saxlamayın' },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item
+                label='Başlıq(en)'
+                name={['title', 'en']}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Zəhmət olmasa boş saxlamayın',
+                    whitespace: true,
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item<FormField>
+                label='Başlıq(ru)'
+                name={['title', 'ru']}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Zəhmət olmasa boş saxlamayın',
+                    whitespace: true,
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row gutter={16}>
+            <Col span={8}>
+              <Form.Item<FormField>
+                label='Sayğac başlığı(az)'
+                name={['counter_info', 'az']}
+                rules={[
+                  { required: true, message: 'Zəhmət olmasa boş saxlamayın' },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item
+                label='Sayğac başlığı(en)'
+                name={['counter_info', 'en']}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Zəhmət olmasa boş saxlamayın',
+                    whitespace: true,
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item<FormField>
+                label='Sayğac başlığı(ru)'
+                name={['counter_info', 'ru']}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Zəhmət olmasa boş saxlamayın',
+                    whitespace: true,
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row gutter={16}>
+            <Col span={8}>
+              <Form.Item<FormField>
+                label='Həllər başlığı(az)'
+                name={['solutions', 'title', 'az']}
+                rules={[
+                  { required: true, message: 'Zəhmət olmasa boş saxlamayın' },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item
+                label='Həllər başlığı(en)'
+                name={['solutions', 'title', 'en']}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Zəhmət olmasa boş saxlamayın',
+                    whitespace: true,
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item<FormField>
+                label='Həllər başlığı(ru)'
+                name={['solutions', 'title', 'ru']}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Zəhmət olmasa boş saxlamayın',
+                    whitespace: true,
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+
+            <Col span={24}>
+              <Form.List name={['solutions', 'options']}>
+                {(fields, { add, remove }) => (
+                  <>
+                    {fields.map(({ key, name, ...restField }) => (
+                      <Row
+                        key={key}
+                        gutter={16}
+                      >
+                        <Col span={6}>
+                          <Form.Item
+                            label='Həllərə nümunə(az)'
+                            name={[name, 'title', 'az']}
+                            rules={[
+                              {
+                                required: true,
+                                message: 'Zəhmət olmasa boş saxlamayın',
+                              },
+                            ]}
+                            {...restField}
+                          >
+                            <Input />
+                          </Form.Item>
+                        </Col>
+                        <Col span={6}>
+                          <Form.Item
+                            label='Həllərə nümunə(en)'
+                            name={[name, 'title', 'en']}
+                            rules={[
+                              {
+                                required: true,
+                                message: 'Zəhmət olmasa boş saxlamayın',
+                              },
+                            ]}
+                            {...restField}
+                          >
+                            <Input />
+                          </Form.Item>
+                        </Col>
+                        <Col span={6}>
+                          <Form.Item
+                            label='Həllərə nümunə(ru)'
+                            name={[name, 'title', 'ru']}
+                            rules={[
+                              {
+                                required: true,
+                                message: 'Zəhmət olmasa boş saxlamayın',
+                              },
+                            ]}
+                            {...restField}
+                          >
+                            <Input />
+                          </Form.Item>
+                        </Col>
+                        <Col
+                          span={6}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'flex-end',
+                          }}
+                        >
+                          <Form.Item
+                            label=''
+                            style={{ flex: '1 100%' }}
+                          >
+                            <Button
+                              color='danger'
+                              variant='outlined'
+                              onClick={() => remove(name)}
+                              block
+                            >
+                              <DeleteOutlined />
+                              Sil
+                            </Button>
+                          </Form.Item>
+                        </Col>
+                      </Row>
+                    ))}
+                    <Form.Item>
+                      <Button
+                        color='primary'
+                        variant='outlined'
+                        onClick={() => add()}
+                        block
+                        icon={<PlusOutlined />}
+                      >
+                        Əlavə et
+                      </Button>
+                    </Form.Item>
+                  </>
+                )}
+              </Form.List>
+            </Col>
+          </Row>
+
+          <Form.Item<FormField>
             name={['content', 'az']}
             label='Kontent (az)'
             rules={[
@@ -198,7 +373,7 @@ export function AboutContent(): React.ReactElement {
               editorData={contentRichText.az}
             />
           </Form.Item>
-          <Form.Item<IFieldForm>
+          <Form.Item<FormField>
             name={['content', 'en']}
             label='Kontent (en)'
             rules={[
@@ -217,7 +392,7 @@ export function AboutContent(): React.ReactElement {
               editorData={contentRichText.en}
             />
           </Form.Item>
-          <Form.Item<IFieldForm>
+          <Form.Item<FormField>
             name={['content', 'ru']}
             label='Kontent (ru)'
             rules={[
@@ -237,7 +412,7 @@ export function AboutContent(): React.ReactElement {
             />
           </Form.Item>
 
-          <Form.Item<IFieldForm>
+          <Form.Item<FormField>
             name='video'
             label='Upload Video'
             valuePropName='video'
@@ -255,10 +430,11 @@ export function AboutContent(): React.ReactElement {
             </Upload>
           </Form.Item>
 
-          <Form.Item wrapperCol={{ span: 12, offset: 6 }}>
+          <Form.Item wrapperCol={{ span: 12 }}>
             <Space>
               <Button
                 disabled={postLoading}
+                loading={postLoading}
                 type='primary'
                 htmlType='submit'
               >

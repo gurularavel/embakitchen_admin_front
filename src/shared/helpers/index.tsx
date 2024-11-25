@@ -65,20 +65,22 @@ export const handleFileData = (
   }
 }
 
-export const createFormData = (formValues: object): FormData => {
-  const formData = new FormData()
-
+export const createFormData = (
+  formValues: object,
+  formData = new FormData(),
+  parentKey?: string,
+): FormData => {
   Object.entries(formValues).forEach(([key, value]) => {
-    if (Array.isArray(value) && (key === 'image' || key === 'video')) {
+    const formKey = parentKey ? `${parentKey}[${key}]` : key
+
+    if (Array.isArray(value) && (formKey === 'image' || formKey === 'video')) {
       value.forEach(file => {
-        formData.append(key, file)
+        formData.append(formKey, file)
       })
-    } else if (typeof value === 'object') {
-      Object.entries(value).forEach(([subKey, subValue]) => {
-        formData.append(`${key}[${subKey}]`, subValue as string | Blob)
-      })
+    } else if (typeof value === 'object' && value !== null) {
+      createFormData(value, formData, formKey)
     } else {
-      formData.append(`${key}`, value)
+      formData.append(formKey, value as string | Blob)
     }
   })
 
@@ -110,4 +112,18 @@ export const handleRemoveFile = async (
     },
     onCancel: () => {},
   })
+}
+
+export const pick = <T, K extends keyof T>(data: T, keys: K[]): Pick<T, K> => {
+  if (!data) {
+    return {} as Pick<T, K>
+  }
+
+  return keys.reduce(
+    (result, key) => ({
+      ...result,
+      [key]: data[key],
+    }),
+    {} as Pick<T, K>,
+  )
 }
