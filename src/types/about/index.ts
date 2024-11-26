@@ -1,12 +1,14 @@
+interface ISolution {
+  title: ILangContent
+  options: ILangContent[]
+}
+
 export interface IAbout<T = IFileProperties[]> {
   id: number
   title: ILangContent
   content: ILangContent
   counter_info: ILangContent
-  solutions: {
-    title: ILangContent
-    options: ILangContent[]
-  }
+  solutions: ISolution
   video: T
   image: T
 }

@@ -114,15 +114,22 @@ export const handleRemoveFile = async (
   })
 }
 
-export const pick = <T, K extends keyof T>(data: T, keys: K[]): Pick<T, K> => {
-  if (!data) {
+interface IPickParams<T, K> {
+  source: T
+  fields: K[]
+}
+export const pick = <T, K extends keyof T>({
+  source,
+  fields,
+}: IPickParams<T, K>): Pick<T, K> => {
+  if (!source) {
     return {} as Pick<T, K>
   }
 
-  return keys.reduce(
-    (result, key) => ({
+  return fields.reduce(
+    (result, field) => ({
       ...result,
-      [key]: data[key],
+      [field]: source[field],
     }),
     {} as Pick<T, K>,
   )
