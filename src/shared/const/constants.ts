@@ -8,7 +8,8 @@ export const enum URLS {
   ABOUT_INFO_BLOCKS = '/about/info_blocks',
   COMPAIGN = '/compaigns',
   COLOR = '/colors',
-  BLOG = '/blogs',
+  BLOGS = '/blogs',
+  BLOG_PAGE = '/blog-page',
 }
 
 export const enum NOTIFICATION {

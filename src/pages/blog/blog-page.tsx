@@ -1,34 +1,26 @@
 import * as React from 'react'
-import {
-  Button,
-  Col,
-  Drawer,
-  Form,
-  FormProps,
-  Input,
-  Row,
-  Space,
-  Upload,
-} from 'antd'
-import { Loading, RenderIf } from '~ek/shared/components'
+import { Button, Col, Form, FormProps, Input, Row, Space, Upload } from 'antd'
+import { ErrorMessage, Loading, RenderIf } from '~ek/shared/components'
 import { NOTIFICATION } from '~ek/shared/const/constants'
+import { useFormStyle } from '~ek/shared/utilities/formStyles'
 import {
   beforeUploadHandler,
   createFormData,
+  handleFileData,
   notifier,
+  pick,
 } from '~ek/shared/helpers'
-import type { IPostColor } from '~ek/types/colors'
-import { usePostColorMutation } from '~ek/redux/api/colors'
-import { useFormStyle } from '~ek/shared/utilities/formStyles'
+import type { IBlogPage } from '~ek/types/blog'
 import { UploadOutlined } from '@ant-design/icons'
+import {
+  useEditBlogPageMutation,
+  useGetBlogPageQuery,
+} from '~ek/redux/api/blog'
 
-interface IDrawerProps {
-  open: boolean
-  onClose: () => void
-}
+export function BlogPage(): React.ReactElement {
+  const { data, isError, isLoading } = useGetBlogPageQuery()
+  const [editBlogPage, { isLoading: editLoading }] = useEditBlogPageMutation()
 
-export function AddColor({ open, onClose }: IDrawerProps): React.ReactElement {
-  const [addColor, { isLoading }] = usePostColorMutation()
   const [form] = Form.useForm()
   const formStyle = useFormStyle()
   const [image, setImage] = React.useState<IFile>({
@@ -36,28 +28,26 @@ export function AddColor({ open, onClose }: IDrawerProps): React.ReactElement {
     fileList: [],
   })
 
-  const initialValues = {
-    title: {
-      az: '',
-      en: '',
-      ru: '',
-    },
-    image: '',
-  }
+  const initialValues = pick({
+    source: data as IBlogPage,
+    fields: ['title'],
+  })
 
-  const handleSubmit: FormProps<IPostColor>['onFinish'] = async (
-    data: IPostColor,
+  React.useEffect(() => {
+    handleFileData(data?.image as IFileProperties[], setImage)
+  }, [data])
+
+  const handleSubmit: FormProps<IBlogPage>['onFinish'] = async (
+    data: IBlogPage,
   ) => {
     const formValues = {
       ...data,
       image: image.file,
     }
     const formData = createFormData(formValues)
-
     try {
-      await addColor(formData).unwrap()
-      notifier('Yeni rəng əlavə edildi', NOTIFICATION.success)
-      onClose()
+      await editBlogPage(formData).unwrap()
+      notifier('Dəyişiklik uğurla icra edildi.', NOTIFICATION.success)
     } catch (e: unknown) {
       const errorMessage =
         e instanceof Error ? e.message : 'An unexpected error occurred'
@@ -66,137 +56,125 @@ export function AddColor({ open, onClose }: IDrawerProps): React.ReactElement {
   }
 
   return (
-    <Drawer
-      title='Yeni rəng'
-      onClose={onClose}
-      open={open}
-      size={'large'}
-      footer={
-        <Space className='py-4 flex justify-end'>
-          <Button
-            type='default'
-            onClick={onClose}
-          >
-            Close
-          </Button>
-          <Button
-            type='primary'
-            onClick={() => form.submit()}
-          >
-            Submit
-          </Button>
-        </Space>
-      }
-    >
-      <Form
-        layout='vertical'
-        form={form}
-        initialValues={initialValues}
-        onFinish={handleSubmit}
-        style={formStyle}
-      >
-        <RenderIf condition={isLoading}>
-          <Loading />
-        </RenderIf>
-        <Row gutter={{ xs: 8, sm: 16 }}>
-          <Col
-            xs={24}
-            sm={12}
-            md={8}
-          >
-            <Form.Item<IPostColor>
-              name={['title', 'az']}
-              label='Başlıq(az)'
-              rules={[
-                {
-                  required: true,
-                  whitespace: true,
-                  message: 'Zəhmət olmasa başlıq əlavə edin(az)',
-                },
-              ]}
-            >
-              <Input placeholder='Başlıq(az)' />
-            </Form.Item>
-          </Col>
-          <Col
-            xs={24}
-            sm={12}
-            md={8}
-          >
-            <Form.Item<IPostColor>
-              name={['title', 'en']}
-              label='Başlıq(en)'
-              rules={[
-                {
-                  required: true,
-                  whitespace: true,
-                  message: 'Zəhmət olmasa başlıq əlavə edin(en)',
-                },
-              ]}
-            >
-              <Input placeholder='Başlıq(en)' />
-            </Form.Item>
-          </Col>
-          <Col
-            xs={24}
-            sm={12}
-            md={8}
-          >
-            <Form.Item<IPostColor>
-              name={['title', 'ru']}
-              label='Başlıq(ru)'
-              rules={[
-                {
-                  required: true,
-                  whitespace: true,
-                  message: 'Zəhmət olmasa başlıq əlavə edin(ru)',
-                },
-              ]}
-            >
-              <Input placeholder='Başlıq(ru)' />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row>
-          <Col
-            xs={24}
-            sm={12}
-            md={8}
-          >
-            <Form.Item<IPostColor>
-              name='image'
-              label='Image'
-              valuePropName='image'
-              rules={[
-                {
-                  required: true,
-                  validator: () =>
-                    image.fileList.length > 0
-                      ? Promise.resolve()
-                      : Promise.reject(
-                        new Error('Zəhmət olmasa image fayl yükləyin!'),
-                      ),
-                },
-              ]}
-              getValueFromEvent={e => {
-                return e?.fileList
-              }}
-            >
-              <Upload
-                name='image'
-                accept='image/*'
-                maxCount={1}
-                listType='picture'
-                beforeUpload={file => beforeUploadHandler(file, setImage)}
-                fileList={image.fileList}
-                onRemove={() => setImage({ file: [], fileList: [] })}
+    <>
+      <RenderIf condition={isError}>
+        <ErrorMessage message='Məlumatların yüklənməsində xəta baş verdi' />
+      </RenderIf>
+      <RenderIf condition={isLoading}>
+        <Loading />
+      </RenderIf>
+      <RenderIf condition={!isError && !isLoading}>
+        <Form
+          layout='vertical'
+          form={form}
+          initialValues={initialValues}
+          onFinish={handleSubmit}
+          style={formStyle}
+        >
+          <RenderIf condition={isLoading}>
+            <Loading />
+          </RenderIf>
+          <Row gutter={16}>
+            <Col span={8}>
+              <Form.Item<IBlogPage>
+                name={['title', 'az']}
+                label='Başlıq(az)'
+                rules={[
+                  {
+                    required: true,
+                    whitespace: true,
+                    message: 'Zəhmət olmasa başlıq əlavə edin(az)',
+                  },
+                ]}
               >
-                <Button icon={<UploadOutlined />}>Click to upload</Button>
-              </Upload>
-            </Form.Item>
-          </Col>
-        </Row>
-      </Form>
-    </Drawer>
+                <Input placeholder='Başlıq(az)' />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item<IBlogPage>
+                name={['title', 'en']}
+                label='Başlıq(en)'
+                rules={[
+                  {
+                    required: true,
+                    whitespace: true,
+                    message: 'Zəhmət olmasa başlıq əlavə edin(en)',
+                  },
+                ]}
+              >
+                <Input placeholder='Başlıq(en)' />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item<IBlogPage>
+                name={['title', 'ru']}
+                label='Başlıq(ru)'
+                rules={[
+                  {
+                    required: true,
+                    whitespace: true,
+                    message: 'Zəhmət olmasa başlıq əlavə edin(ru)',
+                  },
+                ]}
+              >
+                <Input placeholder='Başlıq(ru)' />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={12}>
+              <Form.Item<IBlogPage>
+                name='image'
+                label='Image'
+                valuePropName='image'
+                rules={[
+                  {
+                    required: true,
+                    validator: () =>
+                      image.fileList.length > 0
+                        ? Promise.resolve()
+                        : Promise.reject(
+                          new Error('Zəhmət olmasa image fayl yükləyin!'),
+                        ),
+                  },
+                ]}
+                getValueFromEvent={e => {
+                  return e?.fileList
+                }}
+              >
+                <Upload
+                  name='image'
+                  accept='image/*'
+                  maxCount={1}
+                  listType='picture'
+                  beforeUpload={file => beforeUploadHandler(file, setImage)}
+                  fileList={image.fileList}
+                  onRemove={() => setImage({ file: [], fileList: [] })}
+                >
+                  <Button icon={<UploadOutlined />}>Click to upload</Button>
+                </Upload>
+              </Form.Item>
+            </Col>
+            <Col
+              span={12}
+              className='flex justify-end items-end'
+            >
+              <Form.Item wrapperCol={{ span: 12 }}>
+                <Space>
+                  <Button
+                    disabled={editLoading}
+                    loading={editLoading}
+                    type='primary'
+                    htmlType='submit'
+                  >
+                    Submit
+                  </Button>
+                </Space>
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form>
+      </RenderIf>
+    </>
   )
 }

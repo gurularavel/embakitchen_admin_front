@@ -5,7 +5,7 @@ import type { IBlogPage, IGetBlogs } from '~ek/types/blog'
 export const blogApi = createApi({
   reducerPath: 'blogApi',
   baseQuery: APIBaseQuery,
-  tagTypes: ['BLOG'],
+  tagTypes: ['BLOG', 'BLOGPAGE'],
   endpoints: builder => ({
     getBlogs: builder.query<IGetBlogs, IRequestParams>({
       query(params) {
@@ -44,16 +44,16 @@ export const blogApi = createApi({
       },
       invalidatesTags: () => [{ type: 'BLOG' }],
     }),
-    getBlogPage: builder.query<IBlogPage, IRequestParams>({
-      query(params) {
+    getBlogPage: builder.query<IBlogPage, void>({
+      query() {
         return {
           url: 'blog-page',
           method: 'GET',
-          params,
         }
       },
+      providesTags: () => [{ type: 'BLOGPAGE' }],
     }),
-    editBlogPage: builder.mutation<void, Omit<IBlogPage, 'id'>>({
+    editBlogPage: builder.mutation<void, FormData>({
       query(data) {
         return {
           url: 'blog-page',
@@ -61,6 +61,7 @@ export const blogApi = createApi({
           data,
         }
       },
+      invalidatesTags: () => [{ type: 'BLOGPAGE' }],
     }),
   }),
 })
