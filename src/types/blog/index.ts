@@ -2,10 +2,9 @@ export interface IBlog {
   id: number
   title: ILangContent
   slug: ILangContent
+  description: ILangContent
   content: ILangContent
-  content2: ILangContent
   image: IFileProperties[]
-  image2: IFileProperties[]
   status: boolean
 }
 export interface IGetBlogs {
@@ -14,11 +13,11 @@ export interface IGetBlogs {
 }
 
 export interface IFormBlog {
-  title: ILangContent
-  content: ILangContent
-  content2: ILangContent
   image: IFileProperties[]
-  image2: IFileProperties[]
+  title: ILangContent
+  description: ILangContent
+  similar_post_ids: number[]
+  content: ILangContent
 }
 
 export interface IBlogPage {
