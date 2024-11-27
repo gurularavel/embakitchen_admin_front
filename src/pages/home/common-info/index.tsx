@@ -1,5 +1,15 @@
 import * as React from 'react'
-import { Button, Col, Form, FormProps, Input, Row, Space, Upload } from 'antd'
+import {
+  Button,
+  Col,
+  Form,
+  FormProps,
+  Input,
+  Row,
+  Space,
+  Upload,
+  UploadFile,
+} from 'antd'
 import { ErrorMessage, Loading, RenderIf } from '~ek/shared/components'
 import {
   beforeUploadHandler,
@@ -58,8 +68,8 @@ export function HomeCommonInfo() {
           ...info,
           icon: [
             {
-              uid: info.icon.split('/').pop(),
-              name: info.icon.split('/').pop(),
+              uid: info.icon?.split('/').pop(),
+              name: info.icon?.split('/').pop(),
               url: info.icon,
             },
           ],
@@ -83,6 +93,7 @@ export function HomeCommonInfo() {
       video: video.file,
       styleImage: styleImage.file,
     }
+
     const formData = createFormData(formValues)
     try {
       await postHome(formData).unwrap()
@@ -111,51 +122,6 @@ export function HomeCommonInfo() {
           onFinish={onFinish}
           className='ml-auto mr-auto'
         >
-          <FormGroup title='Ana səhifə başlıq'>
-            <Row gutter={16}>
-              <Col span={8}>
-                <Form.Item<IFieldForm>
-                  label='Başlıq(az)'
-                  name={['title', 'az']}
-                  rules={[
-                    { required: true, message: 'Zəhmət olmasa boş saxlamayın' },
-                  ]}
-                >
-                  <Input />
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item<IFieldForm>
-                  label='Başlıq(en)'
-                  name={['title', 'en']}
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Zəhmət olmasa boş saxlamayın',
-                      whitespace: true,
-                    },
-                  ]}
-                >
-                  <Input />
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item<IFieldForm>
-                  label='Başlıq(ru)'
-                  name={['title', 'ru']}
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Zəhmət olmasa boş saxlamayın',
-                      whitespace: true,
-                    },
-                  ]}
-                >
-                  <Input />
-                </Form.Item>
-              </Col>
-            </Row>
-          </FormGroup>
           <FormGroup title='Video Section'>
             <Row gutter={16}>
               <Col span={8}>
@@ -163,7 +129,11 @@ export function HomeCommonInfo() {
                   label='Başlıq(az)'
                   name={['videoSection', 'title', 'az']}
                   rules={[
-                    { required: true, message: 'Zəhmət olmasa boş saxlamayın' },
+                    {
+                      required: true,
+                      message: 'Zəhmət olmasa boş saxlamayın',
+                      whitespace: true,
+                    },
                   ]}
                 >
                   <Input />
@@ -204,7 +174,11 @@ export function HomeCommonInfo() {
                   label='Kontent(az)'
                   name={['videoSection', 'content', 'az']}
                   rules={[
-                    { required: true, message: 'Zəhmət olmasa boş saxlamayın' },
+                    {
+                      required: true,
+                      message: 'Zəhmət olmasa boş saxlamayın',
+                      whitespace: true,
+                    },
                   ]}
                 >
                   <Input />
@@ -275,6 +249,7 @@ export function HomeCommonInfo() {
                                 {
                                   required: true,
                                   message: 'Zəhmət olmasa boş saxlamayın',
+                                  whitespace: true,
                                 },
                               ]}
                             >
@@ -289,6 +264,7 @@ export function HomeCommonInfo() {
                                 {
                                   required: true,
                                   message: 'Zəhmət olmasa boş saxlamayın',
+                                  whitespace: true,
                                 },
                               ]}
                             >
@@ -303,6 +279,7 @@ export function HomeCommonInfo() {
                                 {
                                   required: true,
                                   message: 'Zəhmət olmasa boş saxlamayın',
+                                  whitespace: true,
                                 },
                               ]}
                             >
@@ -317,6 +294,7 @@ export function HomeCommonInfo() {
                                 {
                                   required: true,
                                   message: 'Zəhmət olmasa boş saxlamayın',
+                                  whitespace: true,
                                 },
                               ]}
                             >
@@ -331,6 +309,7 @@ export function HomeCommonInfo() {
                                 {
                                   required: true,
                                   message: 'Zəhmət olmasa boş saxlamayın',
+                                  whitespace: true,
                                 },
                               ]}
                             >
@@ -345,6 +324,7 @@ export function HomeCommonInfo() {
                                 {
                                   required: true,
                                   message: 'Zəhmət olmasa boş saxlamayın',
+                                  whitespace: true,
                                 },
                               ]}
                             >
@@ -356,13 +336,26 @@ export function HomeCommonInfo() {
                               name={[name, 'icon']}
                               label='Icon'
                               valuePropName='fileList'
-                              getValueFromEvent={e =>
-                                Array.isArray(e) ? e : e?.fileList
-                              }
+                              getValueFromEvent={e => {
+                                const fileList = Array.isArray(e)
+                                  ? e
+                                  : e?.fileList
+                                return fileList?.map(
+                                  (fileItem: UploadFile) =>
+                                    fileItem.originFileObj || fileItem,
+                                )
+                              }}
                               rules={[
                                 {
                                   required: true,
-                                  message: 'Zəhmət olmasa boş saxlamayın',
+                                  validator: (_, value) =>
+                                    value && value.length > 0
+                                      ? Promise.resolve()
+                                      : Promise.reject(
+                                        new Error(
+                                          'Zəhmət olmasa şəkil yükləyin',
+                                        ),
+                                      ),
                                 },
                               ]}
                             >
@@ -431,7 +424,11 @@ export function HomeCommonInfo() {
                   label='Sifariş yarat başlıq(az)'
                   name={['createOrderSection', 'title', 'az']}
                   rules={[
-                    { required: true, message: 'Zəhmət olmasa boş saxlamayın' },
+                    {
+                      required: true,
+                      message: 'Zəhmət olmasa boş saxlamayın',
+                      whitespace: true,
+                    },
                   ]}
                 >
                   <Input />
@@ -472,7 +469,11 @@ export function HomeCommonInfo() {
                   label='Sifariş yarat kontent(az)'
                   name={['createOrderSection', 'content', 'az']}
                   rules={[
-                    { required: true, message: 'Zəhmət olmasa boş saxlamayın' },
+                    {
+                      required: true,
+                      message: 'Zəhmət olmasa boş saxlamayın',
+                      whitespace: true,
+                    },
                   ]}
                 >
                   <Input />
@@ -513,6 +514,17 @@ export function HomeCommonInfo() {
                   name='createOrderImage'
                   label='Sifariş yarat banner'
                   valuePropName='createOrderImage'
+                  rules={[
+                    {
+                      required: true,
+                      validator: () =>
+                        createOrderImage.fileList.length > 0
+                          ? Promise.resolve()
+                          : Promise.reject(
+                            new Error('Zəhmət olmasa şəkil yükləyin!'),
+                          ),
+                    },
+                  ]}
                 >
                   <Upload
                     name='createOrderImage'
@@ -539,6 +551,17 @@ export function HomeCommonInfo() {
                 name='styleImage'
                 label='Sifariş mərhələsi banner'
                 valuePropName='styleImage'
+                rules={[
+                  {
+                    required: true,
+                    validator: () =>
+                      styleImage.fileList.length > 0
+                        ? Promise.resolve()
+                        : Promise.reject(
+                          new Error('Zəhmət olmasa şəkil yükləyin!'),
+                        ),
+                  },
+                ]}
               >
                 <Upload
                   name='styleImage'
@@ -571,6 +594,7 @@ export function HomeCommonInfo() {
                               {
                                 required: true,
                                 message: 'Zəhmət olmasa boş saxlamayın',
+                                whitespace: true,
                               },
                             ]}
                           >
@@ -585,6 +609,7 @@ export function HomeCommonInfo() {
                               {
                                 required: true,
                                 message: 'Zəhmət olmasa boş saxlamayın',
+                                whitespace: true,
                               },
                             ]}
                           >
@@ -599,6 +624,7 @@ export function HomeCommonInfo() {
                               {
                                 required: true,
                                 message: 'Zəhmət olmasa boş saxlamayın',
+                                whitespace: true,
                               },
                             ]}
                           >
@@ -613,6 +639,7 @@ export function HomeCommonInfo() {
                               {
                                 required: true,
                                 message: 'Zəhmət olmasa boş saxlamayın',
+                                whitespace: true,
                               },
                             ]}
                           >
@@ -627,6 +654,7 @@ export function HomeCommonInfo() {
                               {
                                 required: true,
                                 message: 'Zəhmət olmasa boş saxlamayın',
+                                whitespace: true,
                               },
                             ]}
                           >
@@ -641,6 +669,7 @@ export function HomeCommonInfo() {
                               {
                                 required: true,
                                 message: 'Zəhmət olmasa boş saxlamayın',
+                                whitespace: true,
                               },
                             ]}
                           >

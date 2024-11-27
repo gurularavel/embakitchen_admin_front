@@ -1,6 +1,5 @@
 export interface IHomeInfo {
   id: number
-  title: ILangContent
   videoSection: ITitleContent
   infoArray: Info[]
   styleArray: ITitleContent[]
