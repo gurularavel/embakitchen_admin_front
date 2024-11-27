@@ -293,7 +293,7 @@ export function AboutContent(): React.ReactElement {
                             <Col span={6}>
                               <Form.Item
                                 label='Həllərə nümunə(az)'
-                                name={[name, 'title', 'az']}
+                                name={[name, 'az']}
                                 rules={[
                                   {
                                     required: true,
@@ -308,7 +308,7 @@ export function AboutContent(): React.ReactElement {
                             <Col span={6}>
                               <Form.Item
                                 label='Həllərə nümunə(en)'
-                                name={[name, 'title', 'en']}
+                                name={[name, 'en']}
                                 rules={[
                                   {
                                     required: true,
@@ -323,7 +323,7 @@ export function AboutContent(): React.ReactElement {
                             <Col span={6}>
                               <Form.Item
                                 label='Həllərə nümunə(ru)'
-                                name={[name, 'title', 'ru']}
+                                name={[name, 'ru']}
                                 rules={[
                                   {
                                     required: true,
