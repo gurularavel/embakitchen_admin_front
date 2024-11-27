@@ -20,3 +20,9 @@ export interface IFormBlog {
   image: IFileProperties[]
   image2: IFileProperties[]
 }
+
+export interface IBlogPage {
+  id: number
+  title: ILangContent
+  image: IFileProperties[]
+}

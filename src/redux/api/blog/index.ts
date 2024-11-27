@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { APIBaseQuery } from '~ek/redux/api/axiosBase'
-import type { IGetBlogs } from '~ek/types/blog'
+import type { IBlogPage, IGetBlogs } from '~ek/types/blog'
 
 export const blogApi = createApi({
   reducerPath: 'blogApi',
@@ -44,6 +44,24 @@ export const blogApi = createApi({
       },
       invalidatesTags: () => [{ type: 'BLOG' }],
     }),
+    getBlogPage: builder.query<IBlogPage, IRequestParams>({
+      query(params) {
+        return {
+          url: 'blog-page',
+          method: 'GET',
+          params,
+        }
+      },
+    }),
+    editBlogPage: builder.mutation<void, Omit<IBlogPage, 'id'>>({
+      query(data) {
+        return {
+          url: 'blog-page',
+          method: 'POST',
+          data,
+        }
+      },
+    }),
   }),
 })
 
@@ -52,4 +70,6 @@ export const {
   useDeleteBlogsMutation,
   useEditBlogMutation,
   usePostBlogMutation,
+  useGetBlogPageQuery,
+  useEditBlogPageMutation,
 } = blogApi
