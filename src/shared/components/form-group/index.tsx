@@ -1,15 +1,18 @@
-import { Col, Row, theme } from 'antd'
+import React from 'react'
+import { Col, theme } from 'antd'
 
-export const FormPartial = ({
+export const FormGroup = ({
+  col = 24,
   title,
   children,
 }: {
-  title: string
+  col?: number
+  title?: string
   children: React.ReactNode
 }) => {
   const { token } = theme.useToken()
 
-  const rowStyle = {
+  const filedsStyle = {
     maxWidth: 'none',
     background: token.colorFillAlter,
     borderRadius: token.borderRadiusLG,
@@ -18,14 +21,14 @@ export const FormPartial = ({
   }
 
   return (
-    <Row
-      gutter={16}
-      style={rowStyle}
+    <Col
+      style={filedsStyle}
+      span={col}
     >
-      <Col span={24}>
+      <div>
         <h3 className='font-semibold text-lg'>{title}</h3>
-      </Col>
-      {children}
-    </Row>
+      </div>
+      <Col>{children}</Col>
+    </Col>
   )
 }
