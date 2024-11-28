@@ -17,7 +17,6 @@ export interface InfoBlock {
   id: number
   title: ILangContent
   content: ILangContent
-  slug: ILangContent
   status: boolean
 }
 
