@@ -17,7 +17,7 @@ import {
   notifier,
 } from '~ek/shared/helpers'
 import { NOTIFICATION } from '~ek/shared/const/constants'
-import { IFormSlider } from '~ek/types/home/slider'
+import type { IFormSlider } from '~ek/types/home/slider'
 import { UploadOutlined } from '@ant-design/icons'
 import { usePostSliderMutation } from '~ek/redux/api/home/slider'
 import { useFormStyle } from '~ek/shared/utilities/formStyles'
