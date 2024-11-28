@@ -23,11 +23,7 @@ interface IDrawerProps {
   block: InfoBlock
 }
 
-interface IFieldForm {
-  title: ILangContent
-  content: ILangContent
-  status: boolean
-}
+type FormField = Omit<InfoBlock, 'id'>
 
 export function EditInfoBlock({
   open,
@@ -46,25 +42,8 @@ export function EditInfoBlock({
   })
   const [editBlock, { isLoading }] = useEditInfoBlockMutation()
 
-  const initialValues: InfoBlock = {
-    content: {
-      az: block.content.az,
-      en: block.content.en,
-      ru: block.content.ru,
-    },
-    title: {
-      az: block.title.az,
-      en: block.title.en,
-      ru: block.title.ru,
-    },
-    status: block.status,
-    id: block.id,
-    slug: {
-      az: block.slug.az,
-      en: block.slug.en,
-      ru: block.slug.ru,
-    },
-  }
+  const initialValues: InfoBlock = block
+
   const handleRichContent = (field: 'az' | 'ru' | 'en', content: string) => {
     setContentRichText(prevState => ({ ...prevState, [field]: content }))
   }
@@ -74,8 +53,8 @@ export function EditInfoBlock({
     form.setFieldsValue({ status: checked })
   }
 
-  const handleSubmit: FormProps<IFieldForm>['onFinish'] = async (
-    data: IFieldForm,
+  const handleSubmit: FormProps<FormField>['onFinish'] = async (
+    data: FormField,
   ) => {
     try {
       const postData = { id: block.id, ...data }
@@ -124,7 +103,7 @@ export function EditInfoBlock({
             sm={12}
             md={8}
           >
-            <Form.Item<IFieldForm>
+            <Form.Item<FormField>
               name={['title', 'az']}
               label='Başlıq(az)'
               rules={[
@@ -143,7 +122,7 @@ export function EditInfoBlock({
             sm={12}
             md={8}
           >
-            <Form.Item<IFieldForm>
+            <Form.Item<FormField>
               name={['title', 'en']}
               label='Başlıq(en)'
               rules={[
@@ -162,7 +141,7 @@ export function EditInfoBlock({
             sm={12}
             md={8}
           >
-            <Form.Item<IFieldForm>
+            <Form.Item<FormField>
               name={['title', 'ru']}
               label='Başlıq(ru)'
               rules={[
@@ -179,7 +158,7 @@ export function EditInfoBlock({
         </Row>
         <Row gutter={16}>
           <Col xs={24}>
-            <Form.Item<IFieldForm>
+            <Form.Item<FormField>
               label='Content(az)'
               name={['content', 'az']}
               rules={[
@@ -200,7 +179,7 @@ export function EditInfoBlock({
             </Form.Item>
           </Col>
           <Col xs={24}>
-            <Form.Item<IFieldForm>
+            <Form.Item<FormField>
               label='Content(en)'
               name={['content', 'en']}
               rules={[
@@ -221,7 +200,7 @@ export function EditInfoBlock({
             </Form.Item>
           </Col>
           <Col xs={24}>
-            <Form.Item<IFieldForm>
+            <Form.Item<FormField>
               label='Content(ru)'
               name={['content', 'az']}
               rules={[
@@ -242,7 +221,7 @@ export function EditInfoBlock({
             </Form.Item>
           </Col>
           <Col xs={24}>
-            <Form.Item<IFieldForm>
+            <Form.Item<FormField>
               name='status'
               label='Status'
             >

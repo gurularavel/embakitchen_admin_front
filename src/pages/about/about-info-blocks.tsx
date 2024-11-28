@@ -164,8 +164,8 @@ export function AboutInfoBlocks(): React.ReactElement {
           <Table
             dataSource={data?.data.map((block: InfoBlock) => ({
               ...block,
-              key: block.id,
             }))}
+            rowKey='id'
             rowSelection={rowSelection}
             columns={columns}
             pagination={{
