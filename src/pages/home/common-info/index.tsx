@@ -238,7 +238,7 @@ export function HomeCommonInfo() {
               <Form.List name='infoArray'>
                 {(fields, { add, remove }) => (
                   <>
-                    {fields.map(({ key, name }, index) => (
+                    {fields.map(({ key, name }) => (
                       <FormGroup key={key}>
                         <Row gutter={16}>
                           <Col span={8}>
@@ -363,19 +363,6 @@ export function HomeCommonInfo() {
                                 accept='image/*'
                                 listType='picture'
                                 maxCount={1}
-                                beforeUpload={file =>
-                                  beforeUploadHandler(file, fileList => {
-                                    const updatedArray =
-                                      form.getFieldValue('infoArray')
-                                    updatedArray[index].icon = [
-                                      { file, fileList },
-                                    ]
-                                    form.setFieldsValue({
-                                      infoArray: updatedArray,
-                                    })
-                                  })
-                                }
-                                fileList={video.fileList}
                               >
                                 <Button icon={<UploadOutlined />}>
                                   Upload Icon
