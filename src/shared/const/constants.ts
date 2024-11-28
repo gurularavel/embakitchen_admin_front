@@ -11,6 +11,9 @@ export const enum URLS {
   COLOR = '/colors',
   BLOGS = '/blogs',
   BLOG_PAGE = '/blog-page',
+  CITY = '/city',
+  DISTRICT = '/district',
+  RURAL = '/rural',
 }
 
 export const enum NOTIFICATION {
