@@ -6,7 +6,10 @@ export interface IStore {
   slug: ILangContent
   address: ILangContent
   phone: string
-  schedule: string
+  schedule: {
+    open: string
+    close: string
+  }
   email: string
   city: ICity
 }

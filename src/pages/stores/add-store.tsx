@@ -11,7 +11,8 @@ import {
   Select,
   Spin,
 } from 'antd'
-import InputMask from 'react-input-mask'
+import { MaskedInput } from 'antd-mask-input'
+import { TimePicker } from 'antd'
 import { Loading, RenderIf } from '~ek/shared/components'
 import { notifier } from '~ek/shared/helpers'
 import { NOTIFICATION } from '~ek/shared/const/constants'
@@ -30,6 +31,10 @@ export function AddStoreDrawer({
   open,
   onClose,
 }: IDrawerProps): React.ReactElement {
+  const [timepicker, setTimePicker] = React.useState<{
+    open: string
+    close: string
+  }>({ open: '', close: '' })
   const { data: cityData, isLoading: cityLoading } = useGetCitiesQuery({
     page: 1,
   })
@@ -57,8 +62,15 @@ export function AddStoreDrawer({
   const onFinish: FormProps<FormField>['onFinish'] = async (
     values: FormField,
   ) => {
+    const formValues = {
+      ...values,
+      schedule: {
+        open: timepicker.open,
+        close: timepicker.close,
+      },
+    }
     try {
-      await addStore(values).unwrap()
+      await addStore(formValues).unwrap()
       notifier('Yeni mağaza əlavə edildi', NOTIFICATION.success)
       onClose()
     } catch (e: unknown) {
@@ -196,7 +208,7 @@ export function AddStoreDrawer({
           </Col>
         </Row>
         <Row gutter={16}>
-          <Col span={12}>
+          <Col span={8}>
             <Form.Item
               label='Şəhər'
               name='city'
@@ -230,7 +242,7 @@ export function AddStoreDrawer({
               </Select>
             </Form.Item>
           </Col>
-          <Col span={12}>
+          <Col span={8}>
             <Form.Item<FormField>
               name={'email'}
               label='Email'
@@ -248,40 +260,97 @@ export function AddStoreDrawer({
               />
             </Form.Item>
           </Col>
-          <Col span={12}>
-            <Form.Item<FormField>
-              name={'phone'}
+          <Col span={8}>
+            <Form.Item
               label='Telefon nömrəsi'
+              name='phone'
               rules={[
                 { required: true, message: 'Zəhmət olmasa boş saxlamayın.' },
                 {
                   pattern: /^\+994 \d{2} \d{3} \d{2} \d{2}$/,
-                  message: 'Zəhmət olmasa düzgün formatda telefon daxil edin',
+                  message: 'Zəhmət olmasa düzgün formatda telefon daxil edin.',
                 },
               ]}
             >
-              <InputMask
-                mask='+\\994 99 999 99 99'
-                maskChar={null}
-                placeholder='Telefon'
-              >
-                {() => <Input />}
-              </InputMask>
+              <MaskedInput mask={'+994 00 000 00 00'} />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item<FormField>
-              name={'schedule'}
+              name={['schedule', 'open']}
               label='İşləmə saatları'
               rules={[
                 {
                   required: true,
-                  whitespace: true,
-                  message: 'Zəhmət olmasa boş saxlamayın',
+                  validator: () =>
+                    timepicker.open
+                      ? Promise.resolve()
+                      : Promise.reject(
+                        new Error('Zəhmət olmasa boş saxlamayın'),
+                      ),
                 },
               ]}
             >
-              <Input placeholder='İşləmə saatları' />
+              <TimePicker
+                style={{ width: '100%' }}
+                format={'HH:mm'}
+                onChange={time => {
+                  setTimePicker(prev => ({
+                    ...prev,
+                    open: time ? time.format('HH:mm') : '',
+                  }))
+                }}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item<FormField>
+              name={['schedule', 'close']}
+              label='İşləmə saatları'
+              rules={[
+                {
+                  required: true,
+                  validator: () =>
+                    timepicker.close
+                      ? Promise.resolve()
+                      : Promise.reject(
+                        new Error('Zəhmət olmasa boş saxlamayın'),
+                      ),
+                },
+              ]}
+            >
+              <TimePicker
+                style={{ width: '100%' }}
+                format={'HH:mm'}
+                onChange={time => {
+                  setTimePicker(prev => ({
+                    ...prev,
+                    close: time ? time.format('HH:mm') : '',
+                  }))
+                }}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              label='Longitude'
+              name={['coords', 'longitude']}
+              rules={[
+                { required: true, message: 'Zəhmət olmasa boş saxlamayın.' },
+              ]}
+            >
+              <Input placeholder='Longitude' />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              label='Latitude'
+              name={['coords', 'latitude']}
+              rules={[
+                { required: true, message: 'Zəhmət olmasa boş saxlamayın.' },
+              ]}
+            >
+              <Input placeholder='Latitude' />
             </Form.Item>
           </Col>
         </Row>
