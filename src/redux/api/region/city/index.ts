@@ -1,17 +1,18 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { APIBaseQuery } from '../../axiosBase'
-import { ICity } from '~ek/types/region'
+import { CityApiResponse, ICity } from '~ek/types/region'
 
 export const cityApi = createApi({
   reducerPath: 'cityApi',
   baseQuery: APIBaseQuery,
   tagTypes: ['CITY'],
   endpoints: builder => ({
-    getCities: builder.query({
-      query() {
+    getCities: builder.query<CityApiResponse, IRequestParams>({
+      query(params) {
         return {
           method: 'GET',
           url: 'cities',
+          params,
         }
       },
       providesTags: () => [{ type: 'CITY' }],

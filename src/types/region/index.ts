@@ -4,3 +4,5 @@ export interface ICity {
   rurals: []
   status: boolean
 }
+
+export type CityApiResponse = ApiResponse<ICity[]>

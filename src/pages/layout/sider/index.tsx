@@ -14,13 +14,12 @@ import {
   FundOutlined,
   PicCenterOutlined,
   HighlightOutlined,
-  PicCenterOutlined,
-  HighlightOutlined,
   AlignCenterOutlined,
   AppstoreOutlined,
   BlockOutlined,
   BorderOutlined,
   GlobalOutlined,
+  EnvironmentOutlined,
 } from '@ant-design/icons'
 import logo from '~ek/assets/images/132x20.67.svg'
 const { Sider } = Layout
@@ -155,6 +154,12 @@ const items: IMenu[] = [
         icon: <AppstoreOutlined className={'!text-lg'} />,
       },
     ],
+  },
+  {
+    key: URLS.STORES,
+    path: URLS.STORES,
+    label: <Link to={URLS.STORES}>Mağazalar</Link>,
+    icon: <EnvironmentOutlined className={'!text-lg'} />,
   },
 ]
 
