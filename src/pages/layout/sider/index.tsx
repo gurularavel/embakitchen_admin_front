@@ -15,6 +15,10 @@ import {
   PicCenterOutlined,
   HighlightOutlined,
   AlignCenterOutlined,
+  AppstoreOutlined,
+  BlockOutlined,
+  BorderOutlined,
+  GlobalOutlined,
 } from '@ant-design/icons'
 import logo from '~ek/assets/images/132x20.67.svg'
 const { Sider } = Layout
@@ -122,6 +126,31 @@ const items: IMenu[] = [
         label: <Link to={URLS.BLOG_PAGE}>Bloq səhifə başlığı </Link>,
         path: URLS.BLOG_PAGE,
         icon: <PicCenterOutlined className={'!text-lg'} />,
+      },
+    ],
+  },
+  {
+    key: '5',
+    label: 'Region',
+    icon: <GlobalOutlined className={'!text-lg'} />,
+    children: [
+      {
+        key: URLS.CITY,
+        label: <Link to={URLS.CITY}>Şəhərlər</Link>,
+        path: URLS.CITY,
+        icon: <BorderOutlined className={'!text-lg'} />,
+      },
+      {
+        key: URLS.DISTRICT,
+        label: <Link to={URLS.DISTRICT}>Rayonlar</Link>,
+        path: URLS.DISTRICT,
+        icon: <BlockOutlined className={'!text-lg'} />,
+      },
+      {
+        key: URLS.RURAL,
+        label: <Link to={URLS.RURAL}>Kəndlər</Link>,
+        path: URLS.RURAL,
+        icon: <AppstoreOutlined className={'!text-lg'} />,
       },
     ],
   },

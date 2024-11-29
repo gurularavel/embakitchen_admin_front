@@ -11,6 +11,7 @@ import { homeCommonApi } from '~ek/redux/api/home/common-info'
 import { campaignApi } from '~ek/redux/api/campaign'
 import { colorsApi } from '~ek/redux/api/colors'
 import { blogApi } from '~ek/redux/api/blog'
+import { cityApi } from '~ek/redux/api/region/city'
 
 export const reducer = {
   auth: AuthReducer,
@@ -25,6 +26,7 @@ export const reducer = {
   [campaignApi.reducerPath]: campaignApi.reducer,
   [colorsApi.reducerPath]: colorsApi.reducer,
   [blogApi.reducerPath]: blogApi.reducer,
+  [cityApi.reducerPath]: cityApi.reducer,
 }
 export const middlewares = [
   authApi.middleware,
@@ -38,4 +40,5 @@ export const middlewares = [
   campaignApi.middleware,
   colorsApi.middleware,
   blogApi.middleware,
+  cityApi.middleware,
 ]
