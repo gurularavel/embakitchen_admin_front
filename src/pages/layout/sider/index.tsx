@@ -14,6 +14,7 @@ import {
   FundOutlined,
   PicCenterOutlined,
   HighlightOutlined,
+  AlignCenterOutlined,
 } from '@ant-design/icons'
 import logo from '~ek/assets/images/132x20.67.svg'
 const { Sider } = Layout
@@ -48,6 +49,12 @@ const items: IMenu[] = [
     label: 'Əsas Səhifə',
     icon: <BankOutlined className={'!text-lg'} />,
     children: [
+      {
+        key: URLS.HOME_COMMON_INFO,
+        label: <Link to={URLS.HOME_COMMON_INFO}>Ümumi məlumatlar</Link>,
+        path: URLS.HOME_COMMON_INFO,
+        icon: <AlignCenterOutlined className={'!text-lg'} />,
+      },
       {
         key: URLS.HOME_COUNTERS,
         label: <Link to={URLS.HOME_COUNTERS}>Sayğac</Link>,

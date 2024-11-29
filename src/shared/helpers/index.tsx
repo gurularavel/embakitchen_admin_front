@@ -72,8 +72,7 @@ export const createFormData = (
 ): FormData => {
   Object.entries(formValues).forEach(([key, value]) => {
     const formKey = parentKey ? `${parentKey}[${key}]` : key
-
-    if (Array.isArray(value) && (formKey === 'image' || formKey === 'video')) {
+    if (Array.isArray(value) && value.some(item => item instanceof File)) {
       value.forEach(file => {
         formData.append(formKey, file)
       })
@@ -83,7 +82,6 @@ export const createFormData = (
       formData.append(formKey, value as string | Blob)
     }
   })
-
   return formData
 }
 
