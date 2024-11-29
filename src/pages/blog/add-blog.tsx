@@ -30,12 +30,8 @@ interface IDrawerProps {
 }
 
 export function AddBlog({ open, onClose }: IDrawerProps): React.ReactElement {
-  const {
-    data,
-    // isLoading: IsLoadingBlogs,
-    // isError,
-  } = useGetBlogsQuery({
-    page: 0,
+  const { data } = useGetBlogsQuery({
+    page: 1,
   })
   const options = data?.data?.map(d => ({ value: d.id, label: d.title.az }))
   const [addBlog, { isLoading }] = usePostBlogMutation()
@@ -69,6 +65,7 @@ export function AddBlog({ open, onClose }: IDrawerProps): React.ReactElement {
       en: '',
       ru: '',
     },
+    similar_post_ids: [],
   }
 
   const handleRichContent = (field: 'az' | 'ru' | 'en', content: string) => {
@@ -130,7 +127,7 @@ export function AddBlog({ open, onClose }: IDrawerProps): React.ReactElement {
           <Loading />
         </RenderIf>
 
-        <Row gutter={[24, 24]}>
+        <Row gutter={[16, 16]}>
           <FieldsGroup col={24}>
             <Row>
               <Col
@@ -242,13 +239,15 @@ export function AddBlog({ open, onClose }: IDrawerProps): React.ReactElement {
                 md={24}
               >
                 <Form.Item<IFormBlog>
-                  // name={['similar_post_ids', 'az']}
-                  label='Bloqların siyahısı'
+                  name={['similar_post_ids']}
+                  label='Oxşar bloqları seçin'
                 >
                   <Select
-                    defaultValue={options ? options[0].label : ''}
-                    onChange={() => {}}
+                    mode='multiple'
+                    style={{ width: '100%' }}
+                    placeholder='Oxşar bloqları seçin'
                     options={options || []}
+                    optionRender={option => <Space>{option.label}</Space>}
                   />
                 </Form.Item>
               </Col>
