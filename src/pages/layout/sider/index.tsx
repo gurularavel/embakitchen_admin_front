@@ -14,8 +14,6 @@ import {
   FundOutlined,
   PicCenterOutlined,
   HighlightOutlined,
-  PicCenterOutlined,
-  HighlightOutlined,
   AlignCenterOutlined,
   AppstoreOutlined,
   BlockOutlined,

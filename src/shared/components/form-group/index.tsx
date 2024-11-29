@@ -1,15 +1,13 @@
 import React from 'react'
 import { Col, theme } from 'antd'
 
-export const FormGroup = ({
-  col = 24,
-  title,
-  children,
-}: {
+interface FormGroup {
   col?: number
   title?: string
   children: React.ReactNode
-}) => {
+}
+
+export const FormGroup = ({ col = 24, title, children }: FormGroup) => {
   const { token } = theme.useToken()
 
   const filedsStyle = {
