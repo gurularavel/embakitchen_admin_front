@@ -162,9 +162,7 @@ export function AboutInfoBlocks(): React.ReactElement {
         </RenderIf>
         <RenderIf condition={data?.data?.length}>
           <Table
-            dataSource={data?.data.map((block: InfoBlock) => ({
-              ...block,
-            }))}
+            dataSource={data?.data}
             rowKey='id'
             rowSelection={rowSelection}
             columns={columns}

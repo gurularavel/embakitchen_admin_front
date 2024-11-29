@@ -12,7 +12,8 @@ import {
   GoldOutlined,
   BgColorsOutlined,
   FundOutlined,
-  GroupOutlined,
+  PicCenterOutlined,
+  HighlightOutlined,
   AlignCenterOutlined,
 } from '@ant-design/icons'
 import logo from '~ek/assets/images/132x20.67.svg'
@@ -106,10 +107,23 @@ const items: IMenu[] = [
     icon: <BgColorsOutlined className={'!text-lg'} />,
   },
   {
-    key: URLS.BLOG,
-    path: URLS.BLOG,
-    label: <Link to={URLS.BLOG}>Blog</Link>,
-    icon: <GroupOutlined className={'!text-lg'} />,
+    key: '4',
+    label: 'Blog',
+    icon: <HighlightOutlined className={'!text-lg'} />,
+    children: [
+      {
+        key: URLS.BLOGS,
+        label: <Link to={URLS.BLOGS}>Bloqlar</Link>,
+        path: URLS.BLOGS,
+        icon: <ProjectOutlined className={'!text-lg'} />,
+      },
+      {
+        key: URLS.BLOG_PAGE,
+        label: <Link to={URLS.BLOG_PAGE}>Bloq səhifə başlığı </Link>,
+        path: URLS.BLOG_PAGE,
+        icon: <PicCenterOutlined className={'!text-lg'} />,
+      },
+    ],
   },
 ]
 

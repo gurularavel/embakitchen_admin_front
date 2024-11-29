@@ -18,7 +18,10 @@ import { useDeleteBlogsMutation, useGetBlogsQuery } from '~ek/redux/api/blog'
 
 export function Blogs(): React.ReactElement {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([])
-  const [selectedBlog, setSelectedBlog] = React.useState<IBlog | null>(null)
+  const [selectedBlog, setSelectedBlog] = React.useState<Omit<
+    IBlog,
+    'similar_posts'
+  > | null>(null)
   const [pageParams, setPageParams] = React.useState<IPageParams>({
     take: 10,
     current: 1,
@@ -49,7 +52,7 @@ export function Blogs(): React.ReactElement {
 
   const handleEditButton = (
     e: React.MouseEvent<HTMLElement, MouseEvent>,
-    blog: IBlog,
+    blog: Omit<IBlog, 'similar_posts'>,
   ) => {
     e.stopPropagation()
     setDrawerType('edit')
@@ -61,11 +64,12 @@ export function Blogs(): React.ReactElement {
     setSelectedRowKeys([])
   }
 
-  const rowSelection: TableProps<IBlog>['rowSelection'] = {
-    onChange: (selectedRowKeys: React.Key[]) => {
-      setSelectedRowKeys(selectedRowKeys)
-    },
-  }
+  const rowSelection: TableProps<Omit<IBlog, 'similar_posts'>>['rowSelection'] =
+    {
+      onChange: (selectedRowKeys: React.Key[]) => {
+        setSelectedRowKeys(selectedRowKeys)
+      },
+    }
   const removeBlog = async (ids: number[]): Promise<void> => {
     try {
       await deleteBlog({ ids: ids })
@@ -83,7 +87,7 @@ export function Blogs(): React.ReactElement {
       title: 'Blog',
       dataIndex: 'title',
       key: 'title',
-      render: (_: string, blog: IBlog, i: number) => (
+      render: (_: string, blog: Omit<IBlog, 'similar_posts'>, i: number) => (
         <h2>
           {i + 1}. {blog.title['az']}
         </h2>
@@ -93,7 +97,7 @@ export function Blogs(): React.ReactElement {
       title: 'Actions',
       dataIndex: 'action',
       key: 'action',
-      render: (_: string, blog: IBlog) => (
+      render: (_: string, blog: Omit<IBlog, 'similar_posts'>) => (
         <Space size='middle'>
           <Button onClick={e => handleEditButton(e, blog)}>
             <FormOutlined />
@@ -158,10 +162,8 @@ export function Blogs(): React.ReactElement {
         </RenderIf>
         <RenderIf condition={data?.data?.length}>
           <Table
-            dataSource={data?.data.map((blog: IBlog) => ({
-              ...blog,
-              key: blog.id,
-            }))}
+            dataSource={data?.data}
+            rowKey='id'
             rowSelection={rowSelection}
             columns={columns}
             pagination={{
