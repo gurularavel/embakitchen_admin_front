@@ -69,9 +69,9 @@ export function EditBlog({
     fileList: [],
   })
   const [contentRichText, setContentRichText] = React.useState<ILangContent>({
-    az: blog.content.az,
-    ru: blog.content.ru,
-    en: blog.content.en,
+    az: '',
+    ru: '',
+    en: '',
   })
 
   React.useEffect(() => {
@@ -84,6 +84,7 @@ export function EditBlog({
         'similar_post_ids',
         fullBlogData.similar_posts?.map(post => post.id),
       )
+      setContentRichText(fullBlogData.content)
     }
   }, [fullBlogData, form])
 

@@ -6,7 +6,7 @@ export interface IBlog {
   content: ILangContent
   image: IFileProperties[]
   status: boolean
-  similar_posts: Omit<IBlog, 'similar_posts'>[]
+  similar_posts: Omit<IBlog, 'similar_posts' | 'content'>[]
 }
 
 export interface IGetBlogs {
@@ -26,4 +26,5 @@ export interface IBlogPage {
   id: number
   title: ILangContent
   image: IFileProperties[]
+  similar_article_title: ILangContent
 }

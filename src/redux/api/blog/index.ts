@@ -37,7 +37,6 @@ export const blogApi = createApi({
       query(id: number) {
         return { method: 'GET', url: `posts/${id}` }
       },
-      transformResponse: (response: [IBlog]) => response[0],
       providesTags: () => [{ type: 'BLOG' }],
     }),
     editBlog: builder.mutation<void, IPutFormData>({
