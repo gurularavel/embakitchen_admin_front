@@ -13,6 +13,7 @@ import { colorsApi } from '~ek/redux/api/colors'
 import { blogApi } from '~ek/redux/api/blog'
 import { cityApi } from '~ek/redux/api/region/city'
 import { districtApi } from '~ek/redux/api/region/district'
+import { tagApi } from '~ek/redux/api/tags'
 
 export const reducer = {
   auth: AuthReducer,
@@ -29,6 +30,7 @@ export const reducer = {
   [blogApi.reducerPath]: blogApi.reducer,
   [cityApi.reducerPath]: cityApi.reducer,
   [districtApi.reducerPath]: districtApi.reducer,
+  [tagApi.reducerPath]: tagApi.reducer,
 }
 export const middlewares = [
   authApi.middleware,
@@ -44,4 +46,5 @@ export const middlewares = [
   blogApi.middleware,
   cityApi.middleware,
   districtApi.middleware,
+  tagApi.middleware,
 ]

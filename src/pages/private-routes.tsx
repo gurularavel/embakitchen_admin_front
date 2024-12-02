@@ -9,6 +9,7 @@ import { Color } from '~ek/pages/colors'
 import { City, District } from '~ek/pages/region'
 import { Blogs } from '~ek/pages/blog'
 import { BlogPage } from '~ek/pages/blog/blog-page'
+import { Tags } from '~ek/pages/tags'
 import { URLS } from '~ek/shared/const/constants'
 
 export function PrivateRoutes(): React.ReactElement {
@@ -75,6 +76,10 @@ export function PrivateRoutes(): React.ReactElement {
           <Route
             path={URLS.BLOG_PAGE}
             element={<BlogPage />}
+          />
+          <Route
+            path={URLS.TAG}
+            element={<Tags />}
           />
         </Route>
         <Route
