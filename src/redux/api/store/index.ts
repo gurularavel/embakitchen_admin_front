@@ -35,6 +35,17 @@ export const storeApi = createApi({
           data,
         }
       },
+      invalidatesTags: () => [{ type: 'STORE' }],
+    }),
+    editStore: builder.mutation<void, IStore>({
+      query(data) {
+        const { id, ...editData } = data
+        return {
+          url: `stores/${id}`,
+          method: 'PUT',
+          data: editData,
+        }
+      },
     }),
   }),
 })
@@ -43,4 +54,5 @@ export const {
   useGetStoresQuery,
   useDeleteStoreMutation,
   usePostStoreMutation,
+  useEditStoreMutation,
 } = storeApi

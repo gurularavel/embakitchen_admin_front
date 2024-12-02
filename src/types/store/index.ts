@@ -3,7 +3,6 @@ import { ICity } from '~ek/types/region'
 export interface IStore {
   id: number
   title: ILangContent
-  slug: ILangContent
   address: ILangContent
   phone: string
   schedule: {
@@ -12,6 +11,7 @@ export interface IStore {
   }
   email: string
   city: ICity
+  status: boolean
 }
 
 export interface IStores {
@@ -19,4 +19,4 @@ export interface IStores {
   pagination: IPagination
 }
 
-export type FormField = Omit<IStore, 'id' | 'slug'>
+export type FormField = Omit<IStore, 'id'>
