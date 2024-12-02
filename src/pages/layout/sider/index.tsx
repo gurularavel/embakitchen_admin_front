@@ -19,6 +19,7 @@ import {
   BlockOutlined,
   BorderOutlined,
   GlobalOutlined,
+  TagOutlined,
   EnvironmentOutlined,
 } from '@ant-design/icons'
 import logo from '~ek/assets/images/132x20.67.svg'
@@ -154,6 +155,12 @@ const items: IMenu[] = [
         icon: <AppstoreOutlined className={'!text-lg'} />,
       },
     ],
+  },
+  {
+    key: URLS.TAG,
+    path: URLS.TAG,
+    label: <Link to={URLS.TAG}>Teqlər</Link>,
+    icon: <TagOutlined className={'!text-lg'} />,
   },
   {
     key: URLS.STORES,
