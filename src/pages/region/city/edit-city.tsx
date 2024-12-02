@@ -37,7 +37,7 @@ export function EditCity({
 
   const initialValues: IFieldForm = pick({
     source: city as ICity,
-    fields: ['title', 'status'],
+    fields: ['title', 'status', 'districts'],
   })
 
   const handleSwitchChange = (checked: boolean) => {

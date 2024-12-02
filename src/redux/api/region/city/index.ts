@@ -7,7 +7,7 @@ export const cityApi = createApi({
   baseQuery: APIBaseQuery,
   tagTypes: ['CITY'],
   endpoints: builder => ({
-    getCities: builder.query({
+    getCities: builder.query<PaginatedResponse<ICity>, IRequestParams>({
       query() {
         return {
           method: 'GET',

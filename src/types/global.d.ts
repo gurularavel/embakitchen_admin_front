@@ -28,6 +28,11 @@ declare global {
     total: number
   }
 
+  export interface PaginatedResponse<T> {
+    data: T[]
+    pagination: IPagination
+  }
+
   interface IDelete {
     ids: React.Key[]
   }
