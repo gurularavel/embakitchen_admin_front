@@ -1,13 +1,13 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { APIBaseQuery } from '~ek/redux/api/axiosBase'
-import { ITag } from '~ek/types/tags'
+import { ITag, TagsApiResponse } from '~ek/types/tags'
 
 export const tagApi = createApi({
   reducerPath: 'tagApi',
   baseQuery: APIBaseQuery,
   tagTypes: ['TAG'],
   endpoints: builder => ({
-    getTags: builder.query<PaginatedResponse<ITag>, IRequestParams>({
+    getTags: builder.query<TagsApiResponse, IRequestParams>({
       query() {
         return {
           method: 'GET',
