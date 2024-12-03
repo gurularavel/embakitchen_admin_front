@@ -3,3 +3,5 @@ export interface ITag {
   title: ILangContent
   status: boolean
 }
+
+export type TagsApiResponse = ApiResponse<ITag[]>

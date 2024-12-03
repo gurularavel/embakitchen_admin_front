@@ -82,7 +82,7 @@ const items: IMenu[] = [
     ],
   },
   {
-    key: '3',
+    key: '2',
     label: 'Haqqımızda',
     icon: <ExpandOutlined className={'!text-lg'} />,
     children: [
@@ -101,10 +101,23 @@ const items: IMenu[] = [
     ],
   },
   {
-    key: URLS.COMPAIGN,
-    path: URLS.COMPAIGN,
-    label: <Link to={URLS.COMPAIGN}>Kampaniyalar</Link>,
+    key: '3',
+    label: 'Kampaniyalar',
     icon: <FundOutlined className={'!text-lg'} />,
+    children: [
+      {
+        key: URLS.CAMPAIGN,
+        label: <Link to={URLS.CAMPAIGN}>Kampaniyalar</Link>,
+        path: URLS.CAMPAIGN,
+        icon: <ProjectOutlined className={'!text-lg'} />,
+      },
+      {
+        key: URLS.CAMPAIGN_PAGE,
+        label: <Link to={URLS.CAMPAIGN_PAGE}>Kampaniya səhifəsi</Link>,
+        path: URLS.CAMPAIGN_PAGE,
+        icon: <ProfileOutlined className={'!text-lg'} />,
+      },
+    ],
   },
   {
     key: URLS.COLOR,
