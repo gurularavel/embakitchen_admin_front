@@ -6,20 +6,24 @@ import {
   Form,
   FormProps,
   Input,
-  message,
   Row,
   Space,
   Switch,
-  theme,
   Upload,
-  UploadFile,
 } from 'antd'
 import { NOTIFICATION } from '~ek/shared/const/constants'
-import { confirmModal, notifier } from '~ek/shared/helpers'
+import {
+  beforeUploadHandler,
+  createFormData,
+  handleFileData,
+  handleRemoveFile,
+  notifier,
+} from '~ek/shared/helpers'
 import { IPartner } from '~ek/types/home/partners'
 import { UploadOutlined } from '@ant-design/icons'
 import { useEditPartnerMutation } from '~ek/redux/api/home/partner'
 import { useFileRemoveMutation } from '~ek/redux/api/fileRemove'
+import { useFormStyle } from '~ek/shared/utilities/formStyles'
 
 interface IDrawerProps {
   open: boolean
@@ -38,46 +42,21 @@ export function EditPartner({
   onClose,
   partner,
 }: IDrawerProps): React.ReactElement {
-  const { token } = theme.useToken()
   const [form] = Form.useForm()
+  const formStyle = useFormStyle()
   const [switchChecked, setSwitchChecked] = React.useState<boolean>(
     partner.status,
   )
   const [image, setImage] = React.useState<IFile>({
-    file: null,
+    file: [],
     fileList: [],
   })
 
   const [editPartner, { isLoading }] = useEditPartnerMutation()
   const [deleteFile] = useFileRemoveMutation()
 
-  const formStyle: React.CSSProperties = {
-    maxWidth: 'none',
-    background: token.colorFillAlter,
-    borderRadius: token.borderRadiusLG,
-    padding: 24,
-  }
-
   React.useEffect(() => {
-    if (partner?.image && typeof partner.image === 'object') {
-      const imageKeys = Object.keys(partner.image)
-      if (imageKeys.length > 0) {
-        const firstImageKey = imageKeys[0]
-        const imageData = partner.image[firstImageKey]
-
-        setImage({
-          file: null,
-          fileList: [
-            {
-              uid: imageData.uuid,
-              name: imageData.file_name,
-              status: 'done',
-              url: imageData.original_url,
-            },
-          ],
-        })
-      }
-    }
+    handleFileData(partner.image, setImage)
   }, [partner])
 
   const initialValues: IPartner = {
@@ -96,47 +75,19 @@ export function EditPartner({
     form.setFieldsValue({ status: checked })
   }
 
-  const beforeUpload = (file: File) => {
-    setImage({
-      file,
-      fileList: [{ uid: file.name, name: file.name, status: 'done' }],
-    })
-
-    return false
-  }
-
-  const handleRemoveFile = async (file: UploadFile) => {
-    confirmModal({
-      title: 'Bu faylı silmək istədiyinizdən əminsiniz?',
-      onOk: async () => {
-        await deleteFile({
-          mediaIDS: [file.uid],
-        })
-        setImage({ file: null, fileList: [] })
-      },
-      onCancel: () => {},
-    })
-  }
-
   const handleSubmit: FormProps<IFieldForm>['onFinish'] = async (
     data: IFieldForm,
   ) => {
-    if (image.file?.size === 0 || !image.fileList.length) {
-      message.error('Please select image first!')
-      return
+    const formValues = {
+      ...data,
+      image: image.file,
+      status: data.status ? '1' : '0',
+      _method: 'PUT',
     }
-
-    const formData = new FormData()
-    formData.append('title[az]', data.title.az)
-    formData.append('title[en]', data.title.en)
-    formData.append('title[ru]', data.title.ru)
-    formData.append('status', data.status ? '1' : '0')
-    formData.append('_method', 'PUT')
-    if (image.file) formData.append('image', image.file)
-
+    const formData = createFormData(formValues)
     try {
-      await editPartner({ id: partner.id, formData })
-      notifier('Yeni tərəfdaş əlavə edildi', NOTIFICATION.success)
+      await editPartner({ id: partner.id, formData }).unwrap()
+      notifier('Dəyişiklik uğurla icra edildi', NOTIFICATION.success)
       onClose()
     } catch (e: unknown) {
       const errorMessage =
@@ -188,6 +139,7 @@ export function EditPartner({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(az)',
                 },
               ]}
@@ -206,6 +158,7 @@ export function EditPartner({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(en)',
                 },
               ]}
@@ -224,6 +177,7 @@ export function EditPartner({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(ru)',
                 },
               ]}
@@ -257,9 +211,9 @@ export function EditPartner({
               accept='image/*'
               maxCount={1}
               listType='picture'
-              beforeUpload={file => beforeUpload(file)}
+              beforeUpload={file => beforeUploadHandler(file, setImage)}
               fileList={image.fileList}
-              onRemove={file => handleRemoveFile(file)}
+              onRemove={file => handleRemoveFile(deleteFile, file, setImage)}
             >
               <Button icon={<UploadOutlined />}>Click to upload</Button>
             </Upload>

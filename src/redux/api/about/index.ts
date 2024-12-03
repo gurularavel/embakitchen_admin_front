@@ -17,7 +17,7 @@ export const aboutApi = createApi({
       query() {
         return {
           method: 'GET',
-          url: 'about',
+          url: 'about-page',
         }
       },
       providesTags: () => [{ type: 'ABOUT_CONTENT' }],
@@ -26,7 +26,7 @@ export const aboutApi = createApi({
       query(formData) {
         return {
           method: 'POST',
-          url: 'about',
+          url: 'about-page',
           data: formData,
         }
       },
@@ -64,7 +64,7 @@ export const aboutApi = createApi({
     }),
     editInfoBlock: builder.mutation<void, IPutBlock>({
       query(data) {
-        const { id, data: putData } = data
+        const { id, ...putData } = data
         return {
           method: 'PUT',
           url: `about-info-blocks/${id}`,

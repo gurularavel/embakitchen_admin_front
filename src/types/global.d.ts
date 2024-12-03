@@ -9,6 +9,11 @@ declare global {
     ru: string
   }
 
+  interface ITitleContent {
+    title: ILangContent
+    content: ILangContent
+  }
+
   interface IPagination {
     current_page: number
     last_page: number
@@ -36,22 +41,22 @@ declare global {
   }
 
   interface IFile {
-    file: File | null
+    file: File[] | null
     fileList: UploadFile[]
   }
 
+  type IFileType = 'image' | 'video'
+
   interface IFileProperties {
-    [key: string]: {
-      name: string
-      file_name: string
-      uuid: string
-      preview_url: string
-      original_url: string
-      order: number
-      custom_properties: []
-      extension: string
-      size: number
-    }
+    name: string
+    file_name: string
+    uuid: string
+    preview_url: string
+    original_url: string
+    order: number
+    custom_properties: []
+    extension: string
+    size: number
   }
 
   interface IPutFormData {
@@ -61,6 +66,22 @@ declare global {
 
   interface IRequestParams {
     page?: number
+  }
+
+  interface IError {
+    data: {
+      exception: string
+      line: number
+      message: string
+      file: string
+      terrace: []
+    }
+    status: number
+  }
+
+  type ApiResponse<T> = {
+    data: T
+    pagination: IPagination
   }
 }
 

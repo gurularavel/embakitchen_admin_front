@@ -1,7 +1,7 @@
 export interface IPartner {
   id: number
   title: ILangContent
-  image: IFileProperties
+  image: IFileProperties[]
   status: boolean
 }
 

@@ -1,11 +1,16 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { AppLayout } from '~ek/pages/layout'
 import { Menu } from '~ek/pages/menu'
-import { AboutContent, AboutInfoBlocks } from '~ek/pages/about'
-import { Counter, Partners, Sliders } from '~ek/pages/home'
 import { NotFound } from '~ek/pages/not-found'
+import { AboutContent, AboutInfoBlocks } from '~ek/pages/about'
+import { Counter, HomeCommonInfo, Partners, Sliders } from '~ek/pages/home'
 import { Campaigns } from '~ek/pages/campaigns'
-
+import { Color } from '~ek/pages/colors'
+import { City } from '~ek/pages/region'
+import { Blogs } from '~ek/pages/blog'
+import { BlogPage } from '~ek/pages/blog/blog-page'
+import { Tags } from '~ek/pages/tags'
+import { Stores } from '~ek/pages/stores'
 import { URLS } from '~ek/shared/const/constants'
 
 export function PrivateRoutes(): React.ReactElement {
@@ -15,7 +20,11 @@ export function PrivateRoutes(): React.ReactElement {
         <Route element={<AppLayout />}>
           <Route
             path='/'
-            element={<Navigate to={URLS.HOME_COUNTERS} />}
+            element={<Navigate to={URLS.HOME_COMMON_INFO} />}
+          />
+          <Route
+            path={URLS.HOME_COMMON_INFO}
+            element={<HomeCommonInfo />}
           />
           <Route
             path={URLS.HOME_COUNTERS}
@@ -44,6 +53,30 @@ export function PrivateRoutes(): React.ReactElement {
           <Route
             path={URLS.COMPAIGN}
             element={<Campaigns />}
+          />
+          <Route
+            path={URLS.COLOR}
+            element={<Color />}
+          />
+          <Route
+            path={URLS.CITY}
+            element={<City />}
+          />
+          <Route
+            path={URLS.BLOGS}
+            element={<Blogs />}
+          />
+          <Route
+            path={URLS.BLOG_PAGE}
+            element={<BlogPage />}
+          />
+          <Route
+            path={URLS.STORES}
+            element={<Stores />}
+          />
+          <Route
+            path={URLS.TAG}
+            element={<Tags />}
           />
         </Route>
         <Route

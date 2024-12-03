@@ -6,18 +6,21 @@ import {
   Form,
   FormProps,
   Input,
-  message,
   Row,
   Space,
-  theme,
   Upload,
 } from 'antd'
 import { Loading, RenderIf } from '~ek/shared/components'
-import { notifier } from '~ek/shared/helpers'
+import {
+  beforeUploadHandler,
+  createFormData,
+  notifier,
+} from '~ek/shared/helpers'
 import { NOTIFICATION } from '~ek/shared/const/constants'
 import { IFormPartner } from '~ek/types/home/partners'
 import { UploadOutlined } from '@ant-design/icons'
 import { usePostPartnerMutation } from '~ek/redux/api/home/partner'
+import { useFormStyle } from '~ek/shared/utilities/formStyles'
 
 interface IDrawerProps {
   open: boolean
@@ -28,49 +31,33 @@ export function AddPartnerDrawer({
   open,
   onClose,
 }: IDrawerProps): React.ReactElement {
-  const { token } = theme.useToken()
   const [addPartner, { isLoading }] = usePostPartnerMutation()
   const [form] = Form.useForm()
+  const formStyle = useFormStyle()
   const [image, setImage] = React.useState<IFile>({
-    file: null,
+    file: [],
     fileList: [],
   })
-
-  const formStyle: React.CSSProperties = {
-    maxWidth: 'none',
-    background: token.colorFillAlter,
-    borderRadius: token.borderRadiusLG,
-    padding: 24,
-  }
-
-  const beforeUpload = (file: File, type: string) => {
-    if (type === 'image') {
-      setImage({
-        file,
-        fileList: [{ uid: file.name, name: file.name, status: 'done' }],
-      })
-    }
-    return false
+  const initialValues = {
+    title: {
+      az: '',
+      en: '',
+      ru: '',
+    },
+    image: '',
   }
 
   const onFinish: FormProps<IFormPartner>['onFinish'] = async (
     values: IFormPartner,
   ) => {
-    if (image.file?.size === 0 || !image.fileList.length) {
-      message.error('Please select image first!')
-      return
+    const formValues = {
+      ...values,
+      image: image.file,
     }
-
-    const formData = new FormData()
-    formData.append('title[az]', values.title.az)
-    formData.append('title[en]', values.title.en)
-    formData.append('title[ru]', values.title.ru)
-
-    if (image.file) formData.append('image', image.file)
-
+    const formData = createFormData(formValues)
     try {
       await addPartner(formData).unwrap()
-      notifier('Dəyişiklik uğurla icra edildi', 'success')
+      notifier('Yeni tərəfdaş əlavə edildi', NOTIFICATION.success)
       onClose()
     } catch (e: unknown) {
       const errorMessage =
@@ -78,6 +65,7 @@ export function AddPartnerDrawer({
       notifier(errorMessage, NOTIFICATION.error)
     }
   }
+
   return (
     <Drawer
       title='Yeni Tərəfdaş'
@@ -104,6 +92,7 @@ export function AddPartnerDrawer({
       <Form
         layout='vertical'
         form={form}
+        initialValues={initialValues}
         onFinish={onFinish}
         style={formStyle}
       >
@@ -122,6 +111,7 @@ export function AddPartnerDrawer({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(az)',
                 },
               ]}
@@ -140,6 +130,7 @@ export function AddPartnerDrawer({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(en)',
                 },
               ]}
@@ -158,6 +149,7 @@ export function AddPartnerDrawer({
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(ru)',
                 },
               ]}
@@ -195,9 +187,9 @@ export function AddPartnerDrawer({
                 accept='image/*'
                 maxCount={1}
                 listType='picture'
-                beforeUpload={file => beforeUpload(file, 'image')}
+                beforeUpload={file => beforeUploadHandler(file, setImage)}
                 fileList={image.fileList}
-                onRemove={() => setImage({ file: null, fileList: [] })}
+                onRemove={() => setImage({ file: [], fileList: [] })}
               >
                 <Button icon={<UploadOutlined />}>Click to upload</Button>
               </Upload>

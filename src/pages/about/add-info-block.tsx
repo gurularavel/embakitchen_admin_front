@@ -1,17 +1,12 @@
-import {
-  Button,
-  Col,
-  Drawer,
-  Form,
-  FormProps,
-  Input,
-  Row,
-  Space,
-  theme,
-} from 'antd'
+import * as React from 'react'
+import { Button, Col, Drawer, Form, FormProps, Input, Row, Space } from 'antd'
 import { Loading, RenderIf } from '~ek/shared/components'
 import { usePostInfoBlockMutation } from '~ek/redux/api/about'
-import { IPostBlock } from '~ek/types/about'
+import type { IPostBlock } from '~ek/types/about'
+import { useFormStyle } from '~ek/shared/utilities/formStyles'
+import { notifier } from '~ek/shared/helpers'
+import { NOTIFICATION } from '~ek/shared/const/constants'
+import { RichTextEditor } from '~ek/shared/components/richtext'
 
 interface IDrawerProps {
   open: boolean
@@ -22,27 +17,29 @@ interface IFieldForm {
   title: ILangContent
   content: ILangContent
 }
-
 export function AddBlockDrawer({
   open,
   onClose,
 }: IDrawerProps): React.ReactElement {
-  const { token } = theme.useToken()
   const [addBlock, { isLoading }] = usePostInfoBlockMutation()
   const [form] = Form.useForm()
+  const formStyle = useFormStyle()
+  const [contentRichText, setContentRichText] = React.useState<ILangContent>({
+    az: '',
+    en: '',
+    ru: '',
+  })
 
-  const formStyle: React.CSSProperties = {
-    maxWidth: 'none',
-    background: token.colorFillAlter,
-    borderRadius: token.borderRadiusLG,
-    padding: 24,
+  const handleRichContent = (field: 'az' | 'ru' | 'en', content: string) => {
+    setContentRichText(prevState => ({ ...prevState, [field]: content }))
   }
 
   const handleSubmit: FormProps<IFieldForm>['onFinish'] = async (
     data: IPostBlock,
   ) => {
     try {
-      await addBlock(data)
+      await addBlock(data).unwrap()
+      notifier('Yeni blok əlavə edildi', NOTIFICATION.success)
       onClose()
     } catch (e: unknown) {
       console.error(e)
@@ -92,6 +89,7 @@ export function AddBlockDrawer({
               label='Başlıq(az)'
               rules={[
                 {
+                  whitespace: true,
                   required: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(az)',
                 },
@@ -110,6 +108,7 @@ export function AddBlockDrawer({
               label='Başlıq(en)'
               rules={[
                 {
+                  whitespace: true,
                   required: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(en)',
                 },
@@ -120,14 +119,15 @@ export function AddBlockDrawer({
           </Col>
           <Col
             xs={24}
-            sm={12}
-            md={8}
+            md={12}
+            lg={8}
           >
             <Form.Item<IFieldForm>
               name={['title', 'ru']}
               label='Başlıq(ru)'
               rules={[
                 {
+                  whitespace: true,
                   required: true,
                   message: 'Zəhmət olmasa başlıq əlavə edin(ru)',
                 },
@@ -138,66 +138,66 @@ export function AddBlockDrawer({
           </Col>
         </Row>
         <Row gutter={16}>
-          <Col
-            xs={24}
-            sm={12}
-            md={8}
-          >
+          <Col xs={24}>
             <Form.Item<IFieldForm>
+              label='Content(az)'
               name={['content', 'az']}
-              label='Açıqlama(az)'
               rules={[
                 {
                   required: true,
-                  message: 'Zəhmət olmasa açıqlama daxil edin(az)',
+                  validator: () => {
+                    return contentRichText.az.trim().length > 0
+                      ? Promise.resolve()
+                      : Promise.reject('Zəhmət olmasa mətn daxil edin(az)')
+                  },
                 },
               ]}
             >
-              <Input.TextArea
-                rows={4}
-                placeholder='Açıqlama (az)'
+              <RichTextEditor
+                onChangeValue={data => handleRichContent('az', data)}
+                editorData={contentRichText.az}
               />
             </Form.Item>
           </Col>
-          <Col
-            xs={24}
-            sm={12}
-            md={8}
-          >
+          <Col xs={24}>
             <Form.Item<IFieldForm>
+              label='Content(en)'
               name={['content', 'en']}
-              label='Açıqlama(en)'
               rules={[
                 {
                   required: true,
-                  message: 'Zəhmət olmasa açıqlama daxil edin(en)',
+                  validator: () => {
+                    return contentRichText.en.trim().length > 0
+                      ? Promise.resolve()
+                      : Promise.reject('Zəhmət olmasa mətn daxil edin(en)')
+                  },
                 },
               ]}
             >
-              <Input.TextArea
-                rows={4}
-                placeholder='Açıqlama (en)'
+              <RichTextEditor
+                onChangeValue={data => handleRichContent('en', data)}
+                editorData={contentRichText.en}
               />
             </Form.Item>
           </Col>
-          <Col
-            xs={24}
-            sm={12}
-            md={8}
-          >
+          <Col xs={24}>
             <Form.Item<IFieldForm>
+              label='Content(ru)'
               name={['content', 'ru']}
-              label='Açıqlama(ru)'
               rules={[
                 {
                   required: true,
-                  message: 'Zəhmət olmasa açıqlama daxil edin(ru)',
+                  validator: () => {
+                    return contentRichText.ru.trim().length > 0
+                      ? Promise.resolve()
+                      : Promise.reject('Zəhmət olmasa mətn daxil edin(ru)')
+                  },
                 },
               ]}
             >
-              <Input.TextArea
-                rows={4}
-                placeholder='Açıqlama (ru)'
+              <RichTextEditor
+                onChangeValue={data => handleRichContent('ru', data)}
+                editorData={contentRichText.ru}
               />
             </Form.Item>
           </Col>
