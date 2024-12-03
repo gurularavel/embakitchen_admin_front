@@ -9,14 +9,15 @@ export interface IStore {
     open: string
     close: string
   }
+  coords: {
+    longitude: string
+    latitude: string
+  }
   email: string
   city: ICity
   status: boolean
 }
 
-export interface IStores {
-  data: IStore[]
-  pagination: IPagination
-}
+export type StoreApiResponse = ApiResponse<IStore[]>
 
 export type FormField = Omit<IStore, 'id'>

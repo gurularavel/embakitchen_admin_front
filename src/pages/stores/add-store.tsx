@@ -19,7 +19,7 @@ import { NOTIFICATION } from '~ek/shared/const/constants'
 import { FormField } from '~ek/types/store'
 import { usePostStoreMutation } from '~ek/redux/api/store'
 import { useFormStyle } from '~ek/shared/utilities/formStyles'
-import { IStore } from '~ek/types/store'
+import type { IStore } from '~ek/types/store'
 import { useGetCitiesQuery } from '~ek/redux/api/region/city'
 
 interface IDrawerProps {
@@ -211,7 +211,7 @@ export function AddStoreDrawer({
           <Col span={8}>
             <Form.Item
               label='Şəhər'
-              name='city'
+              name='city_id'
               rules={[
                 { required: true, message: 'Zəhmət olmasa boş saxlamayın' },
               ]}

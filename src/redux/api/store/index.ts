@@ -1,13 +1,13 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { APIBaseQuery } from '~ek/redux/api/axiosBase'
-import { IStores, IStore } from '~ek/types/store'
+import type { IStore, StoreApiResponse } from '~ek/types/store'
 
 export const storeApi = createApi({
   reducerPath: 'storeApi',
   baseQuery: APIBaseQuery,
   tagTypes: ['STORE'],
   endpoints: builder => ({
-    getStores: builder.query<IStores, IRequestParams>({
+    getStores: builder.query<StoreApiResponse, IRequestParams>({
       query(params) {
         return {
           url: 'stores',
@@ -46,6 +46,7 @@ export const storeApi = createApi({
           data: editData,
         }
       },
+      invalidatesTags: () => [{ type: 'STORE' }],
     }),
   }),
 })

@@ -8,6 +8,7 @@ import {
   TableProps,
 } from 'antd'
 import { AddStoreDrawer } from '~ek/pages/stores/add-store'
+import { EditStoreDrawer } from '~ek/pages/stores/edit-store'
 import { ErrorMessage, Loading, RenderIf, NoData } from '~ek/shared/components'
 import { confirmModal, notifier } from '~ek/shared/helpers'
 import { NOTIFICATION } from '~ek/shared/const/constants'
@@ -17,7 +18,6 @@ import { useDeleteStoreMutation, useGetStoresQuery } from '~ek/redux/api/store'
 
 export function Stores(): React.ReactElement {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([])
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedStore, setSelectedStore] = React.useState<IStore | null>(null)
   const [pageParams, setPageParams] = React.useState<IPageParams>({
     take: 10,
@@ -177,13 +177,13 @@ export function Stores(): React.ReactElement {
             onClose={onClose}
           />
         )}
-        {/* {drawerType === 'edit' && selectedPartner && (
-          <EditPartner
+        {drawerType === 'edit' && selectedStore && (
+          <EditStoreDrawer
             open={!!drawerType}
             onClose={onClose}
-            partner={selectedPartner}
+            store={selectedStore}
           />
-        )} */}
+        )}
       </RenderIf>
     </>
   )
