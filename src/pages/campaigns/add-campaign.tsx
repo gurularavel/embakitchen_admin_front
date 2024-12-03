@@ -62,6 +62,7 @@ export function AddCampaign({
     startDate: string
     endDate: string
   }>({ startDate: '', endDate: '' })
+
   const [addCampaign, { isLoading }] = usePostCampaignMutation()
 
   const handleDateChange = (
