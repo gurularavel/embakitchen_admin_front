@@ -15,6 +15,7 @@ export const enum URLS {
   DISTRICT = '/district',
   RURAL = '/rural',
   TAG = '/tag',
+  STORES = '/stores',
 }
 
 export const enum NOTIFICATION {

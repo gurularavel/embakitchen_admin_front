@@ -10,6 +10,7 @@ import { City, District } from '~ek/pages/region'
 import { Blogs } from '~ek/pages/blog'
 import { BlogPage } from '~ek/pages/blog/blog-page'
 import { Tags } from '~ek/pages/tags'
+import { Stores } from '~ek/pages/stores'
 import { URLS } from '~ek/shared/const/constants'
 
 export function PrivateRoutes(): React.ReactElement {
@@ -74,8 +75,12 @@ export function PrivateRoutes(): React.ReactElement {
             element={<BlogPage />}
           />
           <Route
-            path={URLS.BLOG_PAGE}
-            element={<BlogPage />}
+            path={URLS.STORES}
+            element={<Stores />}
+          />
+          <Route
+            path={URLS.TAG}
+            element={<Tags />}
           />
           <Route
             path={URLS.TAG}

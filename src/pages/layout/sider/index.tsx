@@ -20,6 +20,7 @@ import {
   BorderOutlined,
   GlobalOutlined,
   TagOutlined,
+  EnvironmentOutlined,
 } from '@ant-design/icons'
 import logo from '~ek/assets/images/132x20.67.svg'
 const { Sider } = Layout
@@ -160,6 +161,12 @@ const items: IMenu[] = [
     path: URLS.TAG,
     label: <Link to={URLS.TAG}>Teqlər</Link>,
     icon: <TagOutlined className={'!text-lg'} />,
+  },
+  {
+    key: URLS.STORES,
+    path: URLS.STORES,
+    label: <Link to={URLS.STORES}>Mağazalar</Link>,
+    icon: <EnvironmentOutlined className={'!text-lg'} />,
   },
 ]
 
