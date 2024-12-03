@@ -83,6 +83,11 @@ declare global {
     }
     status: number
   }
+
+  type ApiResponse<T> = {
+    data: T
+    pagination: IPagination
+  }
 }
 
 export {}

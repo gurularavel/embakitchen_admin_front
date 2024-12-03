@@ -12,3 +12,5 @@ export interface IDistrict {
   title: ILangContent
   status: boolean
 }
+
+export type CityApiResponse = ApiResponse<ICity[]>
