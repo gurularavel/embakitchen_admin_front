@@ -17,7 +17,7 @@ import {
   notifier,
 } from '~ek/shared/helpers'
 import { NOTIFICATION } from '~ek/shared/const/constants'
-import { IFormPartner } from '~ek/types/home/partners'
+import type { IFormPartner } from '~ek/types/home/partners'
 import { UploadOutlined } from '@ant-design/icons'
 import { usePostPartnerMutation } from '~ek/redux/api/home/partner'
 import { useFormStyle } from '~ek/shared/utilities/formStyles'

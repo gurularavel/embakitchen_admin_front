@@ -12,7 +12,7 @@ import { EditSlider } from '~ek/pages/home/sliders/edit-slider'
 import { ErrorMessage, Loading, RenderIf, NoData } from '~ek/shared/components'
 import { NOTIFICATION } from '~ek/shared/const/constants'
 import { confirmModal, notifier } from '~ek/shared/helpers'
-import { ISlider } from '~ek/types/home/slider'
+import type { ISlider } from '~ek/types/home/slider'
 import { PlusOutlined, DeleteOutlined, FormOutlined } from '@ant-design/icons'
 import {
   useDeleteSliderMutation,
@@ -25,7 +25,6 @@ export function Sliders(): React.ReactElement {
     null,
   )
   const [pageParams, setPageParams] = React.useState<IPageParams>({
-    take: 10,
     current: 1,
     pageSize: 10,
     total: 0,
@@ -33,8 +32,9 @@ export function Sliders(): React.ReactElement {
   const [drawerType, setDrawerType] = React.useState<'edit' | 'add' | null>(
     null,
   )
-  const { data, isLoading, isError } = useGetSlidersQuery({
+  const { data, isLoading, isError, isFetching } = useGetSlidersQuery({
     page: pageParams.current,
+    perPage: pageParams.pageSize,
   })
 
   const [deleteSldier] = useDeleteSliderMutation()
@@ -90,7 +90,8 @@ export function Sliders(): React.ReactElement {
       key: 'title',
       render: (_: string, partner: ISlider, i: number) => (
         <h2>
-          {i + 1}. {partner.title['az']}
+          {(pageParams.current - 1) * pageParams.pageSize + ++i}.{' '}
+          {partner.title['az']}
         </h2>
       ),
     },
@@ -163,10 +164,9 @@ export function Sliders(): React.ReactElement {
         </RenderIf>
         <RenderIf condition={data?.data?.length}>
           <Table
-            dataSource={data?.data.map((slider: ISlider) => ({
-              ...slider,
-              key: slider.id,
-            }))}
+            dataSource={data?.data}
+            rowKey='id'
+            loading={isFetching}
             rowSelection={rowSelection}
             columns={columns}
             pagination={{

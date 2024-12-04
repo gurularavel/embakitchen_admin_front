@@ -12,7 +12,7 @@ import {
   Upload,
 } from 'antd'
 import { NOTIFICATION } from '~ek/shared/const/constants'
-import { ISlider } from '~ek/types/home/slider'
+import type { ISlider } from '~ek/types/home/slider'
 import { UploadOutlined } from '@ant-design/icons'
 import {
   beforeUploadHandler,
