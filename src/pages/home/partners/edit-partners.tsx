@@ -19,7 +19,7 @@ import {
   handleRemoveFile,
   notifier,
 } from '~ek/shared/helpers'
-import { IPartner } from '~ek/types/home/partners'
+import type { IPartner } from '~ek/types/home/partners'
 import { UploadOutlined } from '@ant-design/icons'
 import { useEditPartnerMutation } from '~ek/redux/api/home/partner'
 import { useFileRemoveMutation } from '~ek/redux/api/fileRemove'

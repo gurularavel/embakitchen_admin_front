@@ -22,7 +22,6 @@ declare global {
   }
 
   interface IPageParams {
-    take: number
     current: number
     pageSize: number
     total: number

@@ -20,7 +20,6 @@ export function Stores(): React.ReactElement {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([])
   const [selectedStore, setSelectedStore] = React.useState<IStore | null>(null)
   const [pageParams, setPageParams] = React.useState<IPageParams>({
-    take: 10,
     current: 1,
     pageSize: 10,
     total: 0,
@@ -28,8 +27,9 @@ export function Stores(): React.ReactElement {
   const [drawerType, setDrawerType] = React.useState<'edit' | 'add' | null>(
     null,
   )
-  const { data, isLoading, isError } = useGetStoresQuery({
+  const { data, isLoading, isError, isFetching } = useGetStoresQuery({
     page: pageParams.current,
+    perPage: pageParams.pageSize,
   })
 
   const [deleteStore] = useDeleteStoreMutation()
@@ -85,7 +85,8 @@ export function Stores(): React.ReactElement {
       key: 'title',
       render: (_: string, store: IStore, i: number) => (
         <h2>
-          {i + 1}. {store.title['az']}
+          {(pageParams.current - 1) * pageParams.pageSize + ++i}.{' '}
+          {store.title['az']}
         </h2>
       ),
     },
@@ -160,6 +161,7 @@ export function Stores(): React.ReactElement {
           <Table
             dataSource={data?.data}
             rowKey='id'
+            loading={isFetching}
             rowSelection={rowSelection}
             columns={columns}
             pagination={{

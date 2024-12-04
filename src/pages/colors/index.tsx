@@ -23,7 +23,6 @@ export function Color(): React.ReactElement {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([])
   const [selectedColor, setSelectedColor] = React.useState<IColor | null>(null)
   const [pageParams, setPageParams] = React.useState<IPageParams>({
-    take: 10,
     current: 1,
     pageSize: 10,
     total: 0,
@@ -163,11 +162,9 @@ export function Color(): React.ReactElement {
         </RenderIf>
         <RenderIf condition={data?.data?.length}>
           <Table
-            dataSource={data?.data.map((color: IColor) => ({
-              ...color,
-              key: color.id,
-            }))}
+            dataSource={data?.data}
             loading={isFetching}
+            rowKey='id'
             rowSelection={rowSelection}
             columns={columns}
             pagination={{

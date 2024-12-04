@@ -12,7 +12,7 @@ import {
 import { Loading, RenderIf } from '~ek/shared/components'
 import { NOTIFICATION } from '~ek/shared/const/constants'
 import { notifier } from '~ek/shared/helpers'
-import { IPostCounter } from '~ek/types/home/counter'
+import type { IPostCounter } from '~ek/types/home/counter'
 import { usePostCounterMutation } from '~ek/redux/api/home/counter'
 import { useFormStyle } from '~ek/shared/utilities/formStyles'
 
