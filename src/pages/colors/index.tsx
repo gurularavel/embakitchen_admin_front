@@ -28,13 +28,14 @@ export function Color(): React.ReactElement {
     pageSize: 10,
     total: 0,
   })
+
   const [drawerType, setDrawerType] = React.useState<'edit' | 'add' | null>(
     null,
   )
-  const { data, isLoading, isError } = useGetColorsQuery({
+  const { data, isLoading, isError, isFetching } = useGetColorsQuery({
     page: pageParams.current,
+    perPage: pageParams.pageSize,
   })
-
   const [deleteColor] = useDeleteColorsMutation()
 
   const handleTableChange = (pagination: TablePaginationConfig): void => {
@@ -88,7 +89,8 @@ export function Color(): React.ReactElement {
       key: 'title',
       render: (_: string, color: IColor, i: number) => (
         <h2>
-          {i + 1}. {color.title['az']}
+          {(pageParams.current - 1) * pageParams.pageSize + ++i}.{' '}
+          {color.title['az']}
         </h2>
       ),
     },
@@ -165,6 +167,7 @@ export function Color(): React.ReactElement {
               ...color,
               key: color.id,
             }))}
+            loading={isFetching}
             rowSelection={rowSelection}
             columns={columns}
             pagination={{

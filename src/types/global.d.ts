@@ -61,6 +61,7 @@ declare global {
 
   interface IRequestParams {
     page?: number
+    perPage?: number
   }
 
   interface IError {
