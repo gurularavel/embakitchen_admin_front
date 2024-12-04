@@ -1,3 +1,4 @@
+import * as React from 'react'
 import { Button, Col, Drawer, Form, FormProps, Input, Row, Space } from 'antd'
 import { Loading, RenderIf } from '~ek/shared/components'
 import { usePostInfoBlockMutation } from '~ek/redux/api/about'
@@ -5,6 +6,7 @@ import type { IPostBlock } from '~ek/types/about'
 import { useFormStyle } from '~ek/shared/utilities/formStyles'
 import { notifier } from '~ek/shared/helpers'
 import { NOTIFICATION } from '~ek/shared/const/constants'
+import { RichTextEditor } from '~ek/shared/components/richtext'
 
 interface IDrawerProps {
   open: boolean
@@ -22,6 +24,15 @@ export function AddBlockDrawer({
   const [addBlock, { isLoading }] = usePostInfoBlockMutation()
   const [form] = Form.useForm()
   const formStyle = useFormStyle()
+  const [contentRichText, setContentRichText] = React.useState<ILangContent>({
+    az: '',
+    en: '',
+    ru: '',
+  })
+
+  const handleRichContent = (field: 'az' | 'ru' | 'en', content: string) => {
+    setContentRichText(prevState => ({ ...prevState, [field]: content }))
+  }
 
   const handleSubmit: FormProps<IFieldForm>['onFinish'] = async (
     data: IPostBlock,
@@ -108,8 +119,8 @@ export function AddBlockDrawer({
           </Col>
           <Col
             xs={24}
-            sm={12}
-            md={8}
+            md={12}
+            lg={8}
           >
             <Form.Item<IFieldForm>
               name={['title', 'ru']}
@@ -127,69 +138,66 @@ export function AddBlockDrawer({
           </Col>
         </Row>
         <Row gutter={16}>
-          <Col
-            xs={24}
-            sm={12}
-            md={8}
-          >
+          <Col xs={24}>
             <Form.Item<IFieldForm>
+              label='Content(az)'
               name={['content', 'az']}
-              label='Açıqlama(az)'
               rules={[
                 {
-                  whitespace: true,
                   required: true,
-                  message: 'Zəhmət olmasa açıqlama daxil edin(az)',
+                  validator: () => {
+                    return contentRichText.az.trim().length > 0
+                      ? Promise.resolve()
+                      : Promise.reject('Zəhmət olmasa mətn daxil edin(az)')
+                  },
                 },
               ]}
             >
-              <Input.TextArea
-                rows={4}
-                placeholder='Açıqlama (az)'
+              <RichTextEditor
+                onChangeValue={data => handleRichContent('az', data)}
+                editorData={contentRichText.az}
               />
             </Form.Item>
           </Col>
-          <Col
-            xs={24}
-            sm={12}
-            md={8}
-          >
+          <Col xs={24}>
             <Form.Item<IFieldForm>
+              label='Content(en)'
               name={['content', 'en']}
-              label='Açıqlama(en)'
               rules={[
                 {
-                  whitespace: true,
                   required: true,
-                  message: 'Zəhmət olmasa açıqlama daxil edin(en)',
+                  validator: () => {
+                    return contentRichText.en.trim().length > 0
+                      ? Promise.resolve()
+                      : Promise.reject('Zəhmət olmasa mətn daxil edin(en)')
+                  },
                 },
               ]}
             >
-              <Input.TextArea
-                rows={4}
-                placeholder='Açıqlama (en)'
+              <RichTextEditor
+                onChangeValue={data => handleRichContent('en', data)}
+                editorData={contentRichText.en}
               />
             </Form.Item>
           </Col>
-          <Col
-            xs={24}
-            sm={12}
-            md={8}
-          >
+          <Col xs={24}>
             <Form.Item<IFieldForm>
+              label='Content(ru)'
               name={['content', 'ru']}
-              label='Açıqlama(ru)'
               rules={[
                 {
-                  whitespace: true,
                   required: true,
-                  message: 'Zəhmət olmasa açıqlama daxil edin(ru)',
+                  validator: () => {
+                    return contentRichText.ru.trim().length > 0
+                      ? Promise.resolve()
+                      : Promise.reject('Zəhmət olmasa mətn daxil edin(ru)')
+                  },
                 },
               ]}
             >
-              <Input.TextArea
-                rows={4}
-                placeholder='Açıqlama (ru)'
+              <RichTextEditor
+                onChangeValue={data => handleRichContent('ru', data)}
+                editorData={contentRichText.ru}
               />
             </Form.Item>
           </Col>

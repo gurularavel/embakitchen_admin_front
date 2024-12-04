@@ -7,9 +7,13 @@ import { fileRemoveApi } from '~ek/redux/api/fileRemove'
 import { counterApi } from '~ek/redux/api/home/counter'
 import { partnerApi } from '~ek/redux/api/home/partner'
 import { sliderApi } from '~ek/redux/api/home/slider'
+import { homeCommonApi } from '~ek/redux/api/home/common-info'
 import { campaignApi } from '~ek/redux/api/campaign'
 import { colorsApi } from '~ek/redux/api/colors'
 import { blogApi } from '~ek/redux/api/blog'
+import { cityApi } from '~ek/redux/api/region/city'
+import { tagApi } from '~ek/redux/api/tags'
+import { storeApi } from '~ek/redux/api/store'
 
 export const reducer = {
   auth: AuthReducer,
@@ -20,9 +24,13 @@ export const reducer = {
   [counterApi.reducerPath]: counterApi.reducer,
   [partnerApi.reducerPath]: partnerApi.reducer,
   [sliderApi.reducerPath]: sliderApi.reducer,
+  [homeCommonApi.reducerPath]: homeCommonApi.reducer,
   [campaignApi.reducerPath]: campaignApi.reducer,
   [colorsApi.reducerPath]: colorsApi.reducer,
   [blogApi.reducerPath]: blogApi.reducer,
+  [cityApi.reducerPath]: cityApi.reducer,
+  [tagApi.reducerPath]: tagApi.reducer,
+  [storeApi.reducerPath]: storeApi.reducer,
 }
 export const middlewares = [
   authApi.middleware,
@@ -32,7 +40,11 @@ export const middlewares = [
   counterApi.middleware,
   partnerApi.middleware,
   sliderApi.middleware,
+  homeCommonApi.middleware,
   campaignApi.middleware,
   colorsApi.middleware,
   blogApi.middleware,
+  cityApi.middleware,
+  tagApi.middleware,
+  storeApi.middleware,
 ]

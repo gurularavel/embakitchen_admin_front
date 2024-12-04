@@ -23,3 +23,9 @@ export interface IFormCampaign {
   status: boolean
   campaignDates: [string, string]
 }
+
+export interface ICampaignPage {
+  id: number
+  title: ILangContent
+  image: IFileProperties[]
+}

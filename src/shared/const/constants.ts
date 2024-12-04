@@ -3,12 +3,20 @@ export const enum URLS {
   HOME_COUNTERS = '/home/counters',
   HOME_SLIDERS = '/home/sliders',
   HOME_PARTNERS = '/home/partners',
+  HOME_COMMON_INFO = '/home/common-info',
   MENU = '/menu',
   ABOUT_CONTENT = '/about/content',
   ABOUT_INFO_BLOCKS = '/about/info_blocks',
-  COMPAIGN = '/compaigns',
+  CAMPAIGN = '/campaigns',
+  CAMPAIGN_PAGE = '/campaigns-page',
   COLOR = '/colors',
-  BLOG = '/blogs',
+  BLOGS = '/blogs',
+  BLOG_PAGE = '/blog-page',
+  CITY = '/city',
+  DISTRICT = '/district',
+  RURAL = '/rural',
+  TAG = '/tag',
+  STORES = '/stores',
 }
 
 export const enum NOTIFICATION {

@@ -18,6 +18,7 @@
     "@hookform/resolvers": "^3.9.0",
     "@reduxjs/toolkit": "^2.2.7",
     "antd": "^5.20.6",
+    "antd-mask-input": "^2.0.7",
     "axios": "^1.7.7",
     "ckeditor5": "^43.3.1",
     "dayjs": "^1.11.13",

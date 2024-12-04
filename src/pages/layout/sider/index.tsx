@@ -12,7 +12,15 @@ import {
   GoldOutlined,
   BgColorsOutlined,
   FundOutlined,
-  GroupOutlined,
+  PicCenterOutlined,
+  HighlightOutlined,
+  AlignCenterOutlined,
+  AppstoreOutlined,
+  BlockOutlined,
+  BorderOutlined,
+  GlobalOutlined,
+  TagOutlined,
+  EnvironmentOutlined,
 } from '@ant-design/icons'
 import logo from '~ek/assets/images/132x20.67.svg'
 const { Sider } = Layout
@@ -30,12 +38,29 @@ interface IMenu {
   children?: IMenu[]
 }
 
+const siderStyle: React.CSSProperties = {
+  overflow: 'auto',
+  height: '100vh',
+  position: 'fixed',
+  insetInlineStart: 0,
+  top: 0,
+  bottom: 0,
+  scrollbarWidth: 'thin',
+  scrollbarGutter: 'stable',
+}
+
 const items: IMenu[] = [
   {
     key: '1',
     label: 'Əsas Səhifə',
     icon: <BankOutlined className={'!text-lg'} />,
     children: [
+      {
+        key: URLS.HOME_COMMON_INFO,
+        label: <Link to={URLS.HOME_COMMON_INFO}>Ümumi məlumatlar</Link>,
+        path: URLS.HOME_COMMON_INFO,
+        icon: <AlignCenterOutlined className={'!text-lg'} />,
+      },
       {
         key: URLS.HOME_COUNTERS,
         label: <Link to={URLS.HOME_COUNTERS}>Sayğac</Link>,
@@ -57,7 +82,7 @@ const items: IMenu[] = [
     ],
   },
   {
-    key: '3',
+    key: '2',
     label: 'Haqqımızda',
     icon: <ExpandOutlined className={'!text-lg'} />,
     children: [
@@ -76,10 +101,23 @@ const items: IMenu[] = [
     ],
   },
   {
-    key: URLS.COMPAIGN,
-    path: URLS.COMPAIGN,
-    label: <Link to={URLS.COMPAIGN}>Kampaniyalar</Link>,
+    key: '3',
+    label: 'Kampaniyalar',
     icon: <FundOutlined className={'!text-lg'} />,
+    children: [
+      {
+        key: URLS.CAMPAIGN,
+        label: <Link to={URLS.CAMPAIGN}>Kampaniyalar</Link>,
+        path: URLS.CAMPAIGN,
+        icon: <ProjectOutlined className={'!text-lg'} />,
+      },
+      {
+        key: URLS.CAMPAIGN_PAGE,
+        label: <Link to={URLS.CAMPAIGN_PAGE}>Kampaniya səhifəsi</Link>,
+        path: URLS.CAMPAIGN_PAGE,
+        icon: <ProfileOutlined className={'!text-lg'} />,
+      },
+    ],
   },
   {
     key: URLS.COLOR,
@@ -88,10 +126,60 @@ const items: IMenu[] = [
     icon: <BgColorsOutlined className={'!text-lg'} />,
   },
   {
-    key: URLS.BLOG,
-    path: URLS.BLOG,
-    label: <Link to={URLS.BLOG}>Blog</Link>,
-    icon: <GroupOutlined className={'!text-lg'} />,
+    key: '4',
+    label: 'Blog',
+    icon: <HighlightOutlined className={'!text-lg'} />,
+    children: [
+      {
+        key: URLS.BLOGS,
+        label: <Link to={URLS.BLOGS}>Bloqlar</Link>,
+        path: URLS.BLOGS,
+        icon: <ProjectOutlined className={'!text-lg'} />,
+      },
+      {
+        key: URLS.BLOG_PAGE,
+        label: <Link to={URLS.BLOG_PAGE}>Bloq səhifə başlığı </Link>,
+        path: URLS.BLOG_PAGE,
+        icon: <PicCenterOutlined className={'!text-lg'} />,
+      },
+    ],
+  },
+  {
+    key: '5',
+    label: 'Region',
+    icon: <GlobalOutlined className={'!text-lg'} />,
+    children: [
+      {
+        key: URLS.CITY,
+        label: <Link to={URLS.CITY}>Şəhərlər</Link>,
+        path: URLS.CITY,
+        icon: <BorderOutlined className={'!text-lg'} />,
+      },
+      {
+        key: URLS.DISTRICT,
+        label: <Link to={URLS.DISTRICT}>Rayonlar</Link>,
+        path: URLS.DISTRICT,
+        icon: <BlockOutlined className={'!text-lg'} />,
+      },
+      {
+        key: URLS.RURAL,
+        label: <Link to={URLS.RURAL}>Kəndlər</Link>,
+        path: URLS.RURAL,
+        icon: <AppstoreOutlined className={'!text-lg'} />,
+      },
+    ],
+  },
+  {
+    key: URLS.TAG,
+    path: URLS.TAG,
+    label: <Link to={URLS.TAG}>Teqlər</Link>,
+    icon: <TagOutlined className={'!text-lg'} />,
+  },
+  {
+    key: URLS.STORES,
+    path: URLS.STORES,
+    label: <Link to={URLS.STORES}>Mağazalar</Link>,
+    icon: <EnvironmentOutlined className={'!text-lg'} />,
   },
 ]
 
@@ -102,6 +190,7 @@ export function AppSider({
   const location = useLocation()
   return (
     <Sider
+      style={siderStyle}
       trigger={null}
       collapsible
       collapsed={collapsed}

@@ -84,7 +84,6 @@ export function EditPartner({
       status: data.status ? '1' : '0',
       _method: 'PUT',
     }
-
     const formData = createFormData(formValues)
     try {
       await editPartner({ id: partner.id, formData }).unwrap()
