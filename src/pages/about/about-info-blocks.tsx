@@ -24,7 +24,6 @@ export function AboutInfoBlocks(): React.ReactElement {
   const [selectedInfoBlock, setSelectedInfoBlock] =
     React.useState<InfoBlock | null>(null)
   const [pageParams, setPageParams] = React.useState<IPageParams>({
-    take: 10,
     current: 1,
     pageSize: 10,
     total: 0,
@@ -32,8 +31,9 @@ export function AboutInfoBlocks(): React.ReactElement {
   const [drawerType, setDrawerType] = React.useState<'edit' | 'add' | null>(
     null,
   )
-  const { data, isLoading, isError } = useGetInfoBlocksQuery({
+  const { data, isLoading, isError, isFetching } = useGetInfoBlocksQuery({
     page: pageParams.current,
+    perPage: pageParams.pageSize,
   })
 
   const [deleteInfoBlock] = useDeleteInfoBlocksMutation()
@@ -89,7 +89,8 @@ export function AboutInfoBlocks(): React.ReactElement {
       key: 'title',
       render: (_: string, block: InfoBlock, i: number) => (
         <h2>
-          {i + 1}. {block.title['az']}
+          {(pageParams.current - 1) * pageParams.pageSize + ++i}.{' '}
+          {block.title['az']}
         </h2>
       ),
     },
@@ -164,6 +165,7 @@ export function AboutInfoBlocks(): React.ReactElement {
           <Table
             dataSource={data?.data}
             rowKey='id'
+            loading={isFetching}
             rowSelection={rowSelection}
             columns={columns}
             pagination={{

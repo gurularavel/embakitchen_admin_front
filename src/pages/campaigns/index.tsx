@@ -30,7 +30,6 @@ export function Campaigns(): React.ReactElement {
   const [selectedCampaign, setSelectedCampaign] =
     React.useState<ICampaign | null>(null)
   const [pageParams, setPageParams] = React.useState<IPageParams>({
-    take: 10,
     current: 1,
     pageSize: 10,
     total: 0,
@@ -38,8 +37,9 @@ export function Campaigns(): React.ReactElement {
   const [drawerType, setDrawerType] = React.useState<'edit' | 'add' | null>(
     null,
   )
-  const { data, isLoading, isError } = useGetCampaignsQuery({
+  const { data, isLoading, isError, isFetching } = useGetCampaignsQuery({
     page: pageParams.current,
+    perPage: pageParams.pageSize,
   })
 
   const [deleteCampaign] = useDeleteCampaignsMutation()
@@ -113,7 +113,8 @@ export function Campaigns(): React.ReactElement {
       key: 'title',
       render: (_: string, campaign: ICampaign, i: number) => (
         <h2>
-          {i + 1}. {campaign.title['az']}
+          {(pageParams.current - 1) * pageParams.pageSize + ++i}.{' '}
+          {campaign.title['az']}
         </h2>
       ),
     },
@@ -205,10 +206,9 @@ export function Campaigns(): React.ReactElement {
         </RenderIf>
         <RenderIf condition={data?.data?.length}>
           <Table
-            dataSource={data?.data.map((campaign: ICampaign) => ({
-              ...campaign,
-              key: campaign.id,
-            }))}
+            dataSource={data?.data}
+            rowKey='id'
+            loading={isFetching}
             rowSelection={rowSelection}
             columns={columns}
             pagination={{

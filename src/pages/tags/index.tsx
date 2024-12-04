@@ -20,7 +20,6 @@ export function Tags(): React.ReactElement {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([])
   const [selectedTag, setSelectedTag] = React.useState<ITag | null>(null)
   const [pageParams, setPageParams] = React.useState<IPageParams>({
-    take: 10,
     current: 1,
     pageSize: 10,
     total: 0,
@@ -28,8 +27,9 @@ export function Tags(): React.ReactElement {
   const [drawerType, setDrawerType] = React.useState<'edit' | 'add' | null>(
     null,
   )
-  const { data, isLoading, isError } = useGetTagsQuery({
+  const { data, isLoading, isError, isFetching } = useGetTagsQuery({
     page: pageParams.current,
+    perPage: pageParams.pageSize,
   })
 
   const [deleteTag] = useDeleteTagsMutation()
@@ -85,7 +85,8 @@ export function Tags(): React.ReactElement {
       key: 'title',
       render: (_: string, tag: ITag, i: number) => (
         <h2>
-          {i + 1}. {tag.title['az']}
+          {(pageParams.current - 1) * pageParams.pageSize + ++i}.{' '}
+          {tag.title['az']}
         </h2>
       ),
     },
@@ -160,6 +161,7 @@ export function Tags(): React.ReactElement {
           <Table
             dataSource={data?.data}
             rowKey='id'
+            loading={isFetching}
             rowSelection={rowSelection}
             columns={columns}
             pagination={{

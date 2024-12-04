@@ -1,12 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { APIBaseQuery } from '~ek/redux/api/axiosBase'
-import {
-  IAbout,
-  IGetInfoBlock,
-  IPostBlock,
-  IPutBlock,
-  IParams,
-} from '~ek/types/about'
+import { IAbout, IGetInfoBlock, IPostBlock, IPutBlock } from '~ek/types/about'
 
 export const aboutApi = createApi({
   reducerPath: 'aboutApi',
@@ -32,7 +26,7 @@ export const aboutApi = createApi({
       },
       invalidatesTags: () => [{ type: 'ABOUT_CONTENT' }],
     }),
-    getInfoBlocks: builder.query<IGetInfoBlock, IParams>({
+    getInfoBlocks: builder.query<IGetInfoBlock, IRequestParams>({
       query(params) {
         return {
           url: 'about-info-blocks',

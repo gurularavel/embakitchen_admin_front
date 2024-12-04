@@ -12,7 +12,7 @@ import { EditCounter } from '~ek/pages/home/counters/edit-counter'
 import { ErrorMessage, Loading, RenderIf, NoData } from '~ek/shared/components'
 import { confirmModal, notifier } from '~ek/shared/helpers'
 import { NOTIFICATION } from '~ek/shared/const/constants'
-import { ICounter } from '~ek/types/home/counter'
+import type { ICounter } from '~ek/types/home/counter'
 import { PlusOutlined, DeleteOutlined, FormOutlined } from '@ant-design/icons'
 import {
   useDeleteCounterMutation,
@@ -25,7 +25,6 @@ export function Counter(): React.ReactElement {
     null,
   )
   const [pageParams, setPageParams] = React.useState<IPageParams>({
-    take: 10,
     current: 1,
     pageSize: 10,
     total: 0,
@@ -33,8 +32,9 @@ export function Counter(): React.ReactElement {
   const [drawerType, setDrawerType] = React.useState<'edit' | 'add' | null>(
     null,
   )
-  const { data, isLoading, isError } = useGetCountsQuery({
+  const { data, isLoading, isError, isFetching } = useGetCountsQuery({
     page: pageParams.current,
+    perPage: pageParams.current,
   })
 
   const [deleteCounter] = useDeleteCounterMutation()
@@ -90,7 +90,8 @@ export function Counter(): React.ReactElement {
       key: 'title',
       render: (_: string, counter: ICounter, i: number) => (
         <h2>
-          {i + 1}. {counter.title['az']}
+          {(pageParams.current - 1) * pageParams.pageSize + ++i}.{' '}
+          {counter.title['az']}
         </h2>
       ),
     },
@@ -163,10 +164,9 @@ export function Counter(): React.ReactElement {
         </RenderIf>
         <RenderIf condition={data?.data?.length}>
           <Table
-            dataSource={data?.data.map((count: ICounter) => ({
-              ...count,
-              key: count.id,
-            }))}
+            dataSource={data?.data}
+            rowKey='id'
+            loading={isFetching}
             rowSelection={rowSelection}
             columns={columns}
             pagination={{

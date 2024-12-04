@@ -1,6 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { AppLayout } from '~ek/pages/layout'
-import { Menu } from '~ek/pages/menu'
 import { NotFound } from '~ek/pages/not-found'
 import { AboutContent, AboutInfoBlocks } from '~ek/pages/about'
 import { Counter, HomeCommonInfo, Partners, Sliders } from '~ek/pages/home'
@@ -40,10 +39,6 @@ export function PrivateRoutes(): React.ReactElement {
           <Route
             path={URLS.HOME_PARTNERS}
             element={<Partners />}
-          />
-          <Route
-            path={URLS.MENU}
-            element={<Menu />}
           />
           <Route
             path={URLS.ABOUT_CONTENT}
