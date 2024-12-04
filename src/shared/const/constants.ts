@@ -17,6 +17,8 @@ export const enum URLS {
   RURAL = '/rural',
   TAG = '/tag',
   STORES = '/stores',
+  PROJECT_PAGE = '/project-page',
+  PROJECTS = '/projects',
 }
 
 export const enum NOTIFICATION {
