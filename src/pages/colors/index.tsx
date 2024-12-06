@@ -23,18 +23,18 @@ export function Color(): React.ReactElement {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([])
   const [selectedColor, setSelectedColor] = React.useState<IColor | null>(null)
   const [pageParams, setPageParams] = React.useState<IPageParams>({
-    take: 10,
     current: 1,
     pageSize: 10,
     total: 0,
   })
+
   const [drawerType, setDrawerType] = React.useState<'edit' | 'add' | null>(
     null,
   )
-  const { data, isLoading, isError } = useGetColorsQuery({
+  const { data, isLoading, isError, isFetching } = useGetColorsQuery({
     page: pageParams.current,
+    perPage: pageParams.pageSize,
   })
-
   const [deleteColor] = useDeleteColorsMutation()
 
   const handleTableChange = (pagination: TablePaginationConfig): void => {
@@ -88,7 +88,8 @@ export function Color(): React.ReactElement {
       key: 'title',
       render: (_: string, color: IColor, i: number) => (
         <h2>
-          {i + 1}. {color.title['az']}
+          {(pageParams.current - 1) * pageParams.pageSize + ++i}.{' '}
+          {color.title['az']}
         </h2>
       ),
     },
@@ -161,10 +162,9 @@ export function Color(): React.ReactElement {
         </RenderIf>
         <RenderIf condition={data?.data?.length}>
           <Table
-            dataSource={data?.data.map((color: IColor) => ({
-              ...color,
-              key: color.id,
-            }))}
+            dataSource={data?.data}
+            loading={isFetching}
+            rowKey='id'
             rowSelection={rowSelection}
             columns={columns}
             pagination={{

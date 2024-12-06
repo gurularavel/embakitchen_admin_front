@@ -12,7 +12,7 @@ import { EditPartner } from '~ek/pages/home/partners/edit-partners'
 import { ErrorMessage, Loading, RenderIf, NoData } from '~ek/shared/components'
 import { confirmModal, notifier } from '~ek/shared/helpers'
 import { NOTIFICATION } from '~ek/shared/const/constants'
-import { IPartner } from '~ek/types/home/partners'
+import type { IPartner } from '~ek/types/home/partners'
 import { PlusOutlined, DeleteOutlined, FormOutlined } from '@ant-design/icons'
 import {
   useDeletePartnerMutation,
@@ -25,7 +25,6 @@ export function Partners(): React.ReactElement {
     null,
   )
   const [pageParams, setPageParams] = React.useState<IPageParams>({
-    take: 10,
     current: 1,
     pageSize: 10,
     total: 0,
@@ -33,8 +32,9 @@ export function Partners(): React.ReactElement {
   const [drawerType, setDrawerType] = React.useState<'edit' | 'add' | null>(
     null,
   )
-  const { data, isLoading, isError } = useGetPartnersQuery({
+  const { data, isLoading, isError, isFetching } = useGetPartnersQuery({
     page: pageParams.current,
+    perPage: pageParams.pageSize,
   })
 
   const [deletePartner] = useDeletePartnerMutation()
@@ -90,7 +90,8 @@ export function Partners(): React.ReactElement {
       key: 'title',
       render: (_: string, partner: IPartner, i: number) => (
         <h2>
-          {i + 1}. {partner.title['az']}
+          {(pageParams.current - 1) * pageParams.pageSize + ++i}.{' '}
+          {partner.title['az']}
         </h2>
       ),
     },
@@ -163,10 +164,9 @@ export function Partners(): React.ReactElement {
         </RenderIf>
         <RenderIf condition={data?.data?.length}>
           <Table
-            dataSource={data?.data.map((partner: IPartner) => ({
-              ...partner,
-              key: partner.id,
-            }))}
+            dataSource={data?.data}
+            rowKey='id'
+            loading={isFetching}
             rowSelection={rowSelection}
             columns={columns}
             pagination={{

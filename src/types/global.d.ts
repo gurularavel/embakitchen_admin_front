@@ -22,7 +22,6 @@ declare global {
   }
 
   interface IPageParams {
-    take: number
     current: number
     pageSize: number
     total: number
@@ -71,6 +70,7 @@ declare global {
 
   interface IRequestParams {
     page?: number
+    perPage?: number
   }
 
   interface IError {

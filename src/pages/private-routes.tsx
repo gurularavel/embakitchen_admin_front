@@ -1,10 +1,10 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { AppLayout } from '~ek/pages/layout'
-import { Menu } from '~ek/pages/menu'
 import { NotFound } from '~ek/pages/not-found'
 import { AboutContent, AboutInfoBlocks } from '~ek/pages/about'
 import { Counter, HomeCommonInfo, Partners, Sliders } from '~ek/pages/home'
 import { Campaigns } from '~ek/pages/campaigns'
+import { CampaignPage } from '~ek/pages/campaigns/campaign-page'
 import { Color } from '~ek/pages/colors'
 import { City, District } from '~ek/pages/region'
 import { Blogs } from '~ek/pages/blog'
@@ -39,10 +39,6 @@ export function PrivateRoutes(): React.ReactElement {
             element={<Partners />}
           />
           <Route
-            path={URLS.MENU}
-            element={<Menu />}
-          />
-          <Route
             path={URLS.ABOUT_CONTENT}
             element={<AboutContent />}
           />
@@ -51,8 +47,12 @@ export function PrivateRoutes(): React.ReactElement {
             element={<AboutInfoBlocks />}
           />
           <Route
-            path={URLS.COMPAIGN}
+            path={URLS.CAMPAIGN}
             element={<Campaigns />}
+          />
+          <Route
+            path={URLS.CAMPAIGN_PAGE}
+            element={<CampaignPage />}
           />
           <Route
             path={URLS.COLOR}

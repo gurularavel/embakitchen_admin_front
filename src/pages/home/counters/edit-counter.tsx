@@ -13,7 +13,7 @@ import {
 } from 'antd'
 import { notifier } from '~ek/shared/helpers'
 import { NOTIFICATION } from '~ek/shared/const/constants'
-import { ICounter } from '~ek/types/home/counter'
+import type { ICounter } from '~ek/types/home/counter'
 import { useEditCounterMutation } from '~ek/redux/api/home/counter'
 import { useFormStyle } from '~ek/shared/utilities/formStyles'
 
