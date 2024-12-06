@@ -1,4 +1,4 @@
-import { ICity } from '~ek/types/region'
+import { ICity } from '~ek/types/city'
 
 export interface IStore {
   id: number

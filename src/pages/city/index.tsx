@@ -7,17 +7,14 @@ import {
   TablePaginationConfig,
   TableProps,
 } from 'antd'
-import { AddCity } from '~ek/pages/region/city/add-city'
-import { EditCity } from '~ek/pages/region/city/edit-city'
+import { AddCity } from '~ek/pages/city/add-city'
+import { EditCity } from '~ek/pages/city/edit-city'
 import { ErrorMessage, Loading, RenderIf, NoData } from '~ek/shared/components'
 import { confirmModal, notifier } from '~ek/shared/helpers'
 import { NOTIFICATION } from '~ek/shared/const/constants'
-import type { ICity } from '~ek/types/region'
+import type { ICity } from '~ek/types/city'
 import { PlusOutlined, DeleteOutlined, FormOutlined } from '@ant-design/icons'
-import {
-  useDeleteCitiesMutation,
-  useGetCitiesQuery,
-} from '~ek/redux/api/region/city'
+import { useDeleteCitiesMutation, useGetCitiesQuery } from '~ek/redux/api/city'
 
 export function City(): React.ReactElement {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([])
