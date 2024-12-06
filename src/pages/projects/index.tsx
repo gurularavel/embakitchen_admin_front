@@ -25,7 +25,6 @@ export function Projects(): React.ReactElement {
     null,
   )
   const [pageParams, setPageParams] = React.useState<IPageParams>({
-    take: 10,
     current: 1,
     pageSize: 10,
     total: 0,
@@ -33,8 +32,9 @@ export function Projects(): React.ReactElement {
   const [drawerType, setDrawerType] = React.useState<'edit' | 'add' | null>(
     null,
   )
-  const { data, isLoading, isError } = useGetProjectsQuery({
+  const { data, isLoading, isError, isFetching } = useGetProjectsQuery({
     page: pageParams.current,
+    perPage: pageParams.pageSize,
   })
 
   const [deleteProject] = useDeleteProjectsMutation()
@@ -90,7 +90,8 @@ export function Projects(): React.ReactElement {
       key: 'title',
       render: (_: string, project: IProject, i: number) => (
         <h2>
-          {i + 1}. {project.title['az']}
+          {(pageParams.current - 1) * pageParams.pageSize + ++i}.{' '}
+          {project.title['az']}
         </h2>
       ),
     },
@@ -165,6 +166,7 @@ export function Projects(): React.ReactElement {
           <Table
             dataSource={data?.data}
             rowKey='id'
+            loading={isFetching}
             rowSelection={rowSelection}
             columns={columns}
             pagination={{
@@ -186,7 +188,7 @@ export function Projects(): React.ReactElement {
           <EditProject
             open={!!drawerType}
             onClose={onClose}
-            project={selectedProject}
+            project_id={selectedProject.id}
           />
         )}
       </RenderIf>

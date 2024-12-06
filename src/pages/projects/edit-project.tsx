@@ -1,120 +1,119 @@
 import * as React from 'react'
-import dayjs from 'dayjs'
 import {
   Button,
   Col,
-  DatePicker,
   Drawer,
   Form,
   FormProps,
   Input,
   Row,
+  Select,
   Space,
   Switch,
   Upload,
-  type GetProps,
 } from 'antd'
+import type { UploadFile } from 'antd/lib'
 import { Loading, RenderIf } from '~ek/shared/components'
-import {
-  beforeUploadHandler,
-  createFormData,
-  formatDate,
-  handleFileData,
-  handleRemoveFile,
-  notifier,
-} from '~ek/shared/helpers'
-import { NOTIFICATION, DATE_FORMAT } from '~ek/shared/const/constants'
-import type { IFormCampaign } from '~ek/types/campaigns'
+import { createFormData, notifier } from '~ek/shared/helpers'
+import { NOTIFICATION } from '~ek/shared/const/constants'
+import type { IEditProjectForm, IFormProject } from '~ek/types/project'
 import { UploadOutlined } from '@ant-design/icons'
-import { useEditCampaignMutation } from '~ek/redux/api/campaign'
-import { useFileRemoveMutation } from '~ek/redux/api/fileRemove'
+import {
+  useGetProjectByIdQuery,
+  useGetProjectsQuery,
+  useEditProjectMutation,
+} from '~ek/redux/api/project'
+import { useGetTagsQuery } from '~ek/redux/api/tags'
 import { useFormStyle } from '~ek/shared/utilities/formStyles'
+import { RichTextEditor } from '~ek/shared/components/richtext'
 
 interface IDrawerProps {
   open: boolean
   onClose: () => void
-  project
+  project_id: number
 }
-type RangePickerProps = GetProps<typeof DatePicker.RangePicker>
 
 export function EditProject({
   open,
   onClose,
-  project,
+  project_id,
 }: IDrawerProps): React.ReactElement {
-  const { RangePicker } = DatePicker
-  const { TextArea } = Input
   const [form] = Form.useForm()
   const formStyle = useFormStyle()
-  const [switchChecked, setSwitchChecked] = React.useState<boolean>(
-    project.status,
-  )
-  const [image, setImage] = React.useState<IFile>({
-    file: [],
-    fileList: [],
+  const { data: fullProjectData, isLoading: loadingProductData } =
+    useGetProjectByIdQuery(project_id)
+  const { data: projects } = useGetProjectsQuery({ page: 1 })
+  const { data: teqData } = useGetTagsQuery({ page: 1 })
+  const [editProject, { isLoading }] = useEditProjectMutation()
+  const [contentRichText, setContentRichText] = React.useState<ILangContent>({
+    az: '',
+    ru: '',
+    en: '',
   })
-  const [dateRange, setDateRange] = React.useState<{
-    startDate: string
-    endDate: string
-  }>({
-    startDate: project.startDate,
-    endDate: project.endDate,
-  })
-  const [editCampaign, { isLoading }] = useEditCampaignMutation()
-  const [deleteFile] = useFileRemoveMutation()
+  const [switchChecked, setSwitchChecked] = React.useState<boolean>(true)
+  const projectsOptions = projects?.data
+    .filter(b => b.id !== project_id)
+    .map(blog => ({
+      value: blog.id,
+      label: blog.title.az,
+    }))
+
+  const teqOptions = teqData?.data?.map(d => ({
+    value: d.id,
+    label: d.title.az,
+  }))
 
   React.useEffect(() => {
-    handleFileData(project.image, setImage)
-  }, [project])
-
-  const initialValues = {
-    title: project.title,
-    content: project.content,
-    campaignDates: [
-      dayjs(dateRange.startDate, DATE_FORMAT.VIEW),
-      dayjs(dateRange.endDate, DATE_FORMAT.VIEW),
-    ],
-    status: project.status,
-    id: project.id,
-  }
+    if (fullProjectData) {
+      form.setFieldsValue({
+        similar_project_ids: fullProjectData.similar_projects?.map(
+          project => project.id,
+        ),
+        tag_ids: fullProjectData.tags?.map(tag => tag.id),
+        images: fullProjectData.images?.map(image => ({
+          uid: image?.uuid,
+          name: image?.name,
+          url: image?.original_url,
+        })),
+        bannerImage: fullProjectData.bannerImage?.map(image => ({
+          uid: image?.uuid,
+          name: image?.name,
+          url: image?.original_url,
+        })),
+        status: fullProjectData.status,
+        title: fullProjectData.title,
+        content: fullProjectData.content,
+      })
+      setContentRichText(fullProjectData.content)
+    }
+  }, [fullProjectData, form])
 
   const handleSwitchChange = (checked: boolean) => {
     setSwitchChecked(checked)
     form.setFieldsValue({ status: checked })
   }
-
-  const handleDateChange = (
-    dates: RangePickerProps['value'],
-    dateStrings: [string, string],
-  ) => {
-    if (dates) {
-      setDateRange({ startDate: dateStrings[0], endDate: dateStrings[1] })
-    }
+  const handleRichContent = (field: 'az' | 'ru' | 'en', content: string) => {
+    setContentRichText(prevState => ({ ...prevState, [field]: content }))
   }
 
-  const onFinish: FormProps<IFormCampaign>['onFinish'] = async (
-    values: IFormCampaign,
+  const onFinish: FormProps<IFormProject>['onFinish'] = async (
+    values: IFormProject,
   ) => {
-    const formatStartDate =
-      dateRange.startDate &&
-      formatDate(dateRange.startDate, DATE_FORMAT.VIEW, DATE_FORMAT.SEND)
-    const formatEndDate =
-      dateRange.endDate &&
-      formatDate(dateRange.endDate, DATE_FORMAT.VIEW, DATE_FORMAT.SEND)
-
     const formValues = {
       ...values,
-      startDate: formatStartDate,
-      endDate: formatEndDate,
       status: switchChecked ? '1' : '0',
+      content: contentRichText,
+      tag_ids: Array.isArray(values.tag_ids)
+        ? values.tag_ids
+        : [values.tag_ids],
       _method: 'PUT',
-      image: image.file,
     }
+
     const formData = createFormData(formValues)
 
     try {
-      await editCampaign({ id: project.id, formData }).unwrap()
-      notifier('Dəyişiklik uğurla icra edildi', NOTIFICATION.success)
+      await editProject({ id: project_id, formData }).unwrap()
+      notifier('Dəyişiklik uğurla icra edildi.', NOTIFICATION.success)
       onClose()
     } catch (e: unknown) {
       const errorMessage =
@@ -122,7 +121,6 @@ export function EditProject({
       notifier(errorMessage, NOTIFICATION.error)
     }
   }
-
   return (
     <Drawer
       title='Düzəliş'
@@ -139,6 +137,7 @@ export function EditProject({
           </Button>
           <Button
             type='primary'
+            disabled={isLoading}
             onClick={() => form.submit()}
           >
             Submit
@@ -149,212 +148,265 @@ export function EditProject({
       <Form
         layout='vertical'
         form={form}
-        initialValues={initialValues}
         onFinish={onFinish}
         style={formStyle}
       >
-        <RenderIf condition={isLoading}>
+        <RenderIf condition={loadingProductData}>
           <Loading />
         </RenderIf>
-        <Row gutter={{ xs: 8, sm: 16 }}>
-          <Col
-            xs={24}
-            sm={12}
-            md={8}
-          >
-            <Form.Item<IFormCampaign>
-              name={['title', 'az']}
-              label='Başlıq(az)'
-              rules={[
-                {
-                  required: true,
-                  whitespace: true,
-                  message: 'Zəhmət olmasa başlıq əlavə edin(az)',
-                },
-              ]}
+        <RenderIf condition={!loadingProductData}>
+          <Row gutter={{ xs: 8, sm: 16 }}>
+            <Col
+              xs={24}
+              sm={12}
+              md={8}
             >
-              <Input placeholder='Başlıq(az)' />
-            </Form.Item>
-          </Col>
-          <Col
-            xs={24}
-            sm={12}
-            md={8}
-          >
-            <Form.Item<IFormCampaign>
-              name={['title', 'en']}
-              label='Başlıq(en)'
-              rules={[
-                {
-                  required: true,
-                  whitespace: true,
-                  message: 'Zəhmət olmasa başlıq əlavə edin(en)',
-                },
-              ]}
-            >
-              <Input placeholder='Başlıq(en)' />
-            </Form.Item>
-          </Col>
-          <Col
-            xs={24}
-            sm={12}
-            md={8}
-          >
-            <Form.Item<IFormCampaign>
-              name={['title', 'ru']}
-              label='Başlıq(ru)'
-              rules={[
-                {
-                  required: true,
-                  whitespace: true,
-                  message: 'Zəhmət olmasa başlıq əlavə edin(ru)',
-                },
-              ]}
-            >
-              <Input placeholder='Başlıq(ru)' />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row gutter={{ xs: 8, sm: 16 }}>
-          <Col
-            xs={24}
-            sm={12}
-            md={8}
-          >
-            <Form.Item<IFormCampaign>
-              name={['content', 'az']}
-              label='Kontent(az)'
-              rules={[
-                {
-                  required: true,
-                  whitespace: true,
-                  message: 'Zəhmət olmasa kontent əlavə edin(az)',
-                },
-              ]}
-            >
-              <TextArea
-                rows={4}
-                placeholder='Kontent(az)'
-              />
-            </Form.Item>
-          </Col>
-          <Col
-            xs={24}
-            sm={12}
-            md={8}
-          >
-            <Form.Item<IFormCampaign>
-              name={['content', 'en']}
-              label='Kontent(en)'
-              rules={[
-                {
-                  required: true,
-                  whitespace: true,
-                  message: 'Zəhmət olmasa kontent əlavə edin(en)',
-                },
-              ]}
-            >
-              <TextArea
-                rows={4}
-                placeholder='Kontent(en)'
-              />
-            </Form.Item>
-          </Col>
-          <Col
-            xs={24}
-            sm={12}
-            md={8}
-          >
-            <Form.Item<IFormCampaign>
-              name={['content', 'ru']}
-              label='Kontent(ru)'
-              rules={[
-                {
-                  required: true,
-                  whitespace: true,
-                  message: 'Zəhmət olmasa kontent əlavə edin(ru)',
-                },
-              ]}
-            >
-              <TextArea
-                rows={4}
-                placeholder='Kontent(ru)'
-              />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row>
-          <Col
-            xs={24}
-            sm={12}
-          >
-            <Form.Item<IFormCampaign>
-              name='image'
-              label='Image'
-              valuePropName='image'
-              rules={[
-                {
-                  required: true,
-                  validator: () =>
-                    image.fileList.length > 0
-                      ? Promise.resolve()
-                      : Promise.reject(
-                        new Error('Zəhmət olmasa image fayl yükləyin!'),
-                      ),
-                },
-              ]}
-              getValueFromEvent={e => {
-                return e?.fileList
-              }}
-            >
-              <Upload
-                name='image'
-                accept='image/*'
-                maxCount={1}
-                listType='picture'
-                beforeUpload={file => beforeUploadHandler(file, setImage)}
-                fileList={image.fileList}
-                onRemove={file => handleRemoveFile(deleteFile, file, setImage)}
+              <Form.Item<IEditProjectForm>
+                name={['title', 'az']}
+                label='Başlıq(az)'
+                rules={[
+                  {
+                    required: true,
+                    whitespace: true,
+                    message: 'Zəhmət olmasa başlıq əlavə edin(az)',
+                  },
+                ]}
               >
-                <Button icon={<UploadOutlined />}>Click to upload</Button>
-              </Upload>
-            </Form.Item>
-          </Col>
-          <Col xs={12}>
-            <Form.Item<IFormCampaign>
-              name='status'
-              label='Status'
+                <Input placeholder='Başlıq(az)' />
+              </Form.Item>
+            </Col>
+            <Col
+              xs={24}
+              sm={12}
+              md={8}
             >
-              <Switch
-                checked={switchChecked}
-                style={{
-                  backgroundColor: switchChecked ? '#52c41a' : '#ff4d4f',
+              <Form.Item<IEditProjectForm>
+                name={['title', 'en']}
+                label='Başlıq(en)'
+                rules={[
+                  {
+                    required: true,
+                    whitespace: true,
+                    message: 'Zəhmət olmasa başlıq əlavə edin(en)',
+                  },
+                ]}
+              >
+                <Input placeholder='Başlıq(en)' />
+              </Form.Item>
+            </Col>
+            <Col
+              xs={24}
+              sm={12}
+              md={8}
+            >
+              <Form.Item<IEditProjectForm>
+                name={['title', 'ru']}
+                label='Başlıq(ru)'
+                rules={[
+                  {
+                    required: true,
+                    whitespace: true,
+                    message: 'Zəhmət olmasa başlıq əlavə edin(ru)',
+                  },
+                ]}
+              >
+                <Input placeholder='Başlıq(ru)' />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={{ xs: 8, sm: 16 }}>
+            <Col span={24}>
+              <Form.Item<IEditProjectForm>
+                label='Content(az)'
+                name={['content', 'az']}
+                rules={[
+                  {
+                    required: true,
+                    validator: () => {
+                      return contentRichText.az.trim().length > 0
+                        ? Promise.resolve()
+                        : Promise.reject('Zəhmət olmasa mətn daxil edin(az)')
+                    },
+                  },
+                ]}
+              >
+                <RichTextEditor
+                  onChangeValue={data => handleRichContent('az', data)}
+                  editorData={contentRichText.az}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={24}>
+              <Form.Item<IEditProjectForm>
+                label='Content(en)'
+                name={['content', 'en']}
+                rules={[
+                  {
+                    required: true,
+                    validator: () => {
+                      return contentRichText.en.trim().length > 0
+                        ? Promise.resolve()
+                        : Promise.reject('Zəhmət olmasa mətn daxil edin(en)')
+                    },
+                  },
+                ]}
+              >
+                <RichTextEditor
+                  onChangeValue={data => handleRichContent('en', data)}
+                  editorData={contentRichText.en}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={24}>
+              <Form.Item<IEditProjectForm>
+                label='Content(ru)'
+                name={['content', 'ru']}
+                rules={[
+                  {
+                    required: true,
+                    validator: () => {
+                      return contentRichText.ru.trim().length > 0
+                        ? Promise.resolve()
+                        : Promise.reject('Zəhmət olmasa mətn daxil edin(ru)')
+                    },
+                  },
+                ]}
+              >
+                <RichTextEditor
+                  onChangeValue={data => handleRichContent('ru', data)}
+                  editorData={contentRichText.ru}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col
+              xs={24}
+              sm={12}
+            >
+              <Form.Item<IEditProjectForm>
+                name='images'
+                label='Layihə şəkilləri'
+                valuePropName='fileList'
+                getValueFromEvent={e => {
+                  const fileList = Array.isArray(e) ? e : e?.fileList
+                  return fileList?.map(
+                    (fileItem: UploadFile) =>
+                      fileItem.originFileObj || fileItem,
+                  )
                 }}
-                onChange={checked => handleSwitchChange(checked)}
-              />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Form.Item<IFormCampaign>
-              name='campaignDates'
-              label='Kampaniya müddəti'
-              rules={[
-                {
-                  required: true,
-                  message: 'Zəhmət olmasa müddət seçin',
-                },
-              ]}
+                rules={[
+                  {
+                    required: true,
+                    validator: (_, value) =>
+                      value && value.length > 0
+                        ? Promise.resolve()
+                        : Promise.reject(
+                          new Error('Zəhmət olmasa şəkil yükləyin'),
+                        ),
+                  },
+                ]}
+              >
+                <Upload
+                  name='images'
+                  accept='image/*'
+                  multiple
+                  listType='picture'
+                >
+                  <Button icon={<UploadOutlined />}>Click to upload</Button>
+                </Upload>
+              </Form.Item>
+            </Col>
+            <Col
+              xs={24}
+              sm={12}
             >
-              <RangePicker
-                showTime={{ format: DATE_FORMAT.VIEW }}
-                format={DATE_FORMAT.VIEW}
-                onChange={handleDateChange}
-              />
-            </Form.Item>
-          </Col>
-        </Row>
+              <Form.Item<IEditProjectForm>
+                name='bannerImage'
+                label='Əsas şəkil'
+                valuePropName='fileList'
+                getValueFromEvent={e => {
+                  const fileList = Array.isArray(e) ? e : e?.fileList
+                  return fileList?.map(
+                    (fileItem: UploadFile) =>
+                      fileItem.originFileObj || fileItem,
+                  )
+                }}
+                rules={[
+                  {
+                    required: true,
+                    validator: (_, value) =>
+                      value && value.length > 0
+                        ? Promise.resolve()
+                        : Promise.reject(
+                          new Error('Zəhmət olmasa şəkil yükləyin'),
+                        ),
+                  },
+                ]}
+              >
+                <Upload
+                  name='bannerImage'
+                  accept='image/*'
+                  listType='picture'
+                >
+                  <Button icon={<UploadOutlined />}>Click to upload</Button>
+                </Upload>
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col
+              xs={24}
+              sm={12}
+            >
+              <Form.Item<IEditProjectForm>
+                name='similar_project_ids'
+                label='Oxşar layihələri seçin'
+              >
+                <Select
+                  mode='multiple'
+                  style={{ width: '100%' }}
+                  placeholder='Oxşar bloqları seçin'
+                  options={projectsOptions || []}
+                  optionRender={option => <Space>{option.label}</Space>}
+                />
+              </Form.Item>
+            </Col>
+            <Col
+              xs={24}
+              sm={8}
+            >
+              <Form.Item<IEditProjectForm>
+                name='tag_ids'
+                label='Layihə teqi'
+              >
+                <Select
+                  style={{ width: '100%' }}
+                  placeholder='Teq seçin'
+                  options={teqOptions || []}
+                  optionRender={option => <Space>{option.label}</Space>}
+                />
+              </Form.Item>
+            </Col>
+            <Col
+              xs={24}
+              sm={3}
+            >
+              <Form.Item<IEditProjectForm>
+                name='status'
+                label='Status'
+              >
+                <Switch
+                  checked={switchChecked}
+                  style={{
+                    backgroundColor: switchChecked ? '#52c41a' : '#ff4d4f',
+                  }}
+                  onChange={checked => handleSwitchChange(checked)}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+        </RenderIf>
       </Form>
     </Drawer>
   )

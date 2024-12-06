@@ -1,6 +1,10 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { APIBaseQuery } from '~ek/redux/api/axiosBase'
-import { ProjectApiResponse, type IProjectPage } from '~ek/types/project'
+import {
+  IProject,
+  ProjectApiResponse,
+  type IProjectPage,
+} from '~ek/types/project'
 
 export const projectApi = createApi({
   reducerPath: 'projectApi',
@@ -16,6 +20,25 @@ export const projectApi = createApi({
         }
       },
       providesTags: () => [{ type: 'PROJECT' }],
+    }),
+    getProjectById: builder.query<IProject, number>({
+      query(id) {
+        return {
+          url: `projects/${id}`,
+          method: 'GET',
+        }
+      },
+    }),
+    editProject: builder.mutation<void, IPutFormData>({
+      query(data) {
+        const { id, formData } = data
+        return {
+          method: 'POST',
+          url: `projects/${id}`,
+          data: formData,
+        }
+      },
+      invalidatesTags: () => [{ type: 'PROJECT' }],
     }),
     deleteProjects: builder.mutation<void, IDelete>({
       query(data) {
@@ -46,6 +69,16 @@ export const projectApi = createApi({
       },
       invalidatesTags: () => [{ type: 'PROJECTPAGE' }],
     }),
+    postProject: builder.mutation<void, FormData>({
+      query(data) {
+        return {
+          url: 'projects',
+          method: 'POST',
+          data,
+        }
+      },
+      invalidatesTags: () => [{ type: 'PROJECT' }],
+    }),
   }),
 })
 
@@ -54,4 +87,7 @@ export const {
   useGetProjectPageQuery,
   useGetProjectsQuery,
   useDeleteProjectsMutation,
+  usePostProjectMutation,
+  useGetProjectByIdQuery,
+  useEditProjectMutation,
 } = projectApi

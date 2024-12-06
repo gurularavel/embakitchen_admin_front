@@ -2,34 +2,33 @@ import * as React from 'react'
 import {
   Button,
   Col,
-  DatePicker,
   Drawer,
   Form,
   FormProps,
   Input,
   Row,
+  Select,
   Space,
   Upload,
 } from 'antd'
+import type { UploadFile } from 'antd/lib'
 import { Loading, RenderIf } from '~ek/shared/components'
-import {
-  beforeUploadHandler,
-  createFormData,
-  formatDate,
-  notifier,
-} from '~ek/shared/helpers'
-import { DATE_FORMAT, NOTIFICATION } from '~ek/shared/const/constants'
-import type { IFormCampaign } from '~ek/types/campaigns'
-import type { GetProps } from 'antd'
+import { createFormData, notifier } from '~ek/shared/helpers'
+import { NOTIFICATION } from '~ek/shared/const/constants'
+import type { IFormProject } from '~ek/types/project'
 import { UploadOutlined } from '@ant-design/icons'
-import { usePostCampaignMutation } from '~ek/redux/api/campaign'
+import {
+  useGetProjectsQuery,
+  usePostProjectMutation,
+} from '~ek/redux/api/project'
+import { useGetTagsQuery } from '~ek/redux/api/tags'
 import { useFormStyle } from '~ek/shared/utilities/formStyles'
+import { RichTextEditor } from '~ek/shared/components/richtext'
 
 interface IDrawerProps {
   open: boolean
   onClose: () => void
 }
-type RangePickerProps = GetProps<typeof DatePicker.RangePicker>
 const initialValues = {
   title: {
     az: '',
@@ -41,7 +40,8 @@ const initialValues = {
     en: '',
     ru: '',
   },
-  campaignDates: [],
+  similar_project_ids: [],
+  tag_ids: [],
 }
 
 export function AddProject({
@@ -50,50 +50,43 @@ export function AddProject({
 }: IDrawerProps): React.ReactElement {
   const [form] = Form.useForm()
   const formStyle = useFormStyle()
-  const { RangePicker } = DatePicker
-  const { TextArea } = Input
 
-  const [image, setImage] = React.useState<IFile>({
-    file: [],
-    fileList: [],
+  const { data: projectsData } = useGetProjectsQuery({ page: 1 })
+  const { data: teqData } = useGetTagsQuery({ page: 1 })
+  const [addProject, { isLoading }] = usePostProjectMutation()
+
+  const [contentRichText, setContentRichText] = React.useState<ILangContent>({
+    az: '',
+    ru: '',
+    en: '',
   })
+  const projectsOptions = projectsData?.data?.map(d => ({
+    value: d.id,
+    label: d.title.az,
+  }))
+  const teqOptions = teqData?.data?.map(d => ({
+    value: d.id,
+    label: d.title.az,
+  }))
 
-  const [dateRange, setDateRange] = React.useState<{
-    startDate: string
-    endDate: string
-  }>({ startDate: '', endDate: '' })
-
-  const [addCampaign, { isLoading }] = usePostCampaignMutation()
-
-  const handleDateChange = (
-    dates: RangePickerProps['value'],
-    dateStrings: [string, string],
-  ) => {
-    if (dates) {
-      setDateRange({ startDate: dateStrings[0], endDate: dateStrings[1] })
-    }
+  const handleRichContent = (field: 'az' | 'ru' | 'en', content: string) => {
+    setContentRichText(prevState => ({ ...prevState, [field]: content }))
   }
 
-  const onFinish: FormProps<IFormCampaign>['onFinish'] = async (
-    values: IFormCampaign,
+  const onFinish: FormProps<IFormProject>['onFinish'] = async (
+    values: IFormProject,
   ) => {
-    const formatStartDate =
-      dateRange.startDate &&
-      formatDate(dateRange.startDate, DATE_FORMAT.VIEW, DATE_FORMAT.SEND)
-    const formatEndDate =
-      dateRange.endDate &&
-      formatDate(dateRange.endDate, DATE_FORMAT.VIEW, DATE_FORMAT.SEND)
-
     const formValues = {
       ...values,
-      image: image.file,
-      startDate: formatStartDate,
-      endDate: formatEndDate,
+      content: contentRichText,
+      tag_ids: Array.isArray(values.tag_ids)
+        ? values.tag_ids
+        : [values.tag_ids],
     }
     const formData = createFormData(formValues)
     try {
-      await addCampaign(formData).unwrap()
-      notifier('Dəyişiklik uğurla icra edildi', NOTIFICATION.success)
+      await addProject(formData).unwrap()
+      notifier('Yeni layihə yaradıldı', NOTIFICATION.success)
       onClose()
     } catch (e: unknown) {
       const errorMessage =
@@ -103,7 +96,7 @@ export function AddProject({
   }
   return (
     <Drawer
-      title='Yeni Kampaniya'
+      title='Yeni Layihə'
       onClose={onClose}
       open={open}
       size={'large'}
@@ -140,7 +133,7 @@ export function AddProject({
             sm={12}
             md={8}
           >
-            <Form.Item<IFormCampaign>
+            <Form.Item<IFormProject>
               name={['title', 'az']}
               label='Başlıq(az)'
               rules={[
@@ -159,7 +152,7 @@ export function AddProject({
             sm={12}
             md={8}
           >
-            <Form.Item<IFormCampaign>
+            <Form.Item<IFormProject>
               name={['title', 'en']}
               label='Başlıq(en)'
               rules={[
@@ -178,7 +171,7 @@ export function AddProject({
             sm={12}
             md={8}
           >
-            <Form.Item<IFormCampaign>
+            <Form.Item<IFormProject>
               name={['title', 'ru']}
               label='Başlıq(ru)'
               rules={[
@@ -194,69 +187,66 @@ export function AddProject({
           </Col>
         </Row>
         <Row gutter={{ xs: 8, sm: 16 }}>
-          <Col
-            xs={24}
-            sm={12}
-            md={8}
-          >
-            <Form.Item<IFormCampaign>
+          <Col span={24}>
+            <Form.Item<IFormProject>
+              label='Content(az)'
               name={['content', 'az']}
-              label='Kontent(az)'
               rules={[
                 {
                   required: true,
-                  whitespace: true,
-                  message: 'Zəhmət olmasa kontent əlavə edin(az)',
+                  validator: () => {
+                    return contentRichText.az.trim().length > 0
+                      ? Promise.resolve()
+                      : Promise.reject('Zəhmət olmasa mətn daxil edin(az)')
+                  },
                 },
               ]}
             >
-              <TextArea
-                rows={4}
-                placeholder='Kontent(az)'
+              <RichTextEditor
+                onChangeValue={data => handleRichContent('az', data)}
+                editorData={contentRichText.az}
               />
             </Form.Item>
           </Col>
-          <Col
-            xs={24}
-            sm={12}
-            md={8}
-          >
-            <Form.Item<IFormCampaign>
+          <Col span={24}>
+            <Form.Item<IFormProject>
+              label='Content(en)'
               name={['content', 'en']}
-              label='Kontent(en)'
               rules={[
                 {
                   required: true,
-                  whitespace: true,
-                  message: 'Zəhmət olmasa kontent əlavə edin(en)',
+                  validator: () => {
+                    return contentRichText.en.trim().length > 0
+                      ? Promise.resolve()
+                      : Promise.reject('Zəhmət olmasa mətn daxil edin(en)')
+                  },
                 },
               ]}
             >
-              <TextArea
-                rows={4}
-                placeholder='Kontent(en)'
+              <RichTextEditor
+                onChangeValue={data => handleRichContent('en', data)}
+                editorData={contentRichText.en}
               />
             </Form.Item>
           </Col>
-          <Col
-            xs={24}
-            sm={12}
-            md={8}
-          >
-            <Form.Item<IFormCampaign>
+          <Col span={24}>
+            <Form.Item<IFormProject>
+              label='Content(ru)'
               name={['content', 'ru']}
-              label='Kontent(ru)'
               rules={[
                 {
                   required: true,
-                  whitespace: true,
-                  message: 'Zəhmət olmasa kontent əlavə edin(ru)',
+                  validator: () => {
+                    return contentRichText.ru.trim().length > 0
+                      ? Promise.resolve()
+                      : Promise.reject('Zəhmət olmasa mətn daxil edin(ru)')
+                  },
                 },
               ]}
             >
-              <TextArea
-                rows={4}
-                placeholder='Kontent(ru)'
+              <RichTextEditor
+                onChangeValue={data => handleRichContent('ru', data)}
+                editorData={contentRichText.ru}
               />
             </Form.Item>
           </Col>
@@ -264,35 +254,35 @@ export function AddProject({
         <Row>
           <Col
             xs={24}
-            sm={8}
+            sm={12}
           >
-            <Form.Item<IFormCampaign>
-              name='image'
-              label='Image'
-              valuePropName='image'
+            <Form.Item<IFormProject>
+              name='images'
+              label='Layihə şəkilləri'
+              valuePropName='fileList'
+              getValueFromEvent={e => {
+                const fileList = Array.isArray(e) ? e : e?.fileList
+                return fileList?.map(
+                  (fileItem: UploadFile) => fileItem.originFileObj || fileItem,
+                )
+              }}
               rules={[
                 {
                   required: true,
-                  validator: () =>
-                    image.fileList.length > 0
+                  validator: (_, value) =>
+                    value && value.length > 0
                       ? Promise.resolve()
                       : Promise.reject(
-                        new Error('Zəhmət olmasa image fayl yükləyin!'),
+                        new Error('Zəhmət olmasa şəkil yükləyin'),
                       ),
                 },
               ]}
-              getValueFromEvent={e => {
-                return e?.fileList
-              }}
             >
               <Upload
-                name='image'
+                name='images'
                 accept='image/*'
-                maxCount={1}
+                multiple
                 listType='picture'
-                beforeUpload={file => beforeUploadHandler(file, setImage)}
-                fileList={image.fileList}
-                onRemove={() => setImage({ file: [], fileList: [] })}
               >
                 <Button icon={<UploadOutlined />}>Click to upload</Button>
               </Upload>
@@ -300,22 +290,70 @@ export function AddProject({
           </Col>
           <Col
             xs={24}
-            sm={16}
+            sm={12}
           >
-            <Form.Item<IFormCampaign>
-              name='campaignDates'
-              label='Kampaniya müddəti'
+            <Form.Item<IFormProject>
+              name='bannerImage'
+              label='Əsas şəkil'
+              valuePropName='fileList'
+              getValueFromEvent={e => {
+                const fileList = Array.isArray(e) ? e : e?.fileList
+                return fileList?.map(
+                  (fileItem: UploadFile) => fileItem.originFileObj || fileItem,
+                )
+              }}
               rules={[
                 {
                   required: true,
-                  message: 'Zəhmət olmasa müddət seçin',
+                  validator: (_, value) =>
+                    value && value.length > 0
+                      ? Promise.resolve()
+                      : Promise.reject(
+                        new Error('Zəhmət olmasa şəkil yükləyin'),
+                      ),
                 },
               ]}
             >
-              <RangePicker
-                showTime={{ format: DATE_FORMAT.VIEW }}
-                format={DATE_FORMAT.VIEW}
-                onChange={handleDateChange}
+              <Upload
+                name='bannerImage'
+                accept='image/*'
+                listType='picture'
+              >
+                <Button icon={<UploadOutlined />}>Click to upload</Button>
+              </Upload>
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={16}>
+          <Col
+            xs={24}
+            sm={12}
+          >
+            <Form.Item<IFormProject>
+              name='similar_project_ids'
+              label='Oxşar layihələri seçin'
+            >
+              <Select
+                mode='multiple'
+                style={{ width: '100%' }}
+                placeholder='Oxşar bloqları seçin'
+                options={projectsOptions || []}
+                optionRender={option => <Space>{option.label}</Space>}
+              />
+            </Form.Item>
+          </Col>
+          <Col
+            xs={24}
+            sm={12}
+          >
+            <Form.Item<IFormProject>
+              name='tag_ids'
+              label='Layihə teqi'
+            >
+              <Select
+                style={{ width: '100%' }}
+                placeholder='Teq seçin'
+                options={teqOptions || []}
               />
             </Form.Item>
           </Col>
