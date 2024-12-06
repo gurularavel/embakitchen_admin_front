@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
-import { APIBaseQuery } from '../axiosBase'
-import { CityApiResponse, ICity } from '~ek/types/region'
+import { APIBaseQuery } from '~ek/redux/api/axiosBase'
+import { CityApiResponse, ICity } from '~ek/types/city'
 
 export const cityApi = createApi({
   reducerPath: 'cityApi',

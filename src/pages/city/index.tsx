@@ -12,7 +12,7 @@ import { EditCity } from '~ek/pages/city/edit-city'
 import { ErrorMessage, Loading, RenderIf, NoData } from '~ek/shared/components'
 import { confirmModal, notifier } from '~ek/shared/helpers'
 import { NOTIFICATION } from '~ek/shared/const/constants'
-import type { ICity } from '~ek/types/region'
+import type { ICity } from '~ek/types/city'
 import { PlusOutlined, DeleteOutlined, FormOutlined } from '@ant-design/icons'
 import { useDeleteCitiesMutation, useGetCitiesQuery } from '~ek/redux/api/city'
 

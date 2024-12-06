@@ -3,7 +3,7 @@ import { Button, Col, Drawer, Form, FormProps, Input, Row, Space } from 'antd'
 import { Loading, RenderIf } from '~ek/shared/components'
 import { NOTIFICATION } from '~ek/shared/const/constants'
 import { notifier } from '~ek/shared/helpers'
-import type { ICity } from '~ek/types/region'
+import type { ICity } from '~ek/types/city'
 import { usePostCityMutation } from '~ek/redux/api/city'
 import { useFormStyle } from '~ek/shared/utilities/formStyles'
 

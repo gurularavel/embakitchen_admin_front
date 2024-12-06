@@ -12,7 +12,7 @@ import {
 } from 'antd'
 import { notifier, pick } from '~ek/shared/helpers'
 import { NOTIFICATION } from '~ek/shared/const/constants'
-import type { ICity } from '~ek/types/region'
+import type { ICity } from '~ek/types/city'
 import { useEditCityMutation } from '~ek/redux/api/city'
 import { useFormStyle } from '~ek/shared/utilities/formStyles'
 
