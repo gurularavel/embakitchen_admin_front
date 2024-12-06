@@ -23,7 +23,6 @@ export function Blogs(): React.ReactElement {
     'similar_posts'
   > | null>(null)
   const [pageParams, setPageParams] = React.useState<IPageParams>({
-    take: 10,
     current: 1,
     pageSize: 10,
     total: 0,
@@ -31,8 +30,9 @@ export function Blogs(): React.ReactElement {
   const [drawerType, setDrawerType] = React.useState<'edit' | 'add' | null>(
     null,
   )
-  const { data, isLoading, isError } = useGetBlogsQuery({
+  const { data, isLoading, isError, isFetching } = useGetBlogsQuery({
     page: pageParams.current,
+    perPage: pageParams.pageSize,
   })
 
   const [deleteBlog] = useDeleteBlogsMutation()
@@ -89,7 +89,8 @@ export function Blogs(): React.ReactElement {
       key: 'title',
       render: (_: string, blog: Omit<IBlog, 'similar_posts'>, i: number) => (
         <h2>
-          {i + 1}. {blog.title['az']}
+          {(pageParams.current - 1) * pageParams.pageSize + ++i}.{' '}
+          {blog.title['az']}
         </h2>
       ),
     },
@@ -164,6 +165,7 @@ export function Blogs(): React.ReactElement {
           <Table
             dataSource={data?.data}
             rowKey='id'
+            loading={isFetching}
             rowSelection={rowSelection}
             columns={columns}
             pagination={{

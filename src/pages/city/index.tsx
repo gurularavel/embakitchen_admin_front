@@ -7,23 +7,19 @@ import {
   TablePaginationConfig,
   TableProps,
 } from 'antd'
-import { AddCity } from '~ek/pages/region/city/add-city'
-import { EditCity } from '~ek/pages/region/city/edit-city'
+import { AddCity } from '~ek/pages/city/add-city'
+import { EditCity } from '~ek/pages/city/edit-city'
 import { ErrorMessage, Loading, RenderIf, NoData } from '~ek/shared/components'
 import { confirmModal, notifier } from '~ek/shared/helpers'
 import { NOTIFICATION } from '~ek/shared/const/constants'
-import type { ICity } from '~ek/types/region'
+import type { ICity } from '~ek/types/city'
 import { PlusOutlined, DeleteOutlined, FormOutlined } from '@ant-design/icons'
-import {
-  useDeleteCitiesMutation,
-  useGetCitiesQuery,
-} from '~ek/redux/api/region/city'
+import { useDeleteCitiesMutation, useGetCitiesQuery } from '~ek/redux/api/city'
 
 export function City(): React.ReactElement {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([])
   const [selectedCity, setSelectedCity] = React.useState<ICity | null>(null)
   const [pageParams, setPageParams] = React.useState<IPageParams>({
-    take: 10,
     current: 1,
     pageSize: 10,
     total: 0,
@@ -31,8 +27,9 @@ export function City(): React.ReactElement {
   const [drawerType, setDrawerType] = React.useState<'edit' | 'add' | null>(
     null,
   )
-  const { data, isLoading, isError } = useGetCitiesQuery({
+  const { data, isLoading, isError, isFetching } = useGetCitiesQuery({
     page: pageParams.current,
+    perPage: pageParams.pageSize,
   })
 
   const [deleteCity] = useDeleteCitiesMutation()
@@ -88,7 +85,8 @@ export function City(): React.ReactElement {
       key: 'title',
       render: (_: string, city: ICity, i: number) => (
         <h2>
-          {i + 1}. {city.title['az']}
+          {(pageParams.current - 1) * pageParams.pageSize + ++i}.{' '}
+          {city.title['az']}
         </h2>
       ),
     },
@@ -161,10 +159,9 @@ export function City(): React.ReactElement {
         </RenderIf>
         <RenderIf condition={data?.data?.length}>
           <Table
-            dataSource={data?.data.map((city: ICity) => ({
-              ...city,
-              key: city.id,
-            }))}
+            dataSource={data?.data}
+            rowKey='id'
+            loading={isFetching}
             rowSelection={rowSelection}
             columns={columns}
             pagination={{

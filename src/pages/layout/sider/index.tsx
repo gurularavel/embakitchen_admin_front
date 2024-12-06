@@ -15,9 +15,6 @@ import {
   PicCenterOutlined,
   HighlightOutlined,
   AlignCenterOutlined,
-  AppstoreOutlined,
-  BlockOutlined,
-  BorderOutlined,
   GlobalOutlined,
   TagOutlined,
   EnvironmentOutlined,
@@ -82,7 +79,7 @@ const items: IMenu[] = [
     ],
   },
   {
-    key: '3',
+    key: '2',
     label: 'Haqqımızda',
     icon: <ExpandOutlined className={'!text-lg'} />,
     children: [
@@ -101,10 +98,23 @@ const items: IMenu[] = [
     ],
   },
   {
-    key: URLS.COMPAIGN,
-    path: URLS.COMPAIGN,
-    label: <Link to={URLS.COMPAIGN}>Kampaniyalar</Link>,
+    key: '3',
+    label: 'Kampaniyalar',
     icon: <FundOutlined className={'!text-lg'} />,
+    children: [
+      {
+        key: URLS.CAMPAIGN,
+        label: <Link to={URLS.CAMPAIGN}>Kampaniyalar</Link>,
+        path: URLS.CAMPAIGN,
+        icon: <ProjectOutlined className={'!text-lg'} />,
+      },
+      {
+        key: URLS.CAMPAIGN_PAGE,
+        label: <Link to={URLS.CAMPAIGN_PAGE}>Kampaniya səhifəsi</Link>,
+        path: URLS.CAMPAIGN_PAGE,
+        icon: <ProfileOutlined className={'!text-lg'} />,
+      },
+    ],
   },
   {
     key: URLS.COLOR,
@@ -132,29 +142,10 @@ const items: IMenu[] = [
     ],
   },
   {
-    key: '5',
-    label: 'Region',
+    key: URLS.CITY,
+    label: <Link to={URLS.CITY}>Şəhərlər</Link>,
+    path: URLS.CITY,
     icon: <GlobalOutlined className={'!text-lg'} />,
-    children: [
-      {
-        key: URLS.CITY,
-        label: <Link to={URLS.CITY}>Şəhərlər</Link>,
-        path: URLS.CITY,
-        icon: <BorderOutlined className={'!text-lg'} />,
-      },
-      {
-        key: URLS.DISTRICT,
-        label: <Link to={URLS.DISTRICT}>Rayonlar</Link>,
-        path: URLS.DISTRICT,
-        icon: <BlockOutlined className={'!text-lg'} />,
-      },
-      {
-        key: URLS.RURAL,
-        label: <Link to={URLS.RURAL}>Kəndlər</Link>,
-        path: URLS.RURAL,
-        icon: <AppstoreOutlined className={'!text-lg'} />,
-      },
-    ],
   },
   {
     key: URLS.TAG,

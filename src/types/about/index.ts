@@ -36,8 +36,3 @@ export interface IPutBlock {
   content?: ILangContent
   status?: boolean
 }
-
-export interface IParams {
-  status?: boolean
-  page?: number
-}

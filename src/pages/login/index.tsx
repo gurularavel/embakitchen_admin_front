@@ -1,6 +1,6 @@
 import { Button, ConfigProvider, Form, Input } from 'antd'
 import { useGetTokenMutation } from '~ek/redux/api/auth'
-import { ILogin } from '~ek/types/auth'
+import type { ILogin } from '~ek/types/auth'
 
 export function Login(): React.ReactElement {
   const [form] = Form.useForm()

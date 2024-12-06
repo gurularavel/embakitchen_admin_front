@@ -10,6 +10,7 @@ import {
   Row,
   Space,
   Upload,
+  type GetProps,
 } from 'antd'
 import { Loading, RenderIf } from '~ek/shared/components'
 import {
@@ -20,7 +21,6 @@ import {
 } from '~ek/shared/helpers'
 import { DATE_FORMAT, NOTIFICATION } from '~ek/shared/const/constants'
 import type { IFormCampaign } from '~ek/types/campaigns'
-import type { GetProps } from 'antd'
 import { UploadOutlined } from '@ant-design/icons'
 import { usePostCampaignMutation } from '~ek/redux/api/campaign'
 import { useFormStyle } from '~ek/shared/utilities/formStyles'
