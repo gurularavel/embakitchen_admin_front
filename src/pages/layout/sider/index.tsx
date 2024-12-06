@@ -15,9 +15,6 @@ import {
   PicCenterOutlined,
   HighlightOutlined,
   AlignCenterOutlined,
-  AppstoreOutlined,
-  BlockOutlined,
-  BorderOutlined,
   GlobalOutlined,
   TagOutlined,
   EnvironmentOutlined,
@@ -147,29 +144,10 @@ const items: IMenu[] = [
     ],
   },
   {
-    key: '5',
-    label: 'Region',
+    key: URLS.CITY,
+    label: <Link to={URLS.CITY}>Şəhərlər</Link>,
+    path: URLS.CITY,
     icon: <GlobalOutlined className={'!text-lg'} />,
-    children: [
-      {
-        key: URLS.CITY,
-        label: <Link to={URLS.CITY}>Şəhərlər</Link>,
-        path: URLS.CITY,
-        icon: <BorderOutlined className={'!text-lg'} />,
-      },
-      {
-        key: URLS.DISTRICT,
-        label: <Link to={URLS.DISTRICT}>Rayonlar</Link>,
-        path: URLS.DISTRICT,
-        icon: <BlockOutlined className={'!text-lg'} />,
-      },
-      {
-        key: URLS.RURAL,
-        label: <Link to={URLS.RURAL}>Kəndlər</Link>,
-        path: URLS.RURAL,
-        icon: <AppstoreOutlined className={'!text-lg'} />,
-      },
-    ],
   },
   {
     key: URLS.TAG,
