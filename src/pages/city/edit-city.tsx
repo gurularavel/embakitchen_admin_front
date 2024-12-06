@@ -22,7 +22,7 @@ interface IDrawerProps {
   city: ICity
 }
 
-type IFieldForm = Omit<ICity, 'id' | 'rurals'>
+type IFieldForm = Omit<ICity, 'id'>
 
 export function EditCity({
   open,
@@ -37,7 +37,7 @@ export function EditCity({
 
   const initialValues: IFieldForm = pick({
     source: city as ICity,
-    fields: ['title', 'status', 'districts'],
+    fields: ['title', 'status'],
   })
 
   const handleSwitchChange = (checked: boolean) => {
