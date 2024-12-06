@@ -20,7 +20,7 @@ import { FormField } from '~ek/types/store'
 import { useEditStoreMutation } from '~ek/redux/api/store'
 import { useFormStyle } from '~ek/shared/utilities/formStyles'
 import type { IStore } from '~ek/types/store'
-import { useGetCitiesQuery } from '~ek/redux/api/region/city'
+import { useGetCitiesQuery } from '~ek/redux/api/city'
 import dayjs from 'dayjs'
 
 interface IDrawerProps {

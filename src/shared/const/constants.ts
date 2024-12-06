@@ -13,8 +13,6 @@ export const enum URLS {
   BLOGS = '/blogs',
   BLOG_PAGE = '/blog-page',
   CITY = '/city',
-  DISTRICT = '/district',
-  RURAL = '/rural',
   TAG = '/tag',
   STORES = '/stores',
 }
