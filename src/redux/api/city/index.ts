@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
-import { APIBaseQuery } from '../../axiosBase'
+import { APIBaseQuery } from '../axiosBase'
 import { CityApiResponse, ICity } from '~ek/types/region'
 
 export const cityApi = createApi({

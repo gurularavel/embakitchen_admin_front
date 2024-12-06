@@ -6,7 +6,7 @@ import { Counter, HomeCommonInfo, Partners, Sliders } from '~ek/pages/home'
 import { Campaigns } from '~ek/pages/campaigns'
 import { CampaignPage } from '~ek/pages/campaigns/campaign-page'
 import { Color } from '~ek/pages/colors'
-import { City, District } from '~ek/pages/region'
+import { City } from '~ek/pages/city'
 import { Blogs } from '~ek/pages/blog'
 import { BlogPage } from '~ek/pages/blog/blog-page'
 import { Tags } from '~ek/pages/tags'
@@ -61,10 +61,6 @@ export function PrivateRoutes(): React.ReactElement {
           <Route
             path={URLS.CITY}
             element={<City />}
-          />
-          <Route
-            path={URLS.DISTRICT}
-            element={<District />}
           />
           <Route
             path={URLS.BLOGS}

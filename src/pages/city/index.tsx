@@ -7,24 +7,19 @@ import {
   TablePaginationConfig,
   TableProps,
 } from 'antd'
-import { AddDistrict } from '~ek/pages/region/district/add-district'
-import { EditDistrict } from '~ek/pages/region/district/edit-district'
+import { AddCity } from '~ek/pages/city/add-city'
+import { EditCity } from '~ek/pages/city/edit-city'
 import { ErrorMessage, Loading, RenderIf, NoData } from '~ek/shared/components'
 import { confirmModal, notifier } from '~ek/shared/helpers'
 import { NOTIFICATION } from '~ek/shared/const/constants'
-import type { IDistrict } from '~ek/types/region'
+import type { ICity } from '~ek/types/region'
 import { PlusOutlined, DeleteOutlined, FormOutlined } from '@ant-design/icons'
-import {
-  useDeleteDistrictsMutation,
-  useGetDistrictsQuery,
-} from '~ek/redux/api/region/district'
+import { useDeleteCitiesMutation, useGetCitiesQuery } from '~ek/redux/api/city'
 
-export function District(): React.ReactElement {
+export function City(): React.ReactElement {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([])
-  const [selectedDistrict, setSelectedDistrict] =
-    React.useState<IDistrict | null>(null)
+  const [selectedCity, setSelectedCity] = React.useState<ICity | null>(null)
   const [pageParams, setPageParams] = React.useState<IPageParams>({
-    take: 10,
     current: 1,
     pageSize: 10,
     total: 0,
@@ -32,11 +27,12 @@ export function District(): React.ReactElement {
   const [drawerType, setDrawerType] = React.useState<'edit' | 'add' | null>(
     null,
   )
-  const { data, isLoading, isError } = useGetDistrictsQuery({
+  const { data, isLoading, isError, isFetching } = useGetCitiesQuery({
     page: pageParams.current,
+    perPage: pageParams.pageSize,
   })
 
-  const [deleteDistrict] = useDeleteDistrictsMutation()
+  const [deleteCity] = useDeleteCitiesMutation()
 
   const handleTableChange = (pagination: TablePaginationConfig): void => {
     setPageParams(prev => ({
@@ -46,18 +42,18 @@ export function District(): React.ReactElement {
     }))
   }
 
-  const addDistrictDrawer = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+  const addCityDrawer = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     e.stopPropagation()
     setDrawerType('add')
   }
 
   const handleEditButton = (
     e: React.MouseEvent<HTMLElement, MouseEvent>,
-    district: IDistrict,
+    city: ICity,
   ) => {
     e.stopPropagation()
     setDrawerType('edit')
-    setSelectedDistrict(district)
+    setSelectedCity(city)
   }
 
   const onClose = () => {
@@ -65,14 +61,14 @@ export function District(): React.ReactElement {
     setSelectedRowKeys([])
   }
 
-  const rowSelection: TableProps<IDistrict>['rowSelection'] = {
+  const rowSelection: TableProps<ICity>['rowSelection'] = {
     onChange: (selectedRowKeys: React.Key[]) => {
       setSelectedRowKeys(selectedRowKeys)
     },
   }
-  const removeDistrict = async (ids: number[]): Promise<void> => {
+  const removeCity = async (ids: number[]): Promise<void> => {
     try {
-      await deleteDistrict({ ids: ids }).unwrap()
+      await deleteCity({ ids: ids }).unwrap()
       setSelectedRowKeys([])
       notifier('Seçiminiz uğurla silindi', NOTIFICATION.success)
     } catch (e: unknown) {
@@ -84,12 +80,13 @@ export function District(): React.ReactElement {
 
   const columns = [
     {
-      title: 'Rayonlar',
+      title: 'Şəhərlər',
       dataIndex: 'title',
       key: 'title',
-      render: (_: string, district: IDistrict, i: number) => (
+      render: (_: string, city: ICity, i: number) => (
         <h2>
-          {i + 1}. {district.title['az']}
+          {(pageParams.current - 1) * pageParams.pageSize + ++i}.{' '}
+          {city.title['az']}
         </h2>
       ),
     },
@@ -97,9 +94,9 @@ export function District(): React.ReactElement {
       title: 'Actions',
       dataIndex: 'action',
       key: 'action',
-      render: (_: string, district: IDistrict) => (
+      render: (_: string, city: ICity) => (
         <Space size='middle'>
-          <Button onClick={e => handleEditButton(e, district)}>
+          <Button onClick={e => handleEditButton(e, city)}>
             <FormOutlined />
           </Button>
           <Button
@@ -108,7 +105,7 @@ export function District(): React.ReactElement {
               confirmModal({
                 title: 'Silmək istədiyinizdən əminsiniz?',
                 onOk: () => {
-                  removeDistrict([district.id])
+                  removeCity([city.id])
                 },
               })
             }
@@ -136,7 +133,7 @@ export function District(): React.ReactElement {
               onClick={() =>
                 confirmModal({
                   title: 'Silmək istədiyinizdən əminsiniz?',
-                  onOk: () => removeDistrict(selectedRowKeys as number[]),
+                  onOk: () => removeCity(selectedRowKeys as number[]),
                 })
               }
             />
@@ -151,9 +148,9 @@ export function District(): React.ReactElement {
             <Button
               type='primary'
               icon={<PlusOutlined />}
-              onClick={e => addDistrictDrawer(e)}
+              onClick={e => addCityDrawer(e)}
             >
-              Rayon əlavə et
+              Şəhər əlavə et
             </Button>
           </ConfigProvider>
         </div>
@@ -162,10 +159,9 @@ export function District(): React.ReactElement {
         </RenderIf>
         <RenderIf condition={data?.data?.length}>
           <Table
-            dataSource={data?.data.map((district: IDistrict) => ({
-              ...district,
-              key: district.id,
-            }))}
+            dataSource={data?.data}
+            rowKey='id'
+            loading={isFetching}
             rowSelection={rowSelection}
             columns={columns}
             pagination={{
@@ -178,16 +174,16 @@ export function District(): React.ReactElement {
           />
         </RenderIf>
         {drawerType === 'add' && (
-          <AddDistrict
+          <AddCity
             open={!!drawerType}
             onClose={onClose}
           />
         )}
-        {drawerType === 'edit' && selectedDistrict && (
-          <EditDistrict
+        {drawerType === 'edit' && selectedCity && (
+          <EditCity
             open={!!drawerType}
             onClose={onClose}
-            district={selectedDistrict}
+            city={selectedCity}
           />
         )}
       </RenderIf>

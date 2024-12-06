@@ -7,51 +7,38 @@ import {
   FormProps,
   Input,
   Row,
-  Select,
   Space,
   Switch,
 } from 'antd'
 import { notifier, pick } from '~ek/shared/helpers'
 import { NOTIFICATION } from '~ek/shared/const/constants'
-import type { IDistrict } from '~ek/types/region'
-import { useEditDistrictMutation } from '~ek/redux/api/region/district'
-import { useGetCitiesQuery } from '~ek/redux/api/region/city'
+import type { ICity } from '~ek/types/region'
+import { useEditCityMutation } from '~ek/redux/api/city'
 import { useFormStyle } from '~ek/shared/utilities/formStyles'
 
 interface IDrawerProps {
   open: boolean
   onClose: () => void
-  district: IDistrict
+  city: ICity
 }
 
-type IFieldForm = Omit<IDistrict, 'id'>
+type IFieldForm = Omit<ICity, 'id' | 'rurals'>
 
-export function EditDistrict({
+export function EditCity({
   open,
   onClose,
-  district,
+  city,
 }: IDrawerProps): React.ReactElement {
   const [form] = Form.useForm()
   const formStyle = useFormStyle()
-  const [switchChecked, setSwitchChecked] = React.useState<boolean>(
-    district.status,
-  )
+  const [switchChecked, setSwitchChecked] = React.useState<boolean>(city.status)
 
-  const [editCity, { isLoading }] = useEditDistrictMutation()
-  const { data: cityData } = useGetCitiesQuery({ page: 1 })
-  const options = cityData?.data.map(city => ({
-    value: city.id,
-    label: city.title.az,
-  }))
+  const [editCity, { isLoading }] = useEditCityMutation()
 
   const initialValues: IFieldForm = pick({
-    source: district as IDistrict,
-    fields: ['title', 'status', 'city_id'],
+    source: city as ICity,
+    fields: ['title', 'status', 'districts'],
   })
-
-  React.useEffect(() => {
-    form.setFieldValue('city_id', district.city_id)
-  }, [district.city_id, form])
 
   const handleSwitchChange = (checked: boolean) => {
     setSwitchChecked(checked)
@@ -62,7 +49,7 @@ export function EditDistrict({
     data: IFieldForm,
   ) => {
     try {
-      await editCity({ id: district.id, ...data }).unwrap()
+      await editCity({ id: city.id, ...data }).unwrap()
       notifier('Dəyişiklik uğurla icra olundu', NOTIFICATION.success)
       onClose()
     } catch (e: unknown) {
@@ -163,29 +150,6 @@ export function EditDistrict({
           </Col>
         </Row>
         <Row gutter={16}>
-          <Col
-            xs={24}
-            sm={12}
-            md={8}
-          >
-            <Form.Item<IFieldForm>
-              name='city_id'
-              label='Şəhər'
-              rules={[
-                {
-                  required: true,
-                  message: 'Zəhmət olmasa şəhər seçin',
-                },
-              ]}
-            >
-              <Select
-                style={{ width: '100%' }}
-                placeholder='Şəhər seçin'
-                options={options || []}
-                optionRender={option => <Space>{option.label}</Space>}
-              />
-            </Form.Item>
-          </Col>
           <Col xs={4}>
             <Form.Item<IFieldForm>
               name='status'
