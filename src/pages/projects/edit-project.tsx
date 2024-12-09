@@ -9,7 +9,6 @@ import {
   Row,
   Select,
   Space,
-  Switch,
   Upload,
 } from 'antd'
 import type { UploadFile } from 'antd/lib'
@@ -26,6 +25,7 @@ import {
 import { useGetTagsQuery } from '~ek/redux/api/tags'
 import { useFormStyle } from '~ek/shared/utilities/formStyles'
 import { RichTextEditor } from '~ek/shared/components/richtext'
+import { useFileRemoveMutation } from '~ek/redux/api/fileRemove'
 
 interface IDrawerProps {
   open: boolean
@@ -40,17 +40,27 @@ export function EditProject({
 }: IDrawerProps): React.ReactElement {
   const [form] = Form.useForm()
   const formStyle = useFormStyle()
-  const { data: fullProjectData, isLoading: loadingProductData } =
-    useGetProjectByIdQuery(project_id)
+  const {
+    data: fullProjectData,
+    isLoading: loadingProductData,
+    refetch,
+  } = useGetProjectByIdQuery(project_id)
   const { data: projects } = useGetProjectsQuery({ page: 1 })
   const { data: teqData } = useGetTagsQuery({ page: 1 })
+  const [deleteFile] = useFileRemoveMutation()
   const [editProject, { isLoading }] = useEditProjectMutation()
   const [contentRichText, setContentRichText] = React.useState<ILangContent>({
     az: '',
     ru: '',
     en: '',
   })
-  const [switchChecked, setSwitchChecked] = React.useState<boolean>(true)
+
+  React.useEffect(() => {
+    if (open) {
+      refetch()
+    }
+  }, [open, refetch])
+
   const projectsOptions = projects?.data
     .filter(b => b.id !== project_id)
     .map(blog => ({
@@ -88,10 +98,6 @@ export function EditProject({
     }
   }, [fullProjectData, form])
 
-  const handleSwitchChange = (checked: boolean) => {
-    setSwitchChecked(checked)
-    form.setFieldsValue({ status: checked })
-  }
   const handleRichContent = (field: 'az' | 'ru' | 'en', content: string) => {
     setContentRichText(prevState => ({ ...prevState, [field]: content }))
   }
@@ -101,7 +107,6 @@ export function EditProject({
   ) => {
     const formValues = {
       ...values,
-      status: switchChecked ? '1' : '0',
       content: contentRichText,
       tag_ids: Array.isArray(values.tag_ids)
         ? values.tag_ids
@@ -311,7 +316,11 @@ export function EditProject({
                   name='images'
                   accept='image/*'
                   multiple
+                  beforeUpload={() => false}
                   listType='picture'
+                  onRemove={file =>
+                    deleteFile({ mediaIDS: [file.uid] }).unwrap()
+                  }
                 >
                   <Button icon={<UploadOutlined />}>Click to upload</Button>
                 </Upload>
@@ -348,6 +357,10 @@ export function EditProject({
                   name='bannerImage'
                   accept='image/*'
                   listType='picture'
+                  beforeUpload={() => false}
+                  onRemove={file =>
+                    deleteFile({ mediaIDS: [file.uid] }).unwrap()
+                  }
                 >
                   <Button icon={<UploadOutlined />}>Click to upload</Button>
                 </Upload>
@@ -374,7 +387,7 @@ export function EditProject({
             </Col>
             <Col
               xs={24}
-              sm={8}
+              sm={12}
             >
               <Form.Item<IEditProjectForm>
                 name='tag_ids'
@@ -385,23 +398,6 @@ export function EditProject({
                   placeholder='Teq seçin'
                   options={teqOptions || []}
                   optionRender={option => <Space>{option.label}</Space>}
-                />
-              </Form.Item>
-            </Col>
-            <Col
-              xs={24}
-              sm={3}
-            >
-              <Form.Item<IEditProjectForm>
-                name='status'
-                label='Status'
-              >
-                <Switch
-                  checked={switchChecked}
-                  style={{
-                    backgroundColor: switchChecked ? '#52c41a' : '#ff4d4f',
-                  }}
-                  onChange={checked => handleSwitchChange(checked)}
                 />
               </Form.Item>
             </Col>

@@ -57,6 +57,7 @@ export const projectApi = createApi({
           method: 'GET',
         }
       },
+      keepUnusedDataFor: 2,
       providesTags: () => [{ type: 'PROJECTPAGE' }],
     }),
     editProjectPage: builder.mutation<void, FormData>({
@@ -90,4 +91,5 @@ export const {
   usePostProjectMutation,
   useGetProjectByIdQuery,
   useEditProjectMutation,
+  useLazyGetProjectByIdQuery,
 } = projectApi

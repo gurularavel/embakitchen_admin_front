@@ -100,13 +100,15 @@ type DeleteFileMutationTrigger = ReturnType<typeof useFileRemoveMutation>[0]
 export const handleRemoveFile = async (
   deleteFile: DeleteFileMutationTrigger,
   file: UploadFile,
-  setFileState: React.Dispatch<React.SetStateAction<IFile>>,
+  setFileState?: React.Dispatch<React.SetStateAction<IFile>> | undefined,
 ) => {
   confirmModal({
     title: 'Bu faylı silmək istədiyinizdən əminsiniz?',
     onOk: async () => {
       await deleteFile({ mediaIDS: [file.uid] }).unwrap()
-      setFileState({ file: [], fileList: [] })
+      if (setFileState) {
+        setFileState({ file: [], fileList: [] })
+      }
     },
     onCancel: () => {},
   })
