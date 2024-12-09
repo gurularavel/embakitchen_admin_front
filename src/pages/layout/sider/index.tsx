@@ -18,6 +18,8 @@ import {
   GlobalOutlined,
   TagOutlined,
   EnvironmentOutlined,
+  FundProjectionScreenOutlined,
+  FundViewOutlined,
   BlockOutlined,
   BorderOutlined,
   AppstoreOutlined,
@@ -180,6 +182,25 @@ const items: IMenu[] = [
     path: URLS.STORES,
     label: <Link to={URLS.STORES}>Mağazalar</Link>,
     icon: <EnvironmentOutlined className={'!text-lg'} />,
+  },
+  {
+    key: '6',
+    label: 'Layihələr',
+    icon: <FundProjectionScreenOutlined className={'!text-lg'} />,
+    children: [
+      {
+        key: URLS.PROJECTS,
+        label: <Link to={URLS.PROJECTS}>Ümumi siyahı</Link>,
+        path: URLS.PROJECTS,
+        icon: <FundViewOutlined className={'!text-lg'} />,
+      },
+      {
+        key: URLS.PROJECT_PAGE,
+        label: <Link to={URLS.PROJECT_PAGE}>Layihə səhifəsi</Link>,
+        path: URLS.PROJECT_PAGE,
+        icon: <ProjectOutlined className={'!text-lg'} />,
+      },
+    ],
   },
 ]
 

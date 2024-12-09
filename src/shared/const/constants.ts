@@ -17,6 +17,8 @@ export const enum URLS {
   STORES = '/stores',
   PRODUCT_CATEGORY = '/product-category',
   PRODUCTS = '/products',
+  PROJECT_PAGE = '/project-page',
+  PROJECTS = '/projects',
 }
 
 export const enum NOTIFICATION {
