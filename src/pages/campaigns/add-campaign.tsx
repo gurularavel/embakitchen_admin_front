@@ -93,7 +93,7 @@ export function AddCampaign({
     const formData = createFormData(formValues)
     try {
       await addCampaign(formData).unwrap()
-      notifier('Dəyişiklik uğurla icra edildi', NOTIFICATION.success)
+      notifier('Yeni kampaniya yaradıldı', NOTIFICATION.success)
       onClose()
     } catch (e: unknown) {
       const errorMessage =
