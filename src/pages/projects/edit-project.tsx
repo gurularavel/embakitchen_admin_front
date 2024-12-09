@@ -42,7 +42,7 @@ export function EditProject({
   const formStyle = useFormStyle()
   const {
     data: fullProjectData,
-    isLoading: loadingProductData,
+    isLoading: loadingProjectData,
     refetch,
   } = useGetProjectByIdQuery(project_id)
   const { data: projects } = useGetProjectsQuery({ page: 1 })
@@ -156,10 +156,10 @@ export function EditProject({
         onFinish={onFinish}
         style={formStyle}
       >
-        <RenderIf condition={loadingProductData}>
+        <RenderIf condition={loadingProjectData}>
           <Loading />
         </RenderIf>
-        <RenderIf condition={!loadingProductData}>
+        <RenderIf condition={!loadingProjectData}>
           <Row gutter={{ xs: 8, sm: 16 }}>
             <Col
               xs={24}
