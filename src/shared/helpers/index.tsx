@@ -101,16 +101,18 @@ export const handleRemoveFile = async (
   deleteFile: DeleteFileMutationTrigger,
   file: UploadFile,
   setFileState?: React.Dispatch<React.SetStateAction<IFile>> | undefined,
-) => {
+  setDeleteSuccess?: React.Dispatch<React.SetStateAction<boolean>> | undefined,
+): Promise<void> => {
   confirmModal({
     title: 'Bu faylı silmək istədiyinizdən əminsiniz?',
     onOk: async () => {
       await deleteFile({ mediaIDS: [file.uid] }).unwrap()
-      if (setFileState) {
-        setFileState({ file: [], fileList: [] })
-      }
+      if (setFileState) setFileState({ file: [], fileList: [] })
+      if (setDeleteSuccess) setDeleteSuccess(true)
     },
-    onCancel: () => {},
+    onCancel: () => {
+      if (setDeleteSuccess) setDeleteSuccess(false)
+    },
   })
 }
 

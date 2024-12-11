@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { AppLayout } from '~ek/pages/layout'
 import { NotFound } from '~ek/pages/not-found'
 import { AboutContent, AboutInfoBlocks } from '~ek/pages/about'
+import { ProductCategory, Products } from '~ek/pages/products'
 import { Counter, HomeCommonInfo, Partners, Sliders } from '~ek/pages/home'
 import { Campaigns } from '~ek/pages/campaigns'
 import { CampaignPage } from '~ek/pages/campaigns/campaign-page'
@@ -47,6 +48,14 @@ export function PrivateRoutes(): React.ReactElement {
           <Route
             path={URLS.ABOUT_INFO_BLOCKS}
             element={<AboutInfoBlocks />}
+          />
+          <Route
+            path={URLS.PRODUCT_CATEGORY}
+            element={<ProductCategory />}
+          />
+          <Route
+            path={URLS.PRODUCTS}
+            element={<Products />}
           />
           <Route
             path={URLS.CAMPAIGN}

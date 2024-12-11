@@ -20,6 +20,9 @@ import {
   EnvironmentOutlined,
   FundProjectionScreenOutlined,
   FundViewOutlined,
+  BlockOutlined,
+  BorderOutlined,
+  AppstoreOutlined,
 } from '@ant-design/icons'
 import logo from '~ek/assets/images/132x20.67.svg'
 const { Sider } = Layout
@@ -101,6 +104,25 @@ const items: IMenu[] = [
   },
   {
     key: '3',
+    label: 'Məhsul',
+    icon: <AppstoreOutlined className={'!text-lg'} />,
+    children: [
+      {
+        key: URLS.PRODUCTS,
+        label: <Link to={URLS.PRODUCTS}>Məhsullar</Link>,
+        path: URLS.PRODUCTS,
+        icon: <BorderOutlined className={'!text-lg'} />,
+      },
+      {
+        key: URLS.PRODUCT_CATEGORY,
+        label: <Link to={URLS.PRODUCT_CATEGORY}>Məhsul kateqoriyası</Link>,
+        path: URLS.PRODUCT_CATEGORY,
+        icon: <BlockOutlined className={'!text-lg'} />,
+      },
+    ],
+  },
+  {
+    key: '4',
     label: 'Kampaniyalar',
     icon: <FundOutlined className={'!text-lg'} />,
     children: [
@@ -125,7 +147,7 @@ const items: IMenu[] = [
     icon: <BgColorsOutlined className={'!text-lg'} />,
   },
   {
-    key: '4',
+    key: '5',
     label: 'Blog',
     icon: <HighlightOutlined className={'!text-lg'} />,
     children: [
