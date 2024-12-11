@@ -39,10 +39,13 @@ export function AddProduct({
   const [form] = Form.useForm()
   const formStyle = useFormStyle()
 
-  const { data: productsData } = useGetProductsQuery({ page: 1 })
-  const { data: teqData } = useGetTagsQuery({ page: 1 })
-  const { data: colorsData } = useGetColorsQuery({ page: 1 })
-  const { data: categoryData } = useGetCategoriesQuery({ page: 1 })
+  const { data: productsData } = useGetProductsQuery({ page: 1, status: true })
+  const { data: teqData } = useGetTagsQuery({ page: 1, status: true })
+  const { data: colorsData } = useGetColorsQuery({ page: 1, status: true })
+  const { data: categoryData } = useGetCategoriesQuery({
+    page: 1,
+    status: true,
+  })
   const [addProduct, { isLoading }] = usePostProductMutation()
 
   const [contentRichText, setContentRichText] = React.useState<ILangContent>({

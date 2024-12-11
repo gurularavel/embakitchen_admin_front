@@ -49,10 +49,13 @@ export function EditProduct({
     refetch,
   } = useGetProductByIdQuery(product_id)
   const [deleteFile] = useFileRemoveMutation()
-  const { data: productsData } = useGetProductsQuery({ page: 1 })
-  const { data: teqData } = useGetTagsQuery({ page: 1 })
-  const { data: colorsData } = useGetColorsQuery({ page: 1 })
-  const { data: categoryData } = useGetCategoriesQuery({ page: 1 })
+  const { data: productsData } = useGetProductsQuery({ page: 1, status: true })
+  const { data: teqData } = useGetTagsQuery({ page: 1, status: true })
+  const { data: colorsData } = useGetColorsQuery({ page: 1, status: true })
+  const { data: categoryData } = useGetCategoriesQuery({
+    page: 1,
+    status: true,
+  })
   const [editProduct, { isLoading }] = useEditProductMutation()
 
   const [contentRichText, setContentRichText] = React.useState<ILangContent>({
