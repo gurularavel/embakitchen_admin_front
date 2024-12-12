@@ -8,10 +8,11 @@ export const tagApi = createApi({
   tagTypes: ['TAG'],
   endpoints: builder => ({
     getTags: builder.query<TagsApiResponse, IRequestParams>({
-      query() {
+      query(params) {
         return {
           method: 'GET',
           url: 'tags',
+          params,
         }
       },
       providesTags: () => [{ type: 'TAG' }],

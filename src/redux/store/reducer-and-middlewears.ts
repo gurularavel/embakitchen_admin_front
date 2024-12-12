@@ -14,6 +14,9 @@ import { blogApi } from '~ek/redux/api/blog'
 import { cityApi } from '~ek/redux/api/city'
 import { tagApi } from '~ek/redux/api/tags'
 import { storeApi } from '~ek/redux/api/store'
+import { projectApi } from '~ek/redux/api/project'
+import { categoryApi } from '~ek/redux/api/product/product-category'
+import { productApi } from '~ek/redux/api/product/products'
 
 export const reducer = {
   auth: AuthReducer,
@@ -31,6 +34,9 @@ export const reducer = {
   [cityApi.reducerPath]: cityApi.reducer,
   [tagApi.reducerPath]: tagApi.reducer,
   [storeApi.reducerPath]: storeApi.reducer,
+  [projectApi.reducerPath]: projectApi.reducer,
+  [categoryApi.reducerPath]: categoryApi.reducer,
+  [productApi.reducerPath]: productApi.reducer,
 }
 export const middlewares = [
   authApi.middleware,
@@ -47,4 +53,7 @@ export const middlewares = [
   cityApi.middleware,
   tagApi.middleware,
   storeApi.middleware,
+  projectApi.middleware,
+  categoryApi.middleware,
+  productApi.middleware,
 ]

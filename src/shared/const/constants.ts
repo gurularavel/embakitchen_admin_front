@@ -15,6 +15,10 @@ export const enum URLS {
   CITY = '/city',
   TAG = '/tag',
   STORES = '/stores',
+  PRODUCT_CATEGORY = '/product-category',
+  PRODUCTS = '/products',
+  PROJECT_PAGE = '/project-page',
+  PROJECTS = '/projects',
 }
 
 export const enum NOTIFICATION {

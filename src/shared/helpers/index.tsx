@@ -73,8 +73,8 @@ export const createFormData = (
   Object.entries(formValues).forEach(([key, value]) => {
     const formKey = parentKey ? `${parentKey}[${key}]` : key
     if (Array.isArray(value) && value.some(item => item instanceof File)) {
-      value.forEach(file => {
-        formData.append(formKey, file)
+      value.forEach((file, index) => {
+        formData.append(`${formKey}[${index}]`, file)
       })
     } else if (typeof value === 'object' && value !== null) {
       createFormData(value, formData, formKey)
@@ -100,15 +100,19 @@ type DeleteFileMutationTrigger = ReturnType<typeof useFileRemoveMutation>[0]
 export const handleRemoveFile = async (
   deleteFile: DeleteFileMutationTrigger,
   file: UploadFile,
-  setFileState: React.Dispatch<React.SetStateAction<IFile>>,
-) => {
+  setFileState?: React.Dispatch<React.SetStateAction<IFile>> | undefined,
+  setDeleteSuccess?: React.Dispatch<React.SetStateAction<boolean>> | undefined,
+): Promise<void> => {
   confirmModal({
     title: 'Bu faylı silmək istədiyinizdən əminsiniz?',
     onOk: async () => {
       await deleteFile({ mediaIDS: [file.uid] }).unwrap()
-      setFileState({ file: [], fileList: [] })
+      if (setFileState) setFileState({ file: [], fileList: [] })
+      if (setDeleteSuccess) setDeleteSuccess(true)
     },
-    onCancel: () => {},
+    onCancel: () => {
+      if (setDeleteSuccess) setDeleteSuccess(false)
+    },
   })
 }
 
