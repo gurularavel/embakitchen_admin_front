@@ -558,6 +558,7 @@ export function AddProduct({
             >
               <Select
                 mode='multiple'
+                optionFilterProp='label'
                 style={{ width: '100%' }}
                 placeholder='Oxşar məhsulları seçin'
                 options={productsOptions || []}
@@ -575,6 +576,7 @@ export function AddProduct({
             >
               <Select
                 style={{ width: '100%' }}
+                optionFilterProp='label'
                 placeholder='Teq seçin'
                 options={teqOptions || []}
               />
@@ -598,6 +600,7 @@ export function AddProduct({
             >
               <Select
                 style={{ width: '100%' }}
+                optionFilterProp='label'
                 placeholder='Kateqoriya seçin'
                 options={categoriesOptions || []}
                 optionRender={option => <Space>{option.label}</Space>}
@@ -611,11 +614,18 @@ export function AddProduct({
             <Form.Item<IFormProduct>
               name='color_ids'
               label='Məhsul rəngi'
+              rules={[
+                {
+                  required: true,
+                  message: 'Zəhmət olmasa rəng seçin',
+                },
+              ]}
             >
               <Select
                 mode='multiple'
+                optionFilterProp='label'
                 style={{ width: '100%' }}
-                placeholder='Teq seçin'
+                placeholder='Rəng seçin'
                 options={colorsOptions || []}
               />
             </Form.Item>
