@@ -612,6 +612,7 @@ export function EditProduct({
               >
                 <Select
                   mode='multiple'
+                  optionFilterProp='label'
                   style={{ width: '100%' }}
                   placeholder='Oxşar məhsulları seçin'
                   options={productsOptions || []}
@@ -628,6 +629,7 @@ export function EditProduct({
                 label='Məhsul teqi'
               >
                 <Select
+                  optionFilterProp='label'
                   style={{ width: '100%' }}
                   placeholder='Teq seçin'
                   options={teqOptions || []}
@@ -652,6 +654,7 @@ export function EditProduct({
               >
                 <Select
                   style={{ width: '100%' }}
+                  optionFilterProp='label'
                   placeholder='Kateqoriya seçin'
                   options={categoriesOptions || []}
                   optionRender={option => <Space>{option.label}</Space>}
@@ -668,8 +671,9 @@ export function EditProduct({
               >
                 <Select
                   mode='multiple'
+                  optionFilterProp='label'
                   style={{ width: '100%' }}
-                  placeholder='Teq seçin'
+                  placeholder='Rəng seçin'
                   options={colorsOptions || []}
                 />
               </Form.Item>
