@@ -34,7 +34,7 @@ export function Counter(): React.ReactElement {
   )
   const { data, isLoading, isError, isFetching } = useGetCountsQuery({
     page: pageParams.current,
-    perPage: pageParams.current,
+    perPage: pageParams.pageSize,
   })
 
   const [deleteCounter] = useDeleteCounterMutation()
