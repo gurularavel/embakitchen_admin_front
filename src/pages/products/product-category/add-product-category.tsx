@@ -1,11 +1,23 @@
 import * as React from 'react'
-import { Button, Col, Drawer, Form, FormProps, Input, Row, Space } from 'antd'
+import {
+  Button,
+  Col,
+  Drawer,
+  Form,
+  FormProps,
+  Input,
+  Row,
+  Space,
+  Upload,
+} from 'antd'
 import { Loading, RenderIf } from '~ek/shared/components'
 import { NOTIFICATION } from '~ek/shared/const/constants'
-import { notifier } from '~ek/shared/helpers'
+import { createFormData, notifier } from '~ek/shared/helpers'
 import type { ICategory } from '~ek/types/product'
 import { usePostCategoryMutation } from '~ek/redux/api/product/product-category'
 import { useFormStyle } from '~ek/shared/utilities/formStyles'
+import type { UploadFile } from 'antd/lib'
+import { UploadOutlined } from '@ant-design/icons'
 
 interface IDrawerProps {
   open: boolean
@@ -20,19 +32,12 @@ export function AddCategory({
   const [form] = Form.useForm()
   const formStyle = useFormStyle()
 
-  const initialValues = {
-    title: {
-      az: '',
-      en: '',
-      ru: '',
-    },
-  }
-
   const handleSubmit: FormProps<ICategory>['onFinish'] = async (
     data: ICategory,
   ) => {
+    const formData = createFormData(data)
     try {
-      await addCategory(data).unwrap()
+      await addCategory(formData).unwrap()
       notifier('Yeni kateqoriya əlavə edildi', NOTIFICATION.success)
       onClose()
     } catch (e: unknown) {
@@ -68,7 +73,6 @@ export function AddCategory({
       <Form
         layout='vertical'
         form={form}
-        initialValues={initialValues}
         onFinish={handleSubmit}
         style={formStyle}
       >
@@ -131,6 +135,41 @@ export function AddCategory({
               ]}
             >
               <Input placeholder='Başlıq(ru)' />
+            </Form.Item>
+          </Col>
+          <Col
+            xs={24}
+            sm={12}
+          >
+            <Form.Item<ICategory>
+              name='bannerImage'
+              label='Əsas şəkil'
+              valuePropName='fileList'
+              getValueFromEvent={e => {
+                const fileList = Array.isArray(e) ? e : e?.fileList
+                return fileList?.map(
+                  (fileItem: UploadFile) => fileItem.originFileObj || fileItem,
+                )
+              }}
+              rules={[
+                {
+                  required: true,
+                  validator: (_, value) =>
+                    value && value.length > 0
+                      ? Promise.resolve()
+                      : Promise.reject(
+                        new Error('Zəhmət olmasa şəkil yükləyin'),
+                      ),
+                },
+              ]}
+            >
+              <Upload
+                name='bannerImage'
+                accept='image/*'
+                listType='picture'
+              >
+                <Button icon={<UploadOutlined />}>Click to upload</Button>
+              </Upload>
             </Form.Item>
           </Col>
         </Row>
