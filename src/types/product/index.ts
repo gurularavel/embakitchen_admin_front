@@ -5,6 +5,7 @@ export interface ICategory {
   title: ILangContent
   id: number
   status: boolean
+  bannerImage: IFileProperties[]
 }
 
 export type CategoryApiResponse = ApiResponse<ICategory[]>

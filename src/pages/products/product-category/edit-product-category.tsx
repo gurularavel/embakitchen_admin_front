@@ -9,12 +9,15 @@ import {
   Row,
   Space,
   Switch,
+  Upload,
 } from 'antd'
-import { notifier, pick } from '~ek/shared/helpers'
+import { createFormData, notifier } from '~ek/shared/helpers'
 import { NOTIFICATION } from '~ek/shared/const/constants'
 import type { ICategory } from '~ek/types/product'
 import { useEditCategoryMutation } from '~ek/redux/api/product/product-category'
 import { useFormStyle } from '~ek/shared/utilities/formStyles'
+import type { UploadFile } from 'antd/lib'
+import { UploadOutlined } from '@ant-design/icons'
 
 interface IDrawerProps {
   open: boolean
@@ -37,10 +40,17 @@ export function EditCategory({
 
   const [editCategory, { isLoading }] = useEditCategoryMutation()
 
-  const initialValues: IFieldForm = pick({
-    source: category as ICategory,
-    fields: ['title', 'status'],
-  })
+  React.useEffect(() => {
+    form.setFieldsValue({
+      title: category.title,
+      status: category.status,
+      bannerImage: category.bannerImage?.map(image => ({
+        uid: image?.uuid,
+        name: image?.name,
+        url: image?.original_url,
+      })),
+    })
+  }, [category, form])
 
   const handleSwitchChange = (checked: boolean) => {
     setSwitchChecked(checked)
@@ -51,7 +61,13 @@ export function EditCategory({
     data: IFieldForm,
   ) => {
     try {
-      await editCategory({ id: category.id, ...data }).unwrap()
+      const formValues = {
+        ...data,
+        _method: 'PUT',
+        status: switchChecked ? '1' : '0',
+      }
+      const formData = createFormData(formValues)
+      await editCategory({ id: category.id, formData }).unwrap()
       notifier('Dəyişiklik uğurla icra olundu', NOTIFICATION.success)
       onClose()
     } catch (e: unknown) {
@@ -89,7 +105,6 @@ export function EditCategory({
         layout='vertical'
         form={form}
         onFinish={handleSubmit}
-        initialValues={initialValues}
         style={formStyle}
       >
         <Row gutter={16}>
@@ -152,6 +167,41 @@ export function EditCategory({
           </Col>
         </Row>
         <Row gutter={16}>
+          <Col
+            xs={24}
+            sm={12}
+          >
+            <Form.Item<ICategory>
+              name='bannerImage'
+              label='Əsas şəkil'
+              valuePropName='fileList'
+              getValueFromEvent={e => {
+                const fileList = Array.isArray(e) ? e : e?.fileList
+                return fileList?.map(
+                  (fileItem: UploadFile) => fileItem.originFileObj || fileItem,
+                )
+              }}
+              rules={[
+                {
+                  required: true,
+                  validator: (_, value) =>
+                    value && value.length > 0
+                      ? Promise.resolve()
+                      : Promise.reject(
+                        new Error('Zəhmət olmasa şəkil yükləyin'),
+                      ),
+                },
+              ]}
+            >
+              <Upload
+                name='bannerImage'
+                accept='image/*'
+                listType='picture'
+              >
+                <Button icon={<UploadOutlined />}>Click to upload</Button>
+              </Upload>
+            </Form.Item>
+          </Col>
           <Col xs={4}>
             <Form.Item<IFieldForm>
               name='status'

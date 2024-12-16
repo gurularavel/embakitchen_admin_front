@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { APIBaseQuery } from '~ek/redux/api/axiosBase'
-import { CategoryApiResponse, ICategory } from '~ek/types/product'
+import { CategoryApiResponse } from '~ek/types/product'
 
 export const categoryApi = createApi({
   reducerPath: 'categoryApi',
@@ -17,7 +17,7 @@ export const categoryApi = createApi({
       },
       providesTags: () => [{ type: 'CATEGORY' }],
     }),
-    postCategory: builder.mutation<void, Pick<ICategory, 'title'>>({
+    postCategory: builder.mutation<void, FormData>({
       query(data) {
         return {
           method: 'POST',
@@ -37,13 +37,13 @@ export const categoryApi = createApi({
       },
       invalidatesTags: () => [{ type: 'CATEGORY' }],
     }),
-    editCategory: builder.mutation<void, ICategory>({
+    editCategory: builder.mutation<void, IPutFormData>({
       query(data) {
-        const { id, ...editData } = data
+        const { id, formData } = data
         return {
           url: `product-categories/${id}`,
-          method: 'PUT',
-          data: editData,
+          method: 'POST',
+          data: formData,
         }
       },
       invalidatesTags: () => [{ type: 'CATEGORY' }],
