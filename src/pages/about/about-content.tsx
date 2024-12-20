@@ -138,7 +138,11 @@ export function AboutContent(): React.ReactElement {
 
             <FieldsGroup>
               <Row gutter={16}>
-                <Col span={8}>
+                <Col
+                  xs={24}
+                  md={12}
+                  lg={8}
+                >
                   <Form.Item<FormField>
                     label='Başlıq(az)'
                     name={['title', 'az']}
@@ -152,7 +156,11 @@ export function AboutContent(): React.ReactElement {
                     <Input />
                   </Form.Item>
                 </Col>
-                <Col span={8}>
+                <Col
+                  xs={24}
+                  md={12}
+                  lg={8}
+                >
                   <Form.Item
                     label='Başlıq(en)'
                     name={['title', 'en']}
@@ -167,7 +175,11 @@ export function AboutContent(): React.ReactElement {
                     <Input />
                   </Form.Item>
                 </Col>
-                <Col span={8}>
+                <Col
+                  xs={24}
+                  md={12}
+                  lg={8}
+                >
                   <Form.Item<FormField>
                     label='Başlıq(ru)'
                     name={['title', 'ru']}
@@ -187,7 +199,11 @@ export function AboutContent(): React.ReactElement {
 
             <FieldsGroup>
               <Row gutter={16}>
-                <Col span={8}>
+                <Col
+                  xs={24}
+                  md={12}
+                  lg={8}
+                >
                   <Form.Item<FormField>
                     label='Sayğac başlığı(az)'
                     name={['counter_info', 'az']}
@@ -201,7 +217,11 @@ export function AboutContent(): React.ReactElement {
                     <Input />
                   </Form.Item>
                 </Col>
-                <Col span={8}>
+                <Col
+                  xs={24}
+                  md={12}
+                  lg={8}
+                >
                   <Form.Item
                     label='Sayğac başlığı(en)'
                     name={['counter_info', 'en']}
@@ -216,7 +236,11 @@ export function AboutContent(): React.ReactElement {
                     <Input />
                   </Form.Item>
                 </Col>
-                <Col span={8}>
+                <Col
+                  xs={24}
+                  md={12}
+                  lg={8}
+                >
                   <Form.Item<FormField>
                     label='Sayğac başlığı(ru)'
                     name={['counter_info', 'ru']}
@@ -236,7 +260,11 @@ export function AboutContent(): React.ReactElement {
 
             <FieldsGroup>
               <Row gutter={16}>
-                <Col span={8}>
+                <Col
+                  xs={24}
+                  md={12}
+                  lg={8}
+                >
                   <Form.Item<FormField>
                     label='Həllər başlığı(az)'
                     name={['solutions', 'title', 'az']}
@@ -250,7 +278,11 @@ export function AboutContent(): React.ReactElement {
                     <Input />
                   </Form.Item>
                 </Col>
-                <Col span={8}>
+                <Col
+                  xs={24}
+                  md={12}
+                  lg={8}
+                >
                   <Form.Item
                     label='Həllər başlığı(en)'
                     name={['solutions', 'title', 'en']}
@@ -265,7 +297,11 @@ export function AboutContent(): React.ReactElement {
                     <Input />
                   </Form.Item>
                 </Col>
-                <Col span={8}>
+                <Col
+                  xs={24}
+                  md={12}
+                  lg={8}
+                >
                   <Form.Item<FormField>
                     label='Həllər başlığı(ru)'
                     name={['solutions', 'title', 'ru']}
@@ -281,7 +317,11 @@ export function AboutContent(): React.ReactElement {
                   </Form.Item>
                 </Col>
 
-                <Col span={24}>
+                <Col
+                  xs={24}
+                  md={12}
+                  lg={8}
+                >
                   <Form.List name={['solutions', 'options']}>
                     {(fields, { add, remove }) => (
                       <>
@@ -290,7 +330,11 @@ export function AboutContent(): React.ReactElement {
                             key={key}
                             gutter={16}
                           >
-                            <Col span={6}>
+                            <Col
+                              xs={24}
+                              md={12}
+                              lg={6}
+                            >
                               <Form.Item
                                 label='Həllərə nümunə(az)'
                                 name={[name, 'az']}
@@ -305,7 +349,11 @@ export function AboutContent(): React.ReactElement {
                                 <Input />
                               </Form.Item>
                             </Col>
-                            <Col span={6}>
+                            <Col
+                              xs={24}
+                              md={12}
+                              lg={6}
+                            >
                               <Form.Item
                                 label='Həllərə nümunə(en)'
                                 name={[name, 'en']}
@@ -320,7 +368,11 @@ export function AboutContent(): React.ReactElement {
                                 <Input />
                               </Form.Item>
                             </Col>
-                            <Col span={6}>
+                            <Col
+                              xs={24}
+                              md={12}
+                              lg={6}
+                            >
                               <Form.Item
                                 label='Həllərə nümunə(ru)'
                                 name={[name, 'ru']}
@@ -336,7 +388,9 @@ export function AboutContent(): React.ReactElement {
                               </Form.Item>
                             </Col>
                             <Col
-                              span={6}
+                              xs={24}
+                              md={12}
+                              lg={6}
                               style={{
                                 display: 'flex',
                                 alignItems: 'flex-end',
@@ -378,63 +432,77 @@ export function AboutContent(): React.ReactElement {
             </FieldsGroup>
 
             <FieldsGroup>
-              <Form.Item<FormField>
-                name={['content', 'az']}
-                label='Kontent (az)'
-                rules={[
-                  {
-                    required: true,
-                    validator: () => {
-                      return contentRichText.az.trim().length > 0
-                        ? Promise.resolve()
-                        : Promise.reject('Zəhmət olmasa mətn daxil edin(az)')
-                    },
-                  },
-                ]}
-              >
-                <RichTextEditor
-                  onChangeValue={data => handleRichContent('az', data)}
-                  editorData={contentRichText.az}
-                />
-              </Form.Item>
-              <Form.Item<FormField>
-                name={['content', 'en']}
-                label='Kontent (en)'
-                rules={[
-                  {
-                    required: true,
-                    validator: () => {
-                      return contentRichText.en.trim().length > 0
-                        ? Promise.resolve()
-                        : Promise.reject('Zəhmət olmasa mətn daxil edin(en)')
-                    },
-                  },
-                ]}
-              >
-                <RichTextEditor
-                  onChangeValue={data => handleRichContent('en', data)}
-                  editorData={contentRichText.en}
-                />
-              </Form.Item>
-              <Form.Item<FormField>
-                name={['content', 'ru']}
-                label='Kontent (ru)'
-                rules={[
-                  {
-                    required: true,
-                    validator: () => {
-                      return contentRichText.ru.trim().length > 0
-                        ? Promise.resolve()
-                        : Promise.reject('Zəhmət olmasa mətn daxil edin(ru)')
-                    },
-                  },
-                ]}
-              >
-                <RichTextEditor
-                  onChangeValue={data => handleRichContent('ru', data)}
-                  editorData={contentRichText.ru}
-                />
-              </Form.Item>
+              <Row gutter={16}>
+                <Col xs={24}>
+                  <Form.Item<FormField>
+                    name={['content', 'az']}
+                    label='Kontent (az)'
+                    rules={[
+                      {
+                        required: true,
+                        validator: () => {
+                          return contentRichText.az.trim().length > 0
+                            ? Promise.resolve()
+                            : Promise.reject(
+                              'Zəhmət olmasa mətn daxil edin(az)',
+                            )
+                        },
+                      },
+                    ]}
+                  >
+                    <RichTextEditor
+                      onChangeValue={data => handleRichContent('az', data)}
+                      editorData={contentRichText.az}
+                    />
+                  </Form.Item>
+                </Col>
+                <Col xs={24}>
+                  <Form.Item<FormField>
+                    name={['content', 'en']}
+                    label='Kontent (en)'
+                    rules={[
+                      {
+                        required: true,
+                        validator: () => {
+                          return contentRichText.en.trim().length > 0
+                            ? Promise.resolve()
+                            : Promise.reject(
+                              'Zəhmət olmasa mətn daxil edin(en)',
+                            )
+                        },
+                      },
+                    ]}
+                  >
+                    <RichTextEditor
+                      onChangeValue={data => handleRichContent('en', data)}
+                      editorData={contentRichText.en}
+                    />
+                  </Form.Item>
+                </Col>
+                <Col xs={24}>
+                  <Form.Item<FormField>
+                    name={['content', 'ru']}
+                    label='Kontent (ru)'
+                    rules={[
+                      {
+                        required: true,
+                        validator: () => {
+                          return contentRichText.ru.trim().length > 0
+                            ? Promise.resolve()
+                            : Promise.reject(
+                              'Zəhmət olmasa mətn daxil edin(ru)',
+                            )
+                        },
+                      },
+                    ]}
+                  >
+                    <RichTextEditor
+                      onChangeValue={data => handleRichContent('ru', data)}
+                      editorData={contentRichText.ru}
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
             </FieldsGroup>
 
             <FieldsGroup>

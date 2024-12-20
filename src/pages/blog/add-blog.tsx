@@ -129,7 +129,7 @@ export function AddBlog({ open, onClose }: IDrawerProps): React.ReactElement {
 
         <Row gutter={[16, 16]}>
           <FieldsGroup col={24}>
-            <Row>
+            <Row gutter={16}>
               <Col
                 xs={24}
                 sm={12}
@@ -305,7 +305,7 @@ export function AddBlog({ open, onClose }: IDrawerProps): React.ReactElement {
           </FieldsGroup>
 
           <FieldsGroup col={24}>
-            <Row style={{ width: '100%' }}>
+            <Row gutter={16}>
               <Col xs={24}>
                 <Form.Item
                   label='Content part1(az)'
