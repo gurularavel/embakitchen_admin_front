@@ -124,7 +124,11 @@ export function HomeCommonInfo() {
         >
           <FormGroup title='Video Section'>
             <Row gutter={16}>
-              <Col span={8}>
+              <Col
+                xs={24}
+                md={12}
+                lg={8}
+              >
                 <Form.Item<IFieldForm>
                   label='Başlıq(az)'
                   name={['videoSection', 'title', 'az']}
@@ -139,7 +143,11 @@ export function HomeCommonInfo() {
                   <Input />
                 </Form.Item>
               </Col>
-              <Col span={8}>
+              <Col
+                xs={24}
+                md={12}
+                lg={8}
+              >
                 <Form.Item<IFieldForm>
                   label='Başlıq(en)'
                   name={['videoSection', 'title', 'en']}
@@ -154,7 +162,11 @@ export function HomeCommonInfo() {
                   <Input />
                 </Form.Item>
               </Col>
-              <Col span={8}>
+              <Col
+                xs={24}
+                md={12}
+                lg={8}
+              >
                 <Form.Item<IFieldForm>
                   label='Başlıq(ru)'
                   name={['videoSection', 'title', 'ru']}
@@ -169,7 +181,11 @@ export function HomeCommonInfo() {
                   <Input />
                 </Form.Item>
               </Col>
-              <Col span={8}>
+              <Col
+                xs={24}
+                md={12}
+                lg={8}
+              >
                 <Form.Item<IFieldForm>
                   label='Kontent(az)'
                   name={['videoSection', 'content', 'az']}
@@ -184,7 +200,11 @@ export function HomeCommonInfo() {
                   <Input />
                 </Form.Item>
               </Col>
-              <Col span={8}>
+              <Col
+                xs={24}
+                md={12}
+                lg={8}
+              >
                 <Form.Item<IFieldForm>
                   label='Kontent(en)'
                   name={['videoSection', 'content', 'en']}
@@ -199,7 +219,11 @@ export function HomeCommonInfo() {
                   <Input />
                 </Form.Item>
               </Col>
-              <Col span={8}>
+              <Col
+                xs={24}
+                md={12}
+                lg={8}
+              >
                 <Form.Item<IFieldForm>
                   label='Kontent(ru)'
                   name={['videoSection', 'content', 'ru']}
@@ -235,178 +259,212 @@ export function HomeCommonInfo() {
                   </Upload>
                 </Form.Item>
               </Col>
-              <Form.List name='infoArray'>
-                {(fields, { add, remove }) => (
-                  <>
-                    {fields.map(({ key, name }) => (
-                      <FormGroup key={key}>
-                        <Row gutter={16}>
-                          <Col span={8}>
-                            <Form.Item
-                              name={[name, 'title', 'az']}
-                              label='Başlıq(az)'
-                              rules={[
-                                {
-                                  required: true,
-                                  message: 'Zəhmət olmasa boş saxlamayın',
-                                  whitespace: true,
-                                },
-                              ]}
+              <Col span={24}>
+                <Form.List name='infoArray'>
+                  {(fields, { add, remove }) => (
+                    <>
+                      {fields.map(({ key, name }) => (
+                        <FormGroup key={key}>
+                          <Row gutter={16}>
+                            <Col
+                              xs={24}
+                              md={12}
+                              lg={8}
                             >
-                              <Input placeholder='Title' />
-                            </Form.Item>
-                          </Col>
-                          <Col span={8}>
-                            <Form.Item
-                              name={[name, 'title', 'en']}
-                              label='Başlıq(en)'
-                              rules={[
-                                {
-                                  required: true,
-                                  message: 'Zəhmət olmasa boş saxlamayın',
-                                  whitespace: true,
-                                },
-                              ]}
-                            >
-                              <Input placeholder='Title' />
-                            </Form.Item>
-                          </Col>
-                          <Col span={8}>
-                            <Form.Item
-                              name={[name, 'title', 'ru']}
-                              label='Başlıq(ru)'
-                              rules={[
-                                {
-                                  required: true,
-                                  message: 'Zəhmət olmasa boş saxlamayın',
-                                  whitespace: true,
-                                },
-                              ]}
-                            >
-                              <Input placeholder='Title' />
-                            </Form.Item>
-                          </Col>
-                          <Col span={8}>
-                            <Form.Item
-                              name={[name, 'content', 'az']}
-                              label='Kontent (az)'
-                              rules={[
-                                {
-                                  required: true,
-                                  message: 'Zəhmət olmasa boş saxlamayın',
-                                  whitespace: true,
-                                },
-                              ]}
-                            >
-                              <Input placeholder='Content (AZ)' />
-                            </Form.Item>
-                          </Col>
-                          <Col span={8}>
-                            <Form.Item
-                              name={[name, 'content', 'en']}
-                              label='Kontent (en)'
-                              rules={[
-                                {
-                                  required: true,
-                                  message: 'Zəhmət olmasa boş saxlamayın',
-                                  whitespace: true,
-                                },
-                              ]}
-                            >
-                              <Input placeholder='Content (EN)' />
-                            </Form.Item>
-                          </Col>
-                          <Col span={8}>
-                            <Form.Item
-                              name={[name, 'content', 'ru']}
-                              label='Kontent (ru)'
-                              rules={[
-                                {
-                                  required: true,
-                                  message: 'Zəhmət olmasa boş saxlamayın',
-                                  whitespace: true,
-                                },
-                              ]}
-                            >
-                              <Input placeholder='Content (RU)' />
-                            </Form.Item>
-                          </Col>
-                          <Col span={12}>
-                            <Form.Item
-                              name={[name, 'icon']}
-                              label='Icon'
-                              valuePropName='fileList'
-                              getValueFromEvent={e => {
-                                const fileList = Array.isArray(e)
-                                  ? e
-                                  : e?.fileList
-                                return fileList?.map(
-                                  (fileItem: UploadFile) =>
-                                    fileItem.originFileObj || fileItem,
-                                )
-                              }}
-                              rules={[
-                                {
-                                  required: true,
-                                  validator: (_, value) =>
-                                    value && value.length > 0
-                                      ? Promise.resolve()
-                                      : Promise.reject(
-                                        new Error(
-                                          'Zəhmət olmasa şəkil yükləyin',
-                                        ),
-                                      ),
-                                },
-                              ]}
-                            >
-                              <Upload
-                                accept='image/*'
-                                listType='picture'
-                                maxCount={1}
+                              <Form.Item
+                                name={[name, 'title', 'az']}
+                                label='Başlıq(az)'
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: 'Zəhmət olmasa boş saxlamayın',
+                                    whitespace: true,
+                                  },
+                                ]}
                               >
-                                <Button icon={<UploadOutlined />}>
-                                  Upload Icon
-                                </Button>
-                              </Upload>
-                            </Form.Item>
-                          </Col>
-                          <Col
-                            span={12}
-                            className='flex justify-end items-center'
-                          >
-                            <Button
-                              color='danger'
-                              variant='solid'
-                              onClick={() => remove(name)}
+                                <Input placeholder='Title' />
+                              </Form.Item>
+                            </Col>
+                            <Col
+                              xs={24}
+                              md={12}
+                              lg={8}
                             >
-                              Bölməni sil
-                            </Button>
-                          </Col>
-                        </Row>
-                      </FormGroup>
-                    ))}
-                    <Col span={24}>
-                      <Form.Item>
-                        <Button
-                          className='w-100'
-                          color='primary'
-                          variant='outlined'
-                          onClick={() => add()}
-                          block
-                          icon={<PlusOutlined />}
-                        >
-                          Video info əlavə et
-                        </Button>
-                      </Form.Item>
-                    </Col>
-                  </>
-                )}
-              </Form.List>
+                              <Form.Item
+                                name={[name, 'title', 'en']}
+                                label='Başlıq(en)'
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: 'Zəhmət olmasa boş saxlamayın',
+                                    whitespace: true,
+                                  },
+                                ]}
+                              >
+                                <Input placeholder='Title' />
+                              </Form.Item>
+                            </Col>
+                            <Col
+                              xs={24}
+                              md={12}
+                              lg={8}
+                            >
+                              <Form.Item
+                                name={[name, 'title', 'ru']}
+                                label='Başlıq(ru)'
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: 'Zəhmət olmasa boş saxlamayın',
+                                    whitespace: true,
+                                  },
+                                ]}
+                              >
+                                <Input placeholder='Title' />
+                              </Form.Item>
+                            </Col>
+                            <Col
+                              xs={24}
+                              md={12}
+                              lg={8}
+                            >
+                              <Form.Item
+                                name={[name, 'content', 'az']}
+                                label='Kontent (az)'
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: 'Zəhmət olmasa boş saxlamayın',
+                                    whitespace: true,
+                                  },
+                                ]}
+                              >
+                                <Input placeholder='Content (AZ)' />
+                              </Form.Item>
+                            </Col>
+                            <Col
+                              xs={24}
+                              md={12}
+                              lg={8}
+                            >
+                              <Form.Item
+                                name={[name, 'content', 'en']}
+                                label='Kontent (en)'
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: 'Zəhmət olmasa boş saxlamayın',
+                                    whitespace: true,
+                                  },
+                                ]}
+                              >
+                                <Input placeholder='Content (EN)' />
+                              </Form.Item>
+                            </Col>
+                            <Col
+                              xs={24}
+                              md={12}
+                              lg={8}
+                            >
+                              <Form.Item
+                                name={[name, 'content', 'ru']}
+                                label='Kontent (ru)'
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: 'Zəhmət olmasa boş saxlamayın',
+                                    whitespace: true,
+                                  },
+                                ]}
+                              >
+                                <Input placeholder='Content (RU)' />
+                              </Form.Item>
+                            </Col>
+                            <Col
+                              xs={24}
+                              md={12}
+                            >
+                              <Form.Item
+                                name={[name, 'icon']}
+                                label='Icon'
+                                valuePropName='fileList'
+                                getValueFromEvent={e => {
+                                  const fileList = Array.isArray(e)
+                                    ? e
+                                    : e?.fileList
+                                  return fileList?.map(
+                                    (fileItem: UploadFile) =>
+                                      fileItem.originFileObj || fileItem,
+                                  )
+                                }}
+                                rules={[
+                                  {
+                                    required: true,
+                                    validator: (_, value) =>
+                                      value && value.length > 0
+                                        ? Promise.resolve()
+                                        : Promise.reject(
+                                          new Error(
+                                            'Zəhmət olmasa şəkil yükləyin',
+                                          ),
+                                        ),
+                                  },
+                                ]}
+                              >
+                                <Upload
+                                  accept='image/*'
+                                  listType='picture'
+                                  maxCount={1}
+                                >
+                                  <Button icon={<UploadOutlined />}>
+                                    Upload Icon
+                                  </Button>
+                                </Upload>
+                              </Form.Item>
+                            </Col>
+                            <Col
+                              xs={24}
+                              md={12}
+                              className='flex justify-end items-center'
+                            >
+                              <Button
+                                color='danger'
+                                variant='solid'
+                                onClick={() => remove(name)}
+                              >
+                                Bölməni sil
+                              </Button>
+                            </Col>
+                          </Row>
+                        </FormGroup>
+                      ))}
+                      <Col span={24}>
+                        <Form.Item>
+                          <Button
+                            className='w-100'
+                            color='primary'
+                            variant='outlined'
+                            onClick={() => add()}
+                            block
+                            icon={<PlusOutlined />}
+                          >
+                            Video info əlavə et
+                          </Button>
+                        </Form.Item>
+                      </Col>
+                    </>
+                  )}
+                </Form.List>
+              </Col>
             </Row>
           </FormGroup>
           <FormGroup title='Sifariş Yarat Ana Səhifə'>
             <Row gutter={16}>
-              <Col span={8}>
+              <Col
+                xs={24}
+                md={12}
+                lg={8}
+              >
                 <Form.Item<IFieldForm>
                   label='Sifariş yarat başlıq(az)'
                   name={['createOrderSection', 'title', 'az']}
@@ -421,7 +479,11 @@ export function HomeCommonInfo() {
                   <Input />
                 </Form.Item>
               </Col>
-              <Col span={8}>
+              <Col
+                xs={24}
+                md={12}
+                lg={8}
+              >
                 <Form.Item<IFieldForm>
                   label='Sifariş yarat başlıq(en)'
                   name={['createOrderSection', 'title', 'en']}
@@ -436,7 +498,11 @@ export function HomeCommonInfo() {
                   <Input />
                 </Form.Item>
               </Col>
-              <Col span={8}>
+              <Col
+                xs={24}
+                md={12}
+                lg={8}
+              >
                 <Form.Item<IFieldForm>
                   label='Sifariş yarat başlıq(ru)'
                   name={['createOrderSection', 'title', 'ru']}
@@ -451,7 +517,11 @@ export function HomeCommonInfo() {
                   <Input />
                 </Form.Item>
               </Col>
-              <Col span={8}>
+              <Col
+                xs={24}
+                md={12}
+                lg={8}
+              >
                 <Form.Item<IFieldForm>
                   label='Sifariş yarat kontent(az)'
                   name={['createOrderSection', 'content', 'az']}
@@ -466,7 +536,11 @@ export function HomeCommonInfo() {
                   <Input />
                 </Form.Item>
               </Col>
-              <Col span={8}>
+              <Col
+                xs={24}
+                md={12}
+                lg={8}
+              >
                 <Form.Item<IFieldForm>
                   label='Sifariş yarat kontent(en)'
                   name={['createOrderSection', 'content', 'en']}
@@ -481,7 +555,11 @@ export function HomeCommonInfo() {
                   <Input />
                 </Form.Item>
               </Col>
-              <Col span={8}>
+              <Col
+                xs={24}
+                md={12}
+                lg={8}
+              >
                 <Form.Item<IFieldForm>
                   label='Sifariş yarat kontent(ru)'
                   name={['createOrderSection', 'content', 'ru']}
@@ -496,7 +574,11 @@ export function HomeCommonInfo() {
                   <Input />
                 </Form.Item>
               </Col>
-              <Col span={8}>
+              <Col
+                xs={24}
+                md={12}
+                lg={8}
+              >
                 <Form.Item<IFieldForm>
                   name='createOrderImage'
                   label='Sifariş yarat banner'
@@ -533,7 +615,10 @@ export function HomeCommonInfo() {
             </Row>
           </FormGroup>
           <FormGroup title='Sifariş mərhələləri'>
-            <Col span={12}>
+            <Col
+              md={12}
+              xs={24}
+            >
               <Form.Item<IFieldForm>
                 name='styleImage'
                 label='Sifariş mərhələsi banner'
@@ -573,7 +658,11 @@ export function HomeCommonInfo() {
                   {fields.map(({ key, name }) => (
                     <FormGroup key={key}>
                       <Row gutter={16}>
-                        <Col span={8}>
+                        <Col
+                          xs={24}
+                          md={12}
+                          lg={8}
+                        >
                           <Form.Item
                             name={[name, 'title', 'az']}
                             label='Mərhələ başlığı(az)'
@@ -588,7 +677,11 @@ export function HomeCommonInfo() {
                             <Input placeholder='Title' />
                           </Form.Item>
                         </Col>
-                        <Col span={8}>
+                        <Col
+                          xs={24}
+                          md={12}
+                          lg={8}
+                        >
                           <Form.Item
                             name={[name, 'title', 'en']}
                             label='Mərhələ başlığı(en)'
@@ -603,7 +696,11 @@ export function HomeCommonInfo() {
                             <Input placeholder='Title' />
                           </Form.Item>
                         </Col>
-                        <Col span={8}>
+                        <Col
+                          xs={24}
+                          md={12}
+                          lg={8}
+                        >
                           <Form.Item
                             name={[name, 'title', 'ru']}
                             label='Mərhələ başlığı(ru)'
@@ -618,7 +715,11 @@ export function HomeCommonInfo() {
                             <Input placeholder='Title' />
                           </Form.Item>
                         </Col>
-                        <Col span={8}>
+                        <Col
+                          xs={24}
+                          md={12}
+                          lg={8}
+                        >
                           <Form.Item
                             name={[name, 'content', 'az']}
                             label='Mərhələ kontenti (az)'
@@ -633,7 +734,11 @@ export function HomeCommonInfo() {
                             <Input placeholder='Content (AZ)' />
                           </Form.Item>
                         </Col>
-                        <Col span={8}>
+                        <Col
+                          xs={24}
+                          md={12}
+                          lg={8}
+                        >
                           <Form.Item
                             name={[name, 'content', 'en']}
                             label='Mərhələ kontenti (en)'
@@ -648,7 +753,11 @@ export function HomeCommonInfo() {
                             <Input placeholder='Content (EN)' />
                           </Form.Item>
                         </Col>
-                        <Col span={8}>
+                        <Col
+                          xs={24}
+                          md={12}
+                          lg={8}
+                        >
                           <Form.Item
                             name={[name, 'content', 'ru']}
                             label='Mərhələ kontenti (ru)'
@@ -697,8 +806,8 @@ export function HomeCommonInfo() {
             </Form.List>
           </FormGroup>
 
-          <Form.Item wrapperCol={{ span: 24, offset: 22 }}>
-            <Space>
+          <Form.Item>
+            <Space className='flex justify-end'>
               <Button
                 disabled={postLoading}
                 type='primary'

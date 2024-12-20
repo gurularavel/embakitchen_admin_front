@@ -85,7 +85,11 @@ export function BlogPage(): React.ReactElement {
           <Row gutter={[24, 24]}>
             <FieldsGroup col={24}>
               <Row gutter={16}>
-                <Col span={8}>
+                <Col
+                  xs={24}
+                  md={12}
+                  lg={8}
+                >
                   <Form.Item<FormField>
                     name={['title', 'az']}
                     label='Başlıq(az)'
@@ -100,7 +104,11 @@ export function BlogPage(): React.ReactElement {
                     <Input placeholder='Başlıq(az)' />
                   </Form.Item>
                 </Col>
-                <Col span={8}>
+                <Col
+                  xs={24}
+                  md={12}
+                  lg={8}
+                >
                   <Form.Item<FormField>
                     name={['title', 'en']}
                     label='Başlıq(en)'
@@ -115,7 +123,11 @@ export function BlogPage(): React.ReactElement {
                     <Input placeholder='Başlıq(en)' />
                   </Form.Item>
                 </Col>
-                <Col span={8}>
+                <Col
+                  xs={24}
+                  md={12}
+                  lg={8}
+                >
                   <Form.Item<FormField>
                     name={['title', 'ru']}
                     label='Başlıq(ru)'
@@ -134,8 +146,8 @@ export function BlogPage(): React.ReactElement {
             </FieldsGroup>
 
             <FieldsGroup col={24}>
-              <Row>
-                <Col span={24}>
+              <Row gutter={16}>
+                <Col xs={24}>
                   <Form.Item<FormField>
                     name='image'
                     label='Image'
@@ -173,7 +185,11 @@ export function BlogPage(): React.ReactElement {
 
             <FieldsGroup col={24}>
               <Row gutter={16}>
-                <Col span={8}>
+                <Col
+                  xs={24}
+                  md={12}
+                  lg={8}
+                >
                   <Form.Item<FormField>
                     name={['similar_article_title', 'az']}
                     label='Oxşar bloqlar başlığı(az)'
@@ -188,7 +204,11 @@ export function BlogPage(): React.ReactElement {
                     <Input placeholder='Oxşar bloqlar başlığı(az)' />
                   </Form.Item>
                 </Col>
-                <Col span={8}>
+                <Col
+                  xs={24}
+                  md={12}
+                  lg={8}
+                >
                   <Form.Item<FormField>
                     name={['similar_article_title', 'en']}
                     label='Oxşar bloqlar başlığı(en)'
@@ -203,7 +223,11 @@ export function BlogPage(): React.ReactElement {
                     <Input placeholder='Oxşar bloqlar başlığı(en)' />
                   </Form.Item>
                 </Col>
-                <Col span={8}>
+                <Col
+                  xs={24}
+                  md={12}
+                  lg={8}
+                >
                   <Form.Item<FormField>
                     name={['similar_article_title', 'ru']}
                     label='Oxşar bloqlar başlığı(ru)'
@@ -222,7 +246,7 @@ export function BlogPage(): React.ReactElement {
             </FieldsGroup>
 
             <Col
-              span={24}
+              xs={24}
               className='flex justify-end items-end'
             >
               <Form.Item wrapperCol={{ span: 12 }}>
