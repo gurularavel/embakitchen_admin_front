@@ -78,7 +78,10 @@ export function AddBlockDrawer({
         <RenderIf condition={isLoading}>
           <Loading />
         </RenderIf>
-        <Row gutter={{ xs: 8, sm: 16 }}>
+        <Row
+          gutter={{ xs: 8, sm: 16 }}
+          style={{ flexFlow: 'column' }}
+        >
           <Col
             xs={24}
             sm={12}

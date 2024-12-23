@@ -482,7 +482,10 @@ export function AddProduct({
             </Form.Item>
           </Col>
         </Row>
-        <Row gutter={{ xs: 8, sm: 16 }}>
+        <Row
+          gutter={{ xs: 8, sm: 16 }}
+          style={{ flexFlow: 'column' }}
+        >
           <Col span={24}>
             <Form.Item<IFormProduct>
               label='Content(az)'
