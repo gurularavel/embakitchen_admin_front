@@ -11,7 +11,7 @@ import {
   Space,
   Upload,
 } from 'antd'
-import { FieldsGroup, Loading, RenderIf } from '~ek/shared/components'
+import { FormGroup, Loading, RenderIf } from '~ek/shared/components'
 import {
   beforeUploadHandler,
   createFormData,
@@ -128,7 +128,7 @@ export function AddBlog({ open, onClose }: IDrawerProps): React.ReactElement {
         </RenderIf>
 
         <Row gutter={[16, 16]}>
-          <FieldsGroup col={24}>
+          <FormGroup col={24}>
             <Row gutter={16}>
               <Col
                 xs={24}
@@ -167,9 +167,9 @@ export function AddBlog({ open, onClose }: IDrawerProps): React.ReactElement {
                 </Form.Item>
               </Col>
             </Row>
-          </FieldsGroup>
+          </FormGroup>
 
-          <FieldsGroup col={24}>
+          <FormGroup col={24}>
             <Row gutter={{ xs: 8, sm: 16 }}>
               <Col
                 xs={24}
@@ -229,9 +229,9 @@ export function AddBlog({ open, onClose }: IDrawerProps): React.ReactElement {
                 </Form.Item>
               </Col>
             </Row>
-          </FieldsGroup>
+          </FormGroup>
 
-          <FieldsGroup col={24}>
+          <FormGroup col={24}>
             <Row gutter={{ xs: 8, sm: 16 }}>
               <Col
                 xs={24}
@@ -252,9 +252,9 @@ export function AddBlog({ open, onClose }: IDrawerProps): React.ReactElement {
                 </Form.Item>
               </Col>
             </Row>
-          </FieldsGroup>
+          </FormGroup>
 
-          <FieldsGroup col={24}>
+          <FormGroup col={24}>
             <Row gutter={{ xs: 8, sm: 16 }}>
               <Col
                 xs={24}
@@ -302,9 +302,9 @@ export function AddBlog({ open, onClose }: IDrawerProps): React.ReactElement {
                 </Form.Item>
               </Col>
             </Row>
-          </FieldsGroup>
+          </FormGroup>
 
-          <FieldsGroup col={24}>
+          <FormGroup col={24}>
             <Row gutter={16}>
               <Col xs={24}>
                 <Form.Item
@@ -370,7 +370,7 @@ export function AddBlog({ open, onClose }: IDrawerProps): React.ReactElement {
                 </Form.Item>
               </Col>
             </Row>
-          </FieldsGroup>
+          </FormGroup>
         </Row>
       </Form>
     </Drawer>

@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Button, Col, Form, FormProps, Input, Row, Space, Upload } from 'antd'
 import {
   ErrorMessage,
-  FieldsGroup,
+  FormGroup,
   Loading,
   RenderIf,
 } from '~ek/shared/components'
@@ -84,7 +84,7 @@ export function ProjectPage(): React.ReactElement {
           </RenderIf>
 
           <Row gutter={[24, 24]}>
-            <FieldsGroup col={24}>
+            <FormGroup col={24}>
               <Row gutter={16}>
                 <Col span={8}>
                   <Form.Item<FormField>
@@ -132,9 +132,9 @@ export function ProjectPage(): React.ReactElement {
                   </Form.Item>
                 </Col>
               </Row>
-            </FieldsGroup>
+            </FormGroup>
 
-            <FieldsGroup col={24}>
+            <FormGroup col={24}>
               <Row>
                 <Col span={24}>
                   <Form.Item<FormField>
@@ -170,7 +170,7 @@ export function ProjectPage(): React.ReactElement {
                   </Form.Item>
                 </Col>
               </Row>
-            </FieldsGroup>
+            </FormGroup>
 
             <Col
               span={24}
