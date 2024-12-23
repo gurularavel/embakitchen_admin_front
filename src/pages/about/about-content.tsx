@@ -99,7 +99,10 @@ export function AboutContent(): React.ReactElement {
           className='ml-auto mr-auto'
           initialValues={initialValues}
         >
-          <Row gutter={[24, 24]}>
+          <Row
+            gutter={24}
+            style={{ flexFlow: 'column' }}
+          >
             <FormGroup>
               <Form.Item<FormField>
                 name='image'

@@ -156,7 +156,10 @@ export function EditInfoBlock({
             </Form.Item>
           </Col>
         </Row>
-        <Row gutter={16}>
+        <Row
+          gutter={16}
+          style={{ flexFlow: 'column' }}
+        >
           <Col xs={24}>
             <Form.Item<FormField>
               label='Content(az)'
