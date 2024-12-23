@@ -127,10 +127,12 @@ export function AddBlog({ open, onClose }: IDrawerProps): React.ReactElement {
           <Loading />
         </RenderIf>
 
+
         <Row
           gutter={[16, 16]}
           style={{ flexFlow: 'column' }}
         >
+
           <FormGroup col={24}>
             <Row gutter={16}>
               <Col
