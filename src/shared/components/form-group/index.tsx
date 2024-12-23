@@ -26,7 +26,7 @@ export const FormGroup = ({ col = 24, title, children }: FormGroup) => {
       <div>
         <h3 className='font-semibold text-lg'>{title}</h3>
       </div>
-      <Col xs={{ flex: 'column' }}>{children}</Col>
+      <Col>{children}</Col>
     </Col>
   )
 }
