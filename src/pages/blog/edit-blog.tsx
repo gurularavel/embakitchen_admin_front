@@ -12,7 +12,7 @@ import {
   Upload,
   UploadFile,
 } from 'antd'
-import { FieldsGroup, Loading, RenderIf } from '~ek/shared/components'
+import { FormGroup, Loading, RenderIf } from '~ek/shared/components'
 import {
   beforeUploadHandler,
   createFormData,
@@ -152,7 +152,7 @@ export function EditBlog({
         </RenderIf>
 
         <Row gutter={[16, 16]}>
-          <FieldsGroup col={24}>
+          <FormGroup col={24}>
             <Row>
               <Col
                 xs={24}
@@ -193,9 +193,9 @@ export function EditBlog({
                 </Form.Item>
               </Col>
             </Row>
-          </FieldsGroup>
+          </FormGroup>
 
-          <FieldsGroup col={24}>
+          <FormGroup col={24}>
             <Row gutter={{ xs: 8, sm: 16 }}>
               <Col>
                 <Form.Item<IFormBlog>
@@ -251,9 +251,9 @@ export function EditBlog({
                 </Form.Item>
               </Col>
             </Row>
-          </FieldsGroup>
+          </FormGroup>
 
-          <FieldsGroup col={24}>
+          <FormGroup col={24}>
             <Row gutter={{ xs: 8, sm: 16 }}>
               <Col
                 xs={24}
@@ -274,9 +274,9 @@ export function EditBlog({
                 </Form.Item>
               </Col>
             </Row>
-          </FieldsGroup>
+          </FormGroup>
 
-          <FieldsGroup col={24}>
+          <FormGroup col={24}>
             <Row gutter={{ xs: 8, sm: 16 }}>
               <Col
                 xs={24}
@@ -324,9 +324,9 @@ export function EditBlog({
                 </Form.Item>
               </Col>
             </Row>
-          </FieldsGroup>
+          </FormGroup>
 
-          <FieldsGroup col={24}>
+          <FormGroup col={24}>
             <Row style={{ width: '100%' }}>
               <Col xs={24}>
                 <Form.Item
@@ -392,7 +392,7 @@ export function EditBlog({
                 </Form.Item>
               </Col>
             </Row>
-          </FieldsGroup>
+          </FormGroup>
         </Row>
       </Form>
     </Drawer>
