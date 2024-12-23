@@ -10,7 +10,12 @@ import {
   Upload,
   UploadFile,
 } from 'antd'
-import { ErrorMessage, Loading, RenderIf } from '~ek/shared/components'
+import {
+  ErrorMessage,
+  Loading,
+  RenderIf,
+  FormGroup,
+} from '~ek/shared/components'
 import {
   beforeUploadHandler,
   createFormData,
@@ -24,7 +29,6 @@ import {
 } from '~ek/redux/api/home/common-info'
 import { useFileRemoveMutation } from '~ek/redux/api/fileRemove'
 import { PlusOutlined, UploadOutlined } from '@ant-design/icons'
-import { FormGroup } from '~ek/shared/components/form-group'
 import type { IHomeInfo } from '~ek/types/home/common-info'
 import { NOTIFICATION } from '~ek/shared/const/constants'
 

@@ -5,7 +5,7 @@ import {
   Loading,
   RenderIf,
   ErrorMessage,
-  FieldsGroup,
+  FormGroup,
 } from '~ek/shared/components'
 import { NOTIFICATION } from '~ek/shared/const/constants'
 import {
@@ -100,7 +100,7 @@ export function AboutContent(): React.ReactElement {
           initialValues={initialValues}
         >
           <Row gutter={[24, 24]}>
-            <FieldsGroup>
+            <FormGroup>
               <Form.Item<FormField>
                 name='image'
                 label='Banner Photo'
@@ -134,9 +134,9 @@ export function AboutContent(): React.ReactElement {
                   <Button icon={<UploadOutlined />}>Click to upload</Button>
                 </Upload>
               </Form.Item>
-            </FieldsGroup>
+            </FormGroup>
 
-            <FieldsGroup>
+            <FormGroup>
               <Row gutter={16}>
                 <Col
                   xs={24}
@@ -195,9 +195,9 @@ export function AboutContent(): React.ReactElement {
                   </Form.Item>
                 </Col>
               </Row>
-            </FieldsGroup>
+            </FormGroup>
 
-            <FieldsGroup>
+            <FormGroup>
               <Row gutter={16}>
                 <Col
                   xs={24}
@@ -256,9 +256,9 @@ export function AboutContent(): React.ReactElement {
                   </Form.Item>
                 </Col>
               </Row>
-            </FieldsGroup>
+            </FormGroup>
 
-            <FieldsGroup>
+            <FormGroup>
               <Row gutter={16}>
                 <Col
                   xs={24}
@@ -317,11 +317,7 @@ export function AboutContent(): React.ReactElement {
                   </Form.Item>
                 </Col>
 
-                <Col
-                  xs={24}
-                  md={12}
-                  lg={8}
-                >
+                <Col span={24}>
                   <Form.List name={['solutions', 'options']}>
                     {(fields, { add, remove }) => (
                       <>
@@ -429,9 +425,9 @@ export function AboutContent(): React.ReactElement {
                   </Form.List>
                 </Col>
               </Row>
-            </FieldsGroup>
+            </FormGroup>
 
-            <FieldsGroup>
+            <FormGroup>
               <Row gutter={16}>
                 <Col xs={24}>
                   <Form.Item<FormField>
@@ -503,9 +499,9 @@ export function AboutContent(): React.ReactElement {
                   </Form.Item>
                 </Col>
               </Row>
-            </FieldsGroup>
+            </FormGroup>
 
-            <FieldsGroup>
+            <FormGroup>
               <Form.Item<FormField>
                 name='video'
                 label='Upload Video'
@@ -525,7 +521,7 @@ export function AboutContent(): React.ReactElement {
                   <Button icon={<UploadOutlined />}>Click to upload</Button>
                 </Upload>
               </Form.Item>
-            </FieldsGroup>
+            </FormGroup>
 
             <Form.Item wrapperCol={{ span: 12 }}>
               <Space>
