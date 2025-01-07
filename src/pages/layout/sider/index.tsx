@@ -23,6 +23,7 @@ import {
   BlockOutlined,
   BorderOutlined,
   AppstoreOutlined,
+  BuildOutlined,
 } from '@ant-design/icons'
 import logo from '~ek/assets/images/132x20.67.svg'
 const { Sider } = Layout
@@ -166,10 +167,23 @@ const items: IMenu[] = [
     ],
   },
   {
-    key: URLS.CITY,
-    label: <Link to={URLS.CITY}>Şəhərlər</Link>,
-    path: URLS.CITY,
+    key: '6',
+    label: 'Region',
     icon: <GlobalOutlined className={'!text-lg'} />,
+    children: [
+      {
+        key: URLS.CITY,
+        label: <Link to={URLS.CITY}>Şəhərlər</Link>,
+        path: URLS.CITY,
+        icon: <BlockOutlined className={'!text-lg'} />,
+      },
+      {
+        key: URLS.DISTRICT,
+        label: <Link to={URLS.DISTRICT}>Rayonlar</Link>,
+        path: URLS.DISTRICT,
+        icon: <BuildOutlined className={'!text-lg'} />,
+      },
+    ],
   },
   {
     key: URLS.TAG,
@@ -184,7 +198,7 @@ const items: IMenu[] = [
     icon: <EnvironmentOutlined className={'!text-lg'} />,
   },
   {
-    key: '6',
+    key: '7',
     label: 'Layihələr',
     icon: <FundProjectionScreenOutlined className={'!text-lg'} />,
     children: [
