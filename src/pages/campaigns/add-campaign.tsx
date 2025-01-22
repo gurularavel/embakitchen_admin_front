@@ -24,6 +24,7 @@ import type { IFormCampaign } from '~ek/types/campaigns'
 import { UploadOutlined } from '@ant-design/icons'
 import { usePostCampaignMutation } from '~ek/redux/api/campaign'
 import { useFormStyle } from '~ek/shared/utilities/formStyles'
+import { RichTextEditor } from '~ek/shared/components/richtext'
 
 interface IDrawerProps {
   open: boolean
@@ -51,19 +52,26 @@ export function AddCampaign({
   const [form] = Form.useForm()
   const formStyle = useFormStyle()
   const { RangePicker } = DatePicker
-  const { TextArea } = Input
 
   const [image, setImage] = React.useState<IFile>({
     file: [],
     fileList: [],
   })
-
+  const [contentRichText, setContentRichText] = React.useState<ILangContent>({
+    az: '',
+    ru: '',
+    en: '',
+  })
   const [dateRange, setDateRange] = React.useState<{
     startDate: string
     endDate: string
   }>({ startDate: '', endDate: '' })
 
   const [addCampaign, { isLoading }] = usePostCampaignMutation()
+
+  const handleRichContent = (field: 'az' | 'ru' | 'en', content: string) => {
+    setContentRichText(prevState => ({ ...prevState, [field]: content }))
+  }
 
   const handleDateChange = (
     dates: RangePickerProps['value'],
@@ -86,6 +94,7 @@ export function AddCampaign({
 
     const formValues = {
       ...values,
+      content: contentRichText,
       image: image.file,
       startDate: formatStartDate,
       endDate: formatEndDate,
@@ -117,6 +126,7 @@ export function AddCampaign({
           </Button>
           <Button
             type='primary'
+            disabled={isLoading}
             onClick={() => form.submit()}
           >
             Submit
@@ -194,69 +204,66 @@ export function AddCampaign({
           </Col>
         </Row>
         <Row gutter={{ xs: 8, sm: 16 }}>
-          <Col
-            xs={24}
-            sm={12}
-            md={8}
-          >
-            <Form.Item<IFormCampaign>
+          <Col span={24}>
+            <Form.Item
+              label='Content(az)'
               name={['content', 'az']}
-              label='Kontent(az)'
               rules={[
                 {
                   required: true,
-                  whitespace: true,
-                  message: 'Zəhmət olmasa kontent əlavə edin(az)',
+                  validator: () => {
+                    return contentRichText.az.trim().length > 0
+                      ? Promise.resolve()
+                      : Promise.reject('Zəhmət olmasa mətn daxil edin(az)')
+                  },
                 },
               ]}
             >
-              <TextArea
-                rows={4}
-                placeholder='Kontent(az)'
+              <RichTextEditor
+                onChangeValue={data => handleRichContent('az', data)}
+                editorData={contentRichText.az}
               />
             </Form.Item>
           </Col>
-          <Col
-            xs={24}
-            sm={12}
-            md={8}
-          >
-            <Form.Item<IFormCampaign>
+          <Col span={24}>
+            <Form.Item
+              label='Content(en)'
               name={['content', 'en']}
-              label='Kontent(en)'
               rules={[
                 {
                   required: true,
-                  whitespace: true,
-                  message: 'Zəhmət olmasa kontent əlavə edin(en)',
+                  validator: () => {
+                    return contentRichText.en.trim().length > 0
+                      ? Promise.resolve()
+                      : Promise.reject('Zəhmət olmasa mətn daxil edin(en)')
+                  },
                 },
               ]}
             >
-              <TextArea
-                rows={4}
-                placeholder='Kontent(en)'
+              <RichTextEditor
+                onChangeValue={data => handleRichContent('en', data)}
+                editorData={contentRichText.en}
               />
             </Form.Item>
           </Col>
-          <Col
-            xs={24}
-            sm={12}
-            md={8}
-          >
-            <Form.Item<IFormCampaign>
+          <Col span={24}>
+            <Form.Item
+              label='Content(ru)'
               name={['content', 'ru']}
-              label='Kontent(ru)'
               rules={[
                 {
                   required: true,
-                  whitespace: true,
-                  message: 'Zəhmət olmasa kontent əlavə edin(ru)',
+                  validator: () => {
+                    return contentRichText.ru.trim().length > 0
+                      ? Promise.resolve()
+                      : Promise.reject('Zəhmət olmasa mətn daxil edin(ru)')
+                  },
                 },
               ]}
             >
-              <TextArea
-                rows={4}
-                placeholder='Kontent(ru)'
+              <RichTextEditor
+                onChangeValue={data => handleRichContent('ru', data)}
+                editorData={contentRichText.ru}
               />
             </Form.Item>
           </Col>

@@ -18,6 +18,7 @@ import {
   ImageToolbar,
   ImageUpload,
   Base64UploadAdapter,
+  Font,
 } from 'ckeditor5'
 import 'ckeditor5/ckeditor5.css'
 import '~ek/assets/css/ckeditor.css'
@@ -54,12 +55,14 @@ export function RichTextEditor({
           ImageToolbar,
           ImageUpload,
           Base64UploadAdapter,
+          Font,
         ],
         toolbar: [
           'heading',
           '|',
           'bold',
           'italic',
+          'fontColor',
           '|',
           'alignment',
           '|',
@@ -74,6 +77,27 @@ export function RichTextEditor({
           'undo',
           'redo',
         ],
+        fontColor: {
+          colors: [
+            {
+              color: '#1A1A1A',
+              label: 'Black',
+            },
+            {
+              color: '#666666',
+              label: 'Grey',
+            },
+            {
+              color: 'hsl(0, 0%, 100%)',
+              label: 'White',
+              hasBorder: true,
+            },
+            {
+              color: '#E55E25',
+              label: 'Orange',
+            },
+          ],
+        },
         heading: {
           options: [
             {
