@@ -29,6 +29,7 @@ import { UploadOutlined } from '@ant-design/icons'
 import { useEditCampaignMutation } from '~ek/redux/api/campaign'
 import { useFileRemoveMutation } from '~ek/redux/api/fileRemove'
 import { useFormStyle } from '~ek/shared/utilities/formStyles'
+import { RichTextEditor } from '~ek/shared/components/richtext'
 
 interface IDrawerProps {
   open: boolean
@@ -43,7 +44,6 @@ export function EditCampaign({
   campaign,
 }: IDrawerProps): React.ReactElement {
   const { RangePicker } = DatePicker
-  const { TextArea } = Input
   const [form] = Form.useForm()
   const formStyle = useFormStyle()
   const [switchChecked, setSwitchChecked] = React.useState<boolean>(
@@ -52,6 +52,11 @@ export function EditCampaign({
   const [image, setImage] = React.useState<IFile>({
     file: [],
     fileList: [],
+  })
+  const [contentRichText, setContentRichText] = React.useState<ILangContent>({
+    az: '',
+    ru: '',
+    en: '',
   })
   const [dateRange, setDateRange] = React.useState<{
     startDate: string
@@ -65,19 +70,11 @@ export function EditCampaign({
 
   React.useEffect(() => {
     handleFileData(campaign.image, setImage)
+    setContentRichText(campaign.content)
   }, [campaign])
 
   const initialValues = {
-    title: {
-      az: campaign.title.az,
-      en: campaign.title.en,
-      ru: campaign.title.ru,
-    },
-    content: {
-      az: campaign.content.az,
-      en: campaign.content.en,
-      ru: campaign.content.ru,
-    },
+    title: campaign.title,
     campaignDates: [
       dayjs(dateRange.startDate, DATE_FORMAT.VIEW),
       dayjs(dateRange.endDate, DATE_FORMAT.VIEW),
@@ -85,7 +82,9 @@ export function EditCampaign({
     status: campaign.status,
     id: campaign.id,
   }
-
+  const handleRichContent = (field: 'az' | 'ru' | 'en', content: string) => {
+    setContentRichText(prevState => ({ ...prevState, [field]: content }))
+  }
   const handleSwitchChange = (checked: boolean) => {
     setSwitchChecked(checked)
     form.setFieldsValue({ status: checked })
@@ -112,6 +111,7 @@ export function EditCampaign({
 
     const formValues = {
       ...values,
+      content: contentRichText,
       startDate: formatStartDate,
       endDate: formatEndDate,
       status: switchChecked ? '1' : '0',
@@ -224,69 +224,66 @@ export function EditCampaign({
           </Col>
         </Row>
         <Row gutter={{ xs: 8, sm: 16 }}>
-          <Col
-            xs={24}
-            sm={12}
-            md={8}
-          >
-            <Form.Item<IFormCampaign>
+          <Col span={24}>
+            <Form.Item
+              label='Content(az)'
               name={['content', 'az']}
-              label='Kontent(az)'
               rules={[
                 {
                   required: true,
-                  whitespace: true,
-                  message: 'Zəhmət olmasa kontent əlavə edin(az)',
+                  validator: () => {
+                    return contentRichText.az.trim().length > 0
+                      ? Promise.resolve()
+                      : Promise.reject('Zəhmət olmasa mətn daxil edin(az)')
+                  },
                 },
               ]}
             >
-              <TextArea
-                rows={4}
-                placeholder='Kontent(az)'
+              <RichTextEditor
+                onChangeValue={data => handleRichContent('az', data)}
+                editorData={contentRichText.az}
               />
             </Form.Item>
           </Col>
-          <Col
-            xs={24}
-            sm={12}
-            md={8}
-          >
-            <Form.Item<IFormCampaign>
+          <Col span={24}>
+            <Form.Item
+              label='Content(en)'
               name={['content', 'en']}
-              label='Kontent(en)'
               rules={[
                 {
                   required: true,
-                  whitespace: true,
-                  message: 'Zəhmət olmasa kontent əlavə edin(en)',
+                  validator: () => {
+                    return contentRichText.en.trim().length > 0
+                      ? Promise.resolve()
+                      : Promise.reject('Zəhmət olmasa mətn daxil edin(en)')
+                  },
                 },
               ]}
             >
-              <TextArea
-                rows={4}
-                placeholder='Kontent(en)'
+              <RichTextEditor
+                onChangeValue={data => handleRichContent('en', data)}
+                editorData={contentRichText.en}
               />
             </Form.Item>
           </Col>
-          <Col
-            xs={24}
-            sm={12}
-            md={8}
-          >
-            <Form.Item<IFormCampaign>
+          <Col span={24}>
+            <Form.Item
+              label='Content(ru)'
               name={['content', 'ru']}
-              label='Kontent(ru)'
               rules={[
                 {
                   required: true,
-                  whitespace: true,
-                  message: 'Zəhmət olmasa kontent əlavə edin(ru)',
+                  validator: () => {
+                    return contentRichText.ru.trim().length > 0
+                      ? Promise.resolve()
+                      : Promise.reject('Zəhmət olmasa mətn daxil edin(ru)')
+                  },
                 },
               ]}
             >
-              <TextArea
-                rows={4}
-                placeholder='Kontent(ru)'
+              <RichTextEditor
+                onChangeValue={data => handleRichContent('ru', data)}
+                editorData={contentRichText.ru}
               />
             </Form.Item>
           </Col>
