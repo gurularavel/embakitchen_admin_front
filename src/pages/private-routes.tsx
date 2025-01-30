@@ -15,6 +15,7 @@ import { Tags } from '~ek/pages/tags'
 import { Stores } from '~ek/pages/stores'
 import { ProjectPage } from '~ek/pages/projects/project-page'
 import { Projects } from '~ek/pages/projects'
+import { SearchPage } from '~ek/pages/search'
 import { URLS } from '~ek/shared/const/constants'
 
 export function PrivateRoutes(): React.ReactElement {
@@ -101,6 +102,10 @@ export function PrivateRoutes(): React.ReactElement {
           <Route
             path={URLS.PROJECTS}
             element={<Projects />}
+          />
+          <Route
+            path={URLS.SEARCH}
+            element={<SearchPage />}
           />
         </Route>
         <Route
