@@ -18,6 +18,7 @@ import { storeApi } from '~ek/redux/api/store'
 import { projectApi } from '~ek/redux/api/project'
 import { categoryApi } from '~ek/redux/api/product/product-category'
 import { productApi } from '~ek/redux/api/product/products'
+import { searchApi } from '~ek/redux/api/search'
 
 export const reducer = {
   auth: AuthReducer,
@@ -39,6 +40,7 @@ export const reducer = {
   [projectApi.reducerPath]: projectApi.reducer,
   [categoryApi.reducerPath]: categoryApi.reducer,
   [productApi.reducerPath]: productApi.reducer,
+  [searchApi.reducerPath]: searchApi.reducer,
 }
 export const middlewares = [
   authApi.middleware,
@@ -59,4 +61,5 @@ export const middlewares = [
   projectApi.middleware,
   categoryApi.middleware,
   productApi.middleware,
+  searchApi.middleware,
 ]

@@ -24,6 +24,7 @@ import {
   BorderOutlined,
   AppstoreOutlined,
   BuildOutlined,
+  SearchOutlined,
 } from '@ant-design/icons'
 import logo from '~ek/assets/images/132x20.67.svg'
 const { Sider } = Layout
@@ -215,6 +216,12 @@ const items: IMenu[] = [
         icon: <ProjectOutlined className={'!text-lg'} />,
       },
     ],
+  },
+  {
+    key: URLS.SEARCH,
+    path: URLS.SEARCH,
+    label: <Link to={URLS.SEARCH}>Axtarış</Link>,
+    icon: <SearchOutlined className={'!text-lg'} />,
   },
 ]
 

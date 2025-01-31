@@ -20,6 +20,7 @@ export const enum URLS {
   PRODUCTS = '/products',
   PROJECT_PAGE = '/project-page',
   PROJECTS = '/projects',
+  SEARCH = '/search',
 }
 
 export const enum NOTIFICATION {
