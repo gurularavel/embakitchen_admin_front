@@ -1,8 +1,11 @@
-import { BaseQueryFn } from '@reduxjs/toolkit/query/react'
+import { BaseQueryApi, BaseQueryFn } from '@reduxjs/toolkit/query/react'
 import axios, { AxiosRequestConfig, AxiosError } from 'axios'
 import { notification } from 'antd'
 import { revertAll } from '~ek/redux/feature/constants'
+import { setUser } from '~ek/redux/feature/auth'
 import { RootState } from '~ek/redux/store'
+import { ErrorCode } from '~ek/shared/const/constants'
+import { RefreshTokenResult } from '~ek/types/auth'
 
 const baseURL = `${import.meta.env.VITE_BASE_URL}`
 
@@ -101,7 +104,24 @@ export const APIBaseQuery: BaseQueryFn<IBaseQuery, unknown, unknown> = async (
 ) => {
   const result = await APIBaseQueryInterceptor(args, api, extraOptions)
 
-  if (result.error) {
+  if (result.error && result.error.status === ErrorCode.UNAUTHORIZED) {
+    const state: BaseQueryApi = api
+    const userState = state.getState() as RootState
+    const { auth } = userState
+    const refreshResult = await APIBaseQueryInterceptor(
+      { url: 'refresh-token', method: 'POST', data: { old_token: auth.token } },
+      api,
+      extraOptions,
+    )
+    if (refreshResult?.data) {
+      const data: RefreshTokenResult = refreshResult?.data as RefreshTokenResult
+      const { new_token } = data
+      state.dispatch(setUser({ token: new_token, user: auth.user }))
+    } else {
+      errorNotifier('401 UNAUTHORIZED')
+      state.dispatch(revertAll())
+    }
+  } else if (result.error) {
     const { status } = result.error
 
     if (status === 403) {
