@@ -23,6 +23,7 @@ import {
   BlockOutlined,
   BorderOutlined,
   AppstoreOutlined,
+  PieChartOutlined,
   BuildOutlined,
   SearchOutlined,
 } from '@ant-design/icons'
@@ -84,6 +85,12 @@ const items: IMenu[] = [
         icon: <GoldOutlined className={'!text-lg'} />,
       },
     ],
+  },
+  {
+    key: URLS.ORDERS,
+    label: <Link to={URLS.ORDERS}>Sifarişlər</Link>,
+    path: URLS.ORDERS,
+    icon: <PieChartOutlined className={'!text-lg'} />,
   },
   {
     key: '2',

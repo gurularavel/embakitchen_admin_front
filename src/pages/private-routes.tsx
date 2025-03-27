@@ -4,6 +4,7 @@ import { NotFound } from '~ek/pages/not-found'
 import { AboutContent, AboutInfoBlocks } from '~ek/pages/about'
 import { ProductCategory, Products } from '~ek/pages/products'
 import { Counter, HomeCommonInfo, Partners, Sliders } from '~ek/pages/home'
+import { Order } from '~ek/pages/orders'
 import { Campaigns } from '~ek/pages/campaigns'
 import { CampaignPage } from '~ek/pages/campaigns/campaign-page'
 import { Color } from '~ek/pages/colors'
@@ -42,6 +43,10 @@ export function PrivateRoutes(): React.ReactElement {
           <Route
             path={URLS.HOME_PARTNERS}
             element={<Partners />}
+          />
+          <Route
+            path={URLS.ORDERS}
+            element={<Order />}
           />
           <Route
             path={URLS.ABOUT_CONTENT}
