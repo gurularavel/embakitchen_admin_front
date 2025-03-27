@@ -24,3 +24,9 @@ export interface ILogin {
   password: string
   role?: string
 }
+
+export interface RefreshTokenResult {
+  message: string
+  new_token: string
+  old_token: string
+}

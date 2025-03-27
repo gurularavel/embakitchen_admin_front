@@ -660,7 +660,7 @@ export function EditProduct({
                   optionFilterProp='label'
                   placeholder='Kateqoriya seçin'
                   options={categoriesOptions || []}
-                  optionRender={option => <Space>{option.label}</Space>}
+                  //optionRender={option => <Space>{option.label}</Space>}
                 />
               </Form.Item>
             </Col>

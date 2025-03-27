@@ -21,6 +21,7 @@ export const enum URLS {
   PROJECT_PAGE = '/project-page',
   PROJECTS = '/projects',
   SEARCH = '/search',
+  ORDERS = '/orders',
 }
 
 export const enum NOTIFICATION {
@@ -38,4 +39,11 @@ export const enum USER_ROLE {
 export const enum DATE_FORMAT {
   VIEW = 'DD.MM.YYYY HH:mm',
   SEND = 'YYYY-MM-DDTHH:mm:ss[Z]',
+}
+
+export const enum ErrorCode {
+  UNAUTHORIZED = 401,
+  FORBIDDEN = 403,
+  NOTFOUND = 404,
+  INTERNAL_SERVER_ERROR = 500,
 }
