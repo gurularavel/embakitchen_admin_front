@@ -26,6 +26,7 @@ import {
   PieChartOutlined,
   BuildOutlined,
   SearchOutlined,
+  // CheckCircleOutlined,
 } from '@ant-design/icons'
 import logo from '~ek/assets/images/132x20.67.svg'
 const { Sider } = Layout
@@ -92,6 +93,12 @@ const items: IMenu[] = [
     path: URLS.ORDERS,
     icon: <PieChartOutlined className={'!text-lg'} />,
   },
+  // {
+  //   key: URLS.ORDER_STATUS,
+  //   label: <Link to={URLS.ORDER_STATUS}>Sifariş mərhələləri</Link>,
+  //   path: URLS.ORDER_STATUS,
+  //   icon: <CheckCircleOutlined className={'!text-lg'} />,
+  // },
   {
     key: '2',
     label: 'Haqqımızda',

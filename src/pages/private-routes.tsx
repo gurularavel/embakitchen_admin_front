@@ -5,6 +5,7 @@ import { AboutContent, AboutInfoBlocks } from '~ek/pages/about'
 import { ProductCategory, Products } from '~ek/pages/products'
 import { Counter, HomeCommonInfo, Partners, Sliders } from '~ek/pages/home'
 import { Order } from '~ek/pages/orders'
+// import { OrderStatus } from '~ek/pages/order-statuses'
 import { Campaigns } from '~ek/pages/campaigns'
 import { CampaignPage } from '~ek/pages/campaigns/campaign-page'
 import { Color } from '~ek/pages/colors'
@@ -48,6 +49,10 @@ export function PrivateRoutes(): React.ReactElement {
             path={URLS.ORDERS}
             element={<Order />}
           />
+          {/* <Route
+            path={URLS.ORDER_STATUS}
+            element={<OrderStatus />}
+          /> */}
           <Route
             path={URLS.ABOUT_CONTENT}
             element={<AboutContent />}

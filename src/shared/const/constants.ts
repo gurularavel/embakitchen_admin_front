@@ -22,6 +22,7 @@ export const enum URLS {
   PROJECTS = '/projects',
   SEARCH = '/search',
   ORDERS = '/orders',
+  ORDER_STATUS = '/order-status',
 }
 
 export const enum NOTIFICATION {
