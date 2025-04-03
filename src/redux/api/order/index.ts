@@ -30,7 +30,7 @@ export const orderApi = createApi({
         return {
           method: 'POST',
           url: 'track-orders',
-          data: { ...data, date: data.date || '2024-12-04 06:28:13' },
+          data: data,
         }
       },
       invalidatesTags: () => [{ type: 'ORDER' }],
