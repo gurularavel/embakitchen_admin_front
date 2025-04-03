@@ -225,7 +225,7 @@ export function AddSlider({ open, onClose }: IDrawerProps): React.ReactElement {
           >
             <Form.Item<IFormSlider>
               name='image'
-              label='Partner Image'
+              label='Slider Image (1740x960)'
               valuePropName='image'
               rules={[
                 {

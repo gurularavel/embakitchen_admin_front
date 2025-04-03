@@ -253,7 +253,7 @@ export function EditSlider({
         <Row gutter={16}>
           <Form.Item<IFieldForm>
             name='image'
-            label='Banner Photo'
+            label='Slider Photo (1740x960)'
             valuePropName='image'
             rules={[
               {
