@@ -1,11 +1,21 @@
 import * as React from 'react'
-import { Table, TablePaginationConfig, TableProps } from 'antd'
+import { Button, Table, TablePaginationConfig, TableProps } from 'antd'
 import { ErrorMessage, Loading, RenderIf, NoData } from '~ek/shared/components'
 import { confirmModal, notifier } from '~ek/shared/helpers'
 import { NOTIFICATION } from '~ek/shared/const/constants'
 import type { IOrder } from '~ek/types/order'
-import { DeleteOutlined } from '@ant-design/icons'
-import { useDeleteOrderMutation, useGetOrdersQuery } from '~ek/redux/api/order'
+import {
+  CheckCircleOutlined,
+  DeleteOutlined,
+  ExclamationCircleOutlined,
+} from '@ant-design/icons'
+import {
+  useDeleteOrderMutation,
+  useGetOrdersQuery,
+  useAddOrderStatusMutation,
+} from '~ek/redux/api/order'
+import { useGetOrderStatusesQuery } from '~ek/redux/api/order-status'
+import { IOrderStatus } from '~ek/types/order-status'
 
 export function Order(): React.ReactElement {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([])
@@ -19,7 +29,14 @@ export function Order(): React.ReactElement {
     page: pageParams.current,
     perPage: pageParams.pageSize,
   })
+
+  const { data: statuses, isLoading: statusLoading } = useGetOrderStatusesQuery(
+    { page: 1 },
+  )
+
   const [deleteOrder] = useDeleteOrderMutation()
+  const [addOrderStatus, { isLoading: addStatusLoading }] =
+    useAddOrderStatusMutation()
 
   const handleTableChange = (pagination: TablePaginationConfig): void => {
     setPageParams(prev => ({
@@ -39,6 +56,20 @@ export function Order(): React.ReactElement {
       await deleteOrder({ ids: ids }).unwrap()
       setSelectedRowKeys([])
       notifier('Seçiminiz uğurla silindi', NOTIFICATION.success)
+    } catch (e: unknown) {
+      const errorMessage =
+        e instanceof Error ? e.message : 'An unexpected error occurred'
+      notifier(errorMessage, NOTIFICATION.error)
+    }
+  }
+
+  const changeOrderStatus = async (
+    order_id: number,
+    track_order_status_id: number,
+  ): Promise<void> => {
+    try {
+      await addOrderStatus({ order_id, track_order_status_id }).unwrap()
+      notifier('Sifariş statusu dəyişdirildi', NOTIFICATION.success)
     } catch (e: unknown) {
       const errorMessage =
         e instanceof Error ? e.message : 'An unexpected error occurred'
@@ -83,6 +114,36 @@ export function Order(): React.ReactElement {
       dataIndex: 'phone',
       key: 'phone',
       render: (_: string, order: IOrder) => <span>{order.phone}</span>,
+    },
+    {
+      title: 'Sifariş statusu',
+      dataIndex: 'orderStatus',
+      key: 'trackOrderStatuses',
+      render: (_: string, order: IOrder) =>
+        order.trackOrderStatuses.length
+          ? order.trackOrderStatuses.map((status: IOrderStatus) => (
+            <Button
+              className='bg-green-100 text-green-500 border-green-100 hover:!bg-green-300 hover:!border-green-300 hover:!text-green-700'
+              key={status.id}
+              variant='filled'
+              icon={<CheckCircleOutlined />}
+            >
+              {status.title.az}
+            </Button>
+          ))
+          : !statusLoading &&
+            statuses?.data?.map((status: IOrderStatus) => (
+              <Button
+                color='danger'
+                key={status.id}
+                variant='filled'
+                icon={<ExclamationCircleOutlined />}
+                disabled={addStatusLoading}
+                onClick={() => changeOrderStatus(order.id, status.id)}
+              >
+                Əlaqə saxlanılmayıb
+              </Button>
+            )),
     },
   ]
   return (

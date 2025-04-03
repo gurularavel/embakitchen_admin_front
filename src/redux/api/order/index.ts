@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { APIBaseQuery } from '~ek/redux/api/axiosBase'
-import type { IOrder, OrderApiResponse } from '~ek/types/order'
+import type { IOrder, OrderApiResponse, IAddOrderStatus } from '~ek/types/order'
 
 export const orderApi = createApi({
   reducerPath: 'orderApi',
@@ -25,13 +25,12 @@ export const orderApi = createApi({
         }
       },
     }),
-    editOrder: builder.mutation<void, IPutFormData>({
+    addOrderStatus: builder.mutation<void, IAddOrderStatus>({
       query(data) {
-        const { id, formData } = data
         return {
           method: 'POST',
-          url: `track-orders/${id}`,
-          data: formData,
+          url: 'track-orders',
+          data: data,
         }
       },
       invalidatesTags: () => [{ type: 'ORDER' }],
@@ -52,6 +51,6 @@ export const orderApi = createApi({
 export const {
   useGetOrdersQuery,
   useGetOrderByIdQuery,
-  useEditOrderMutation,
   useDeleteOrderMutation,
+  useAddOrderStatusMutation,
 } = orderApi
