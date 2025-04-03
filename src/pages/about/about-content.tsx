@@ -106,7 +106,7 @@ export function AboutContent(): React.ReactElement {
             <FormGroup>
               <Form.Item<FormField>
                 name='image'
-                label='Banner Photo'
+                label='Banner Photo (1900x400)'
                 valuePropName='image'
                 rules={[
                   {

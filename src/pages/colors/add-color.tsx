@@ -165,7 +165,7 @@ export function AddColor({ open, onClose }: IDrawerProps): React.ReactElement {
           >
             <Form.Item<IPostColor>
               name='image'
-              label='Image'
+              label='Image (140x140)'
               valuePropName='image'
               rules={[
                 {

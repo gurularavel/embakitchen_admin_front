@@ -2,6 +2,7 @@ import type { User } from '~ek/types/auth'
 import type { IProduct } from '~ek/types/product'
 import type { ICity } from '~ek/types/city'
 import type { IDistrict } from '~ek/types/district'
+import { IOrderStatus } from '~ek/types/order-status'
 
 export interface IOrder {
   id: number
@@ -16,7 +17,13 @@ export interface IOrder {
   district: Pick<IDistrict, 'id' | 'title'>
   address: string
   phone: string
-  trackOrderStatuses: []
+  trackOrderStatuses: IOrderStatus[]
+}
+
+export interface IAddOrderStatus {
+  order_id: number
+  track_order_status_id: number
+  date?: string
 }
 
 export type OrderApiResponse = ApiResponse<IOrder[]>
