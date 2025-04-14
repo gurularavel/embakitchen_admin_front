@@ -150,7 +150,7 @@ export function BlogPage(): React.ReactElement {
                 <Col xs={24}>
                   <Form.Item<FormField>
                     name='image'
-                    label='Image'
+                    label='Banner şəkli(1900x400)'
                     valuePropName='image'
                     rules={[
                       {
