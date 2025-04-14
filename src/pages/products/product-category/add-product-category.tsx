@@ -143,7 +143,7 @@ export function AddCategory({
           >
             <Form.Item<ICategory>
               name='bannerImage'
-              label='Əsas şəkil'
+              label='Banner şəkil(1900x400)'
               valuePropName='fileList'
               getValueFromEvent={e => {
                 const fileList = Array.isArray(e) ? e : e?.fileList
