@@ -23,6 +23,7 @@ export interface IProduct {
   status: boolean
   images: IFileProperties[]
   bannerImage: IFileProperties[]
+  mainImage: IFileProperties[]
   category: {
     id: number
     title: ILangContent

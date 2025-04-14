@@ -89,6 +89,11 @@ export function EditProduct({
           name: image?.name,
           url: image?.original_url,
         })),
+        mainImage: fullProductData.mainImage?.map(image => ({
+          uid: image?.uuid,
+          name: image?.name,
+          url: image?.original_url,
+        })),
         status: fullProductData.status,
         title: fullProductData.title,
         decor: fullProductData.decor,
@@ -737,7 +742,7 @@ export function EditProduct({
             >
               <Form.Item<IFormProduct>
                 name='bannerImage'
-                label='Əsas şəkil (420x240)'
+                label='Əsas şəkil (1900x400)'
                 valuePropName='fileList'
                 getValueFromEvent={e => {
                   const fileList: UploadFile[] = Array.isArray(e)
@@ -763,6 +768,54 @@ export function EditProduct({
               >
                 <Upload
                   name='bannerImage'
+                  accept='image/*'
+                  maxCount={1}
+                  listType='picture'
+                  onRemove={file =>
+                    handleRemoveFile(
+                      deleteFile,
+                      file,
+                      undefined,
+                      setDeleteSuccess,
+                    )
+                  }
+                >
+                  <Button icon={<UploadOutlined />}>Click to upload</Button>
+                </Upload>
+              </Form.Item>
+            </Col>
+            <Col
+              xs={24}
+              sm={12}
+            >
+              <Form.Item<IFormProduct>
+                name='mainImage'
+                label='Əsas şəkil (420x240)'
+                valuePropName='fileList'
+                getValueFromEvent={e => {
+                  const fileList: UploadFile[] = Array.isArray(e)
+                    ? e
+                    : e?.fileList
+                  if (e.file.status === 'status' && !deleteSuccess) return false
+                  return fileList?.map(
+                    (fileItem: UploadFile) =>
+                      fileItem.originFileObj || fileItem,
+                  )
+                }}
+                rules={[
+                  {
+                    required: true,
+                    validator: (_, value) =>
+                      value && value.length > 0
+                        ? Promise.resolve()
+                        : Promise.reject(
+                          new Error('Zəhmət olmasa şəkil yükləyin'),
+                        ),
+                  },
+                ]}
+              >
+                <Upload
+                  name='mainImage'
                   accept='image/*'
                   maxCount={1}
                   listType='picture'

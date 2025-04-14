@@ -677,7 +677,7 @@ export function AddProduct({
           >
             <Form.Item<IFormProduct>
               name='bannerImage'
-              label='Əsas şəkil(420x240)'
+              label='Banner şəkil(1900x400)'
               valuePropName='fileList'
               getValueFromEvent={e => {
                 const fileList = Array.isArray(e) ? e : e?.fileList
@@ -699,6 +699,41 @@ export function AddProduct({
             >
               <Upload
                 name='bannerImage'
+                accept='image/*'
+                listType='picture'
+              >
+                <Button icon={<UploadOutlined />}>Click to upload</Button>
+              </Upload>
+            </Form.Item>
+          </Col>
+          <Col
+            xs={24}
+            sm={12}
+          >
+            <Form.Item<IFormProduct>
+              name='mainImage'
+              label='Əsas şəkil(420x240)'
+              valuePropName='fileList'
+              getValueFromEvent={e => {
+                const fileList = Array.isArray(e) ? e : e?.fileList
+                return fileList?.map(
+                  (fileItem: UploadFile) => fileItem.originFileObj || fileItem,
+                )
+              }}
+              rules={[
+                {
+                  required: true,
+                  validator: (_, value) =>
+                    value && value.length > 0
+                      ? Promise.resolve()
+                      : Promise.reject(
+                        new Error('Zəhmət olmasa şəkil yükləyin'),
+                      ),
+                },
+              ]}
+            >
+              <Upload
+                name='mainImage'
                 accept='image/*'
                 listType='picture'
               >

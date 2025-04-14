@@ -139,7 +139,7 @@ export function ProjectPage(): React.ReactElement {
                 <Col span={24}>
                   <Form.Item<FormField>
                     name='image'
-                    label='Image'
+                    label='Banner şəkli(1900x400)'
                     valuePropName='image'
                     rules={[
                       {
