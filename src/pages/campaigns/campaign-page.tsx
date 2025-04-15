@@ -139,7 +139,7 @@ export function CampaignPage(): React.ReactElement {
                 <Col span={24}>
                   <Form.Item<FormField>
                     name='image'
-                    label='Image (1900x400)'
+                    label='Banner şəkli(1900x400)'
                     valuePropName='image'
                     rules={[
                       {
