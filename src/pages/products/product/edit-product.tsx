@@ -637,6 +637,7 @@ export function EditProduct({
                 label='Məhsul teqi'
               >
                 <Select
+                  allowClear
                   optionFilterProp='label'
                   style={{ width: '100%' }}
                   placeholder='Teq seçin'
