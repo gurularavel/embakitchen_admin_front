@@ -791,7 +791,7 @@ export function EditProduct({
             >
               <Form.Item<IFormProduct>
                 name='mainImage'
-                label='Əsas şəkil (420x240)'
+                label='Əsas şəkil (560x370)'
                 valuePropName='fileList'
                 getValueFromEvent={e => {
                   const fileList: UploadFile[] = Array.isArray(e)

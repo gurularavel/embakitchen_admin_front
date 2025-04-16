@@ -713,7 +713,7 @@ export function AddProduct({
           >
             <Form.Item<IFormProduct>
               name='mainImage'
-              label='Əsas şəkil(420x240)'
+              label='Əsas şəkil(560x370)'
               valuePropName='fileList'
               getValueFromEvent={e => {
                 const fileList = Array.isArray(e) ? e : e?.fileList
