@@ -57,6 +57,7 @@ export function EditStoreDrawer({
       'status',
       'title',
       'coords',
+      'map_url',
     ],
   })
 
@@ -370,6 +371,17 @@ export function EditStoreDrawer({
               ]}
             >
               <Input placeholder='Latitude' />
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item
+              label='Link'
+              name='map_url'
+              rules={[
+                { required: true, message: 'Zəhmət olmasa boş saxlamayın.' },
+              ]}
+            >
+              <Input placeholder='Url' />
             </Form.Item>
           </Col>
         </Row>

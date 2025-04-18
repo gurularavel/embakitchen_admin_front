@@ -13,6 +13,7 @@ export interface IStore {
     longitude: string
     latitude: string
   }
+  map_url: string
   email: string
   city: ICity
   status: boolean
