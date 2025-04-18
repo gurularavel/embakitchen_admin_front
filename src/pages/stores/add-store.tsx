@@ -353,6 +353,17 @@ export function AddStoreDrawer({
               <Input placeholder='Latitude' />
             </Form.Item>
           </Col>
+          <Col span={24}>
+            <Form.Item
+              label='Link'
+              name='map_url'
+              rules={[
+                { required: true, message: 'Zəhmət olmasa boş saxlamayın.' },
+              ]}
+            >
+              <Input placeholder='Url' />
+            </Form.Item>
+          </Col>
         </Row>
       </Form>
     </Drawer>
