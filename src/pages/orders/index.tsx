@@ -1,21 +1,16 @@
 import * as React from 'react'
-import { Button, Table, TablePaginationConfig, TableProps } from 'antd'
+import { Select, Space, Table, TablePaginationConfig, TableProps } from 'antd'
 import { ErrorMessage, Loading, RenderIf, NoData } from '~ek/shared/components'
 import { confirmModal, notifier } from '~ek/shared/helpers'
 import { NOTIFICATION } from '~ek/shared/const/constants'
 import type { IOrder } from '~ek/types/order'
-import {
-  CheckCircleOutlined,
-  DeleteOutlined,
-  ExclamationCircleOutlined,
-} from '@ant-design/icons'
+import { DeleteOutlined } from '@ant-design/icons'
 import {
   useDeleteOrderMutation,
   useGetOrdersQuery,
   useAddOrderStatusMutation,
 } from '~ek/redux/api/order'
 import { useGetOrderStatusesQuery } from '~ek/redux/api/order-status'
-import { IOrderStatus } from '~ek/types/order-status'
 
 export function Order(): React.ReactElement {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([])
@@ -33,10 +28,13 @@ export function Order(): React.ReactElement {
   const { data: statuses, isLoading: statusLoading } = useGetOrderStatusesQuery(
     { page: 1 },
   )
+  const orderStatusesOptions = statuses?.data?.map(s => ({
+    value: s.id,
+    label: s.title.az,
+  }))
 
   const [deleteOrder] = useDeleteOrderMutation()
-  const [addOrderStatus, { isLoading: addStatusLoading }] =
-    useAddOrderStatusMutation()
+  const [addOrderStatus] = useAddOrderStatusMutation()
 
   const handleTableChange = (pagination: TablePaginationConfig): void => {
     setPageParams(prev => ({
@@ -120,30 +118,30 @@ export function Order(): React.ReactElement {
       dataIndex: 'orderStatus',
       key: 'trackOrderStatuses',
       render: (_: string, order: IOrder) =>
-        order.trackOrderStatuses.length
-          ? order.trackOrderStatuses.map((status: IOrderStatus) => (
-            <Button
-              className='bg-green-100 text-green-500 border-green-100 hover:!bg-green-300 hover:!border-green-300 hover:!text-green-700'
-              key={status.id}
-              variant='filled'
-              icon={<CheckCircleOutlined />}
-            >
-              {status.title.az}
-            </Button>
-          ))
-          : !statusLoading &&
-            statuses?.data?.map((status: IOrderStatus) => (
-              <Button
-                color='danger'
-                key={status.id}
-                variant='filled'
-                icon={<ExclamationCircleOutlined />}
-                disabled={addStatusLoading}
-                onClick={() => changeOrderStatus(order.id, status.id)}
-              >
-                Əlaqə saxlanılmayıb
-              </Button>
-            )),
+        order.trackOrderStatuses.length && !statusLoading ? (
+          <Select
+            optionFilterProp='label'
+            style={{ width: '100%' }}
+            defaultValue={order.trackOrderStatuses[0]?.id}
+            onChange={value => changeOrderStatus(order.id, value)}
+            placeholder='Sifariş statusu'
+            options={orderStatusesOptions || []}
+            optionRender={option => <Space>{option.label}</Space>}
+          />
+        ) : (
+          <Select
+            optionFilterProp='label'
+            style={{ width: '100%' }}
+            defaultValue={
+              orderStatusesOptions?.find(
+                status => status.label === 'əlaqə saxlanılmayıb',
+              )?.value
+            }
+            placeholder='Sifariş statusu'
+            options={orderStatusesOptions || []}
+            optionRender={option => <Space>{option.label}</Space>}
+          />
+        ),
     },
   ]
   return (
