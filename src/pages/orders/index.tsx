@@ -49,7 +49,7 @@ export function Order(): React.ReactElement {
       setSelectedRowKeys(selectedRowKeys)
     },
   }
-  const removeCity = async (ids: number[]): Promise<void> => {
+  const removeOrder = async (ids: number[]): Promise<void> => {
     try {
       await deleteOrder({ ids: ids }).unwrap()
       setSelectedRowKeys([])
@@ -73,6 +73,15 @@ export function Order(): React.ReactElement {
         e instanceof Error ? e.message : 'An unexpected error occurred'
       notifier(errorMessage, NOTIFICATION.error)
     }
+  }
+
+  const getCurrentStatusValue = (order: IOrder) => {
+    if (order.trackOrderStatuses.length > 0) {
+      return order.trackOrderStatuses[0]?.id
+    }
+    return orderStatusesOptions?.find(
+      status => status.label === 'əlaqə saxlanılmayıb',
+    )?.value
   }
 
   const columns = [
@@ -117,31 +126,18 @@ export function Order(): React.ReactElement {
       title: 'Sifariş statusu',
       dataIndex: 'orderStatus',
       key: 'trackOrderStatuses',
-      render: (_: string, order: IOrder) =>
-        order.trackOrderStatuses.length && !statusLoading ? (
-          <Select
-            optionFilterProp='label'
-            style={{ width: '100%' }}
-            defaultValue={order.trackOrderStatuses[0]?.id}
-            onChange={value => changeOrderStatus(order.id, value)}
-            placeholder='Sifariş statusu'
-            options={orderStatusesOptions || []}
-            optionRender={option => <Space>{option.label}</Space>}
-          />
-        ) : (
-          <Select
-            optionFilterProp='label'
-            style={{ width: '100%' }}
-            defaultValue={
-              orderStatusesOptions?.find(
-                status => status.label === 'əlaqə saxlanılmayıb',
-              )?.value
-            }
-            placeholder='Sifariş statusu'
-            options={orderStatusesOptions || []}
-            optionRender={option => <Space>{option.label}</Space>}
-          />
-        ),
+      render: (_: string, order: IOrder) => (
+        <Select
+          optionFilterProp='label'
+          style={{ width: '100%' }}
+          value={getCurrentStatusValue(order)}
+          onChange={value => changeOrderStatus(order.id, value)}
+          placeholder='Sifariş statusu'
+          options={orderStatusesOptions || []}
+          optionRender={option => <Space>{option.label}</Space>}
+          loading={statusLoading}
+        />
+      ),
     },
   ]
   return (
@@ -160,7 +156,7 @@ export function Order(): React.ReactElement {
               onClick={() =>
                 confirmModal({
                   title: 'Silmək istədiyinizdən əminsiniz?',
-                  onOk: () => removeCity(selectedRowKeys as number[]),
+                  onOk: () => removeOrder(selectedRowKeys as number[]),
                 })
               }
             />
