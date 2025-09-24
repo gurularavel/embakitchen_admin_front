@@ -5,7 +5,7 @@ import type { IOrder, OrderApiResponse, IAddOrderStatus } from '~ek/types/order'
 export const orderApi = createApi({
   reducerPath: 'orderApi',
   baseQuery: APIBaseQuery,
-  tagTypes: ['ORDER'],
+  tagTypes: ['TRACK_ORDER'],
   endpoints: builder => ({
     getOrders: builder.query<OrderApiResponse, IRequestParams>({
       query(params) {
@@ -15,7 +15,7 @@ export const orderApi = createApi({
           params,
         }
       },
-      providesTags: () => [{ type: 'ORDER' }],
+      providesTags: () => [{ type: 'TRACK_ORDER' }],
     }),
     getOrderById: builder.query<IOrder, number>({
       query(id) {
@@ -33,17 +33,17 @@ export const orderApi = createApi({
           data: data,
         }
       },
-      invalidatesTags: () => [{ type: 'ORDER' }],
+      invalidatesTags: () => [{ type: 'TRACK_ORDER' }],
     }),
     deleteOrder: builder.mutation<void, IDelete>({
       query(data) {
         return {
-          url: 'track-orders',
+          url: 'orders',
           method: 'DELETE',
           data,
         }
       },
-      invalidatesTags: () => [{ type: 'ORDER' }],
+      invalidatesTags: () => [{ type: 'TRACK_ORDER' }],
     }),
   }),
 })

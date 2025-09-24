@@ -1,21 +1,16 @@
 import * as React from 'react'
-import { Button, Table, TablePaginationConfig, TableProps } from 'antd'
+import { Select, Space, Table, TablePaginationConfig, TableProps } from 'antd'
 import { ErrorMessage, Loading, RenderIf, NoData } from '~ek/shared/components'
 import { confirmModal, notifier } from '~ek/shared/helpers'
 import { NOTIFICATION } from '~ek/shared/const/constants'
 import type { IOrder } from '~ek/types/order'
-import {
-  CheckCircleOutlined,
-  DeleteOutlined,
-  ExclamationCircleOutlined,
-} from '@ant-design/icons'
+import { DeleteOutlined } from '@ant-design/icons'
 import {
   useDeleteOrderMutation,
   useGetOrdersQuery,
   useAddOrderStatusMutation,
 } from '~ek/redux/api/order'
 import { useGetOrderStatusesQuery } from '~ek/redux/api/order-status'
-import { IOrderStatus } from '~ek/types/order-status'
 
 export function Order(): React.ReactElement {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([])
@@ -33,10 +28,13 @@ export function Order(): React.ReactElement {
   const { data: statuses, isLoading: statusLoading } = useGetOrderStatusesQuery(
     { page: 1 },
   )
+  const orderStatusesOptions = statuses?.data?.map(s => ({
+    value: s.id,
+    label: s.title.az,
+  }))
 
   const [deleteOrder] = useDeleteOrderMutation()
-  const [addOrderStatus, { isLoading: addStatusLoading }] =
-    useAddOrderStatusMutation()
+  const [addOrderStatus] = useAddOrderStatusMutation()
 
   const handleTableChange = (pagination: TablePaginationConfig): void => {
     setPageParams(prev => ({
@@ -51,7 +49,7 @@ export function Order(): React.ReactElement {
       setSelectedRowKeys(selectedRowKeys)
     },
   }
-  const removeCity = async (ids: number[]): Promise<void> => {
+  const removeOrder = async (ids: number[]): Promise<void> => {
     try {
       await deleteOrder({ ids: ids }).unwrap()
       setSelectedRowKeys([])
@@ -75,6 +73,15 @@ export function Order(): React.ReactElement {
         e instanceof Error ? e.message : 'An unexpected error occurred'
       notifier(errorMessage, NOTIFICATION.error)
     }
+  }
+
+  const getCurrentStatusValue = (order: IOrder) => {
+    if (order.trackOrderStatuses.length > 0) {
+      return order.trackOrderStatuses[0]?.id
+    }
+    return orderStatusesOptions?.find(
+      status => status.label === 'əlaqə saxlanılmayıb',
+    )?.value
   }
 
   const columns = [
@@ -119,31 +126,18 @@ export function Order(): React.ReactElement {
       title: 'Sifariş statusu',
       dataIndex: 'orderStatus',
       key: 'trackOrderStatuses',
-      render: (_: string, order: IOrder) =>
-        order.trackOrderStatuses.length
-          ? order.trackOrderStatuses.map((status: IOrderStatus) => (
-            <Button
-              className='bg-green-100 text-green-500 border-green-100 hover:!bg-green-300 hover:!border-green-300 hover:!text-green-700'
-              key={status.id}
-              variant='filled'
-              icon={<CheckCircleOutlined />}
-            >
-              {status.title.az}
-            </Button>
-          ))
-          : !statusLoading &&
-            statuses?.data?.map((status: IOrderStatus) => (
-              <Button
-                color='danger'
-                key={status.id}
-                variant='filled'
-                icon={<ExclamationCircleOutlined />}
-                disabled={addStatusLoading}
-                onClick={() => changeOrderStatus(order.id, status.id)}
-              >
-                Əlaqə saxlanılmayıb
-              </Button>
-            )),
+      render: (_: string, order: IOrder) => (
+        <Select
+          optionFilterProp='label'
+          style={{ width: '100%' }}
+          value={getCurrentStatusValue(order)}
+          onChange={value => changeOrderStatus(order.id, value)}
+          placeholder='Sifariş statusu'
+          options={orderStatusesOptions || []}
+          optionRender={option => <Space>{option.label}</Space>}
+          loading={statusLoading}
+        />
+      ),
     },
   ]
   return (
@@ -162,7 +156,7 @@ export function Order(): React.ReactElement {
               onClick={() =>
                 confirmModal({
                   title: 'Silmək istədiyinizdən əminsiniz?',
-                  onOk: () => removeCity(selectedRowKeys as number[]),
+                  onOk: () => removeOrder(selectedRowKeys as number[]),
                 })
               }
             />
