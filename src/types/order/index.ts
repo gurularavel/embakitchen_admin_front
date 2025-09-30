@@ -1,29 +1,34 @@
-import type { User } from '~ek/types/auth'
 import type { IProduct } from '~ek/types/product'
 import type { ICity } from '~ek/types/city'
 import type { IDistrict } from '~ek/types/district'
-import { IOrderStatus } from '~ek/types/order-status'
 
 export interface IOrder {
   id: number
-  user: Omit<User, 'city'> & {
-    city_id: number
-    address: string
-    district_id: number
-  }
-  status: number
-  products: Pick<IProduct, 'id' | 'title'>[]
-  city: Pick<ICity, 'id' | 'title'>
-  district: Pick<IDistrict, 'id' | 'title'>
+  city: ICity & { hasDistricts: boolean }
+  district: IDistrict
+  products: ({ width: number; height: number } & Pick<
+    IProduct,
+    | 'id'
+    | 'title'
+    | 'slug'
+    | 'tags'
+    | 'category'
+    | 'images'
+    | 'bannerImage'
+    | 'mainImage'
+  >)[]
+  name: string
+  surname: string
   address: string
   phone: string
-  trackOrderStatuses: IOrderStatus[]
+  message: string
+  status: number
+  created_at: string
 }
 
-export interface IAddOrderStatus {
+export interface IEditOrderStatus {
   order_id: number
-  track_order_status_id: number
-  date?: string
+  isCalling: boolean
 }
 
 export type OrderApiResponse = ApiResponse<IOrder[]>
