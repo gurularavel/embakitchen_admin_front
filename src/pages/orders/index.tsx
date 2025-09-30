@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Select, Space, Table, TablePaginationConfig, TableProps } from 'antd'
+import { Button, Table, TablePaginationConfig, TableProps } from 'antd'
 import { ErrorMessage, Loading, RenderIf, NoData } from '~ek/shared/components'
 import { confirmModal, notifier } from '~ek/shared/helpers'
 import { NOTIFICATION } from '~ek/shared/const/constants'
@@ -8,9 +8,13 @@ import { DeleteOutlined } from '@ant-design/icons'
 import {
   useDeleteOrderMutation,
   useGetOrdersQuery,
-  useAddOrderStatusMutation,
+  useEditOrderStatusMutation,
 } from '~ek/redux/api/order'
-import { useGetOrderStatusesQuery } from '~ek/redux/api/order-status'
+
+const orderStyles: Readonly<TailwindStyle> = {
+  successButton:
+    'bg-cyan-500 !text-white border-none hover:!bg-cyan-400 !focus:bg-cyan-400',
+}
 
 export function Order(): React.ReactElement {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([])
@@ -25,16 +29,8 @@ export function Order(): React.ReactElement {
     perPage: pageParams.pageSize,
   })
 
-  const { data: statuses, isLoading: statusLoading } = useGetOrderStatusesQuery(
-    { page: 1 },
-  )
-  const orderStatusesOptions = statuses?.data?.map(s => ({
-    value: s.id,
-    label: s.title.az,
-  }))
-
   const [deleteOrder] = useDeleteOrderMutation()
-  const [addOrderStatus] = useAddOrderStatusMutation()
+  const [addOrderStatus] = useEditOrderStatusMutation()
 
   const handleTableChange = (pagination: TablePaginationConfig): void => {
     setPageParams(prev => ({
@@ -63,25 +59,16 @@ export function Order(): React.ReactElement {
 
   const changeOrderStatus = async (
     order_id: number,
-    track_order_status_id: number,
+    isCalling: boolean,
   ): Promise<void> => {
     try {
-      await addOrderStatus({ order_id, track_order_status_id }).unwrap()
+      await addOrderStatus({ order_id, isCalling }).unwrap()
       notifier('Sifariş statusu dəyişdirildi', NOTIFICATION.success)
     } catch (e: unknown) {
       const errorMessage =
         e instanceof Error ? e.message : 'An unexpected error occurred'
       notifier(errorMessage, NOTIFICATION.error)
     }
-  }
-
-  const getCurrentStatusValue = (order: IOrder) => {
-    if (order.trackOrderStatuses.length > 0) {
-      return order.trackOrderStatuses[0]?.id
-    }
-    return orderStatusesOptions?.find(
-      status => status.label === 'əlaqə saxlanılmayıb',
-    )?.value
   }
 
   const columns = [
@@ -91,8 +78,8 @@ export function Order(): React.ReactElement {
       key: 'title',
       render: (_: string, order: IOrder, i: number) => (
         <h2>
-          {(pageParams.current - 1) * pageParams.pageSize + ++i}.{' '}
-          {order.user.name} {order.user.surname}
+          {(pageParams.current - 1) * pageParams.pageSize + ++i}. {order.name}{' '}
+          {order.surname}
         </h2>
       ),
     },
@@ -123,20 +110,43 @@ export function Order(): React.ReactElement {
       render: (_: string, order: IOrder) => <span>{order.phone}</span>,
     },
     {
+      title: 'Sifariş tarixi',
+      dataIndex: 'createdAt',
+      key: 'created_at',
+      render: (_: string, order: IOrder) => <span>{order.created_at}</span>,
+    },
+    {
+      title: 'Sifarişçinin qeydi',
+      dataIndex: 'message',
+      key: 'message',
+      render: (_: string, order: IOrder) => (
+        <span>{order.message ? order.message : '-'}</span>
+      ),
+    },
+    {
       title: 'Sifariş statusu',
       dataIndex: 'orderStatus',
-      key: 'trackOrderStatuses',
+      key: 'status',
       render: (_: string, order: IOrder) => (
-        <Select
-          optionFilterProp='label'
-          style={{ width: '100%' }}
-          value={getCurrentStatusValue(order)}
-          onChange={value => changeOrderStatus(order.id, value)}
-          placeholder='Sifariş statusu'
-          options={orderStatusesOptions || []}
-          optionRender={option => <Space>{option.label}</Space>}
-          loading={statusLoading}
-        />
+        <span>
+          {order.status ? (
+            <Button
+              className={orderStyles.successButton}
+              variant='solid'
+              onClick={() => changeOrderStatus(order.id, false)}
+            >
+              Əlaqə saxlanılıb
+            </Button>
+          ) : (
+            <Button
+              color='danger'
+              variant='solid'
+              onClick={() => changeOrderStatus(order.id, true)}
+            >
+              Əlaqə saxlanılmayıb
+            </Button>
+          )}
+        </span>
       ),
     },
   ]
